@@ -1,0 +1,54 @@
+{
+  "name": "async-redux",
+  "version": "0.1.0",
+  "description": "Opinionated data fetching for React Router & Redux",
+  "main": "lib/AsyncRedux",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CouponTrade/async-redux.git"
+  },
+  "bugs": "https://github.com/CouponTrade/async-redux/issues",
+  "scripts": {
+    "build": "babel ./modules --stage 0 --loose all -d lib --ignore '__tests__'",
+    "start": "babel-node example/server.js"
+  },
+  "authors": [
+    "Nick Dreckshage"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "0.14.x",
+    "react-router": "2.0.0-rc4"
+  },
+  "devDependencies": {
+    "babel": "^5.8.34",
+    "babel-core": "^5.8.34",
+    "babel-eslint": "^4.1.6",
+    "babel-loader": "^5.4.0",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^1.0.2",
+    "eslint-plugin-react": "^3.11.2",
+    "express": "^4.13.3",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-redux": "^4.0.6",
+    "react-router": "2.0.0-rc4",
+    "redux": "^3.0.5",
+    "webpack": "^1.12.9",
+    "webpack-dev-middleware": "^1.4.0"
+  },
+  "tags": [
+    "react",
+    "react router",
+    "data"
+  ],
+  "keywords": [
+    "react",
+    "react router",
+    "data"
+  ],
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "redux-act": "^0.3.0"
+  }
+}
