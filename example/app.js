@@ -47,18 +47,21 @@ const caReducer = createReducer({
     return merge({}, state);
   },
 }, { aCounter: 0 });
-const caFetch = (params, dispatch, done, clientReady, clientHydrated, serverReady) => {
-  clientReady();
+const caFetch = (params, dispatch, stillActive, done, clientRender, clientHydrated, serverRender) => {
+  console.log('sa', stillActive());
   setTimeout(() => {
-    // dispatch(caActions.incr());
-    done();
-  }, 1000);
+    setTimeout(() => {
+      done();
+    }, 2500);
+    clientRender();
+  }, 500);
 };
 const ComponentA = props => {
-  const { data, dispatch } = props;
+  const { data, dispatch, loading } = props;
   if (!data) return <div/>;
   return (
     <div style={routeStyle}>
+      <p>Loading: {loading ? 'yes' : 'no'}</p>
       <p onClick={() => {dispatch(caActions.incr());}}>a: {data.aCounter}</p>
       <Link to="/route-2">b</Link>
     </div>
@@ -97,12 +100,20 @@ const cb1Reducer = createReducer({
     return merge({}, state);
   },
 }, { cb1Counter: 0 });
-const cb1Fetch = (params, dispatch, done, clientReady, clientHydrated, serverReady) => {};
+const cb1Fetch = (params, dispatch, stillActive, done, clientRender, clientHydrated, serverRender) => {
+  clientRender();
+  setTimeout(() => {
+    if (stillActive()) {
+      done();
+    }
+  }, 2500);
+};
 const ComponentB1 = props => {
-  const { data, dispatch } = props;
+  const { data, dispatch, loading } = props;
   if (!data) return <div/>;
   return (
     <div style={routeStyle}>
+      <p>Loading: {loading ? 'yes' : 'no'}</p>
       <p onClick={() => {dispatch(cb1Actions.incr());}}>a: {data.cb1Counter}</p>
       <Link to="/route-2/nested-route">b2</Link>
     </div>
@@ -116,7 +127,6 @@ const cb2Reducer = createReducer({
     return merge({}, state);
   },
 }, { cb2Counter: 0 });
-const cb2Fetch = (params, dispatch, done, clientReady, clientHydrated, serverReady) => {};
 const ComponentB2 = props => {
   const { data, dispatch } = props;
   if (!data) return <div/>;
@@ -128,6 +138,8 @@ const ComponentB2 = props => {
   );
 };
 
+const loader = () => (<div>Custom loader!</div>);
+
 render((
   <Provider store={store}>
     <Router
@@ -136,10 +148,10 @@ render((
         <AsyncRedux {...props} store={store} />
       )}>
       <Route path="/" component={App} reducer={appReducer}>
-        <IndexRoute component={ComponentA} fetchData={caFetch} reducer={caReducer} />
+        <IndexRoute component={ComponentA} fetchData={caFetch} reducer={caReducer} loader={loader} />
         <Route path="/route-2" component={ComponentB} reducer={cbReducer}>
           <IndexRoute component={ComponentB1} fetchData={cb1Fetch} reducer={cb1Reducer} />
-          <Route path="/route-2/nested-route" component={ComponentB2} fetchData={cb2Fetch} reducer={cb2Reducer} />
+          <Route path="/route-2/nested-route" component={ComponentB2} reducer={cb2Reducer} />
         </Route>
       </Route>
     </Router>

@@ -7,14 +7,21 @@ import makeHydratable from './makeHydratable';
 import simpleConnect from './simpleConnect';
 import renderChildren from './renderChildren';
 import diffRoutes from './diffRoutes';
+import { CHILD } from './constants';
 import { nestAndReplaceReducersAndState } from './nestReducers';
-import { forEach, map } from 'lodash';
+import { forEach, map, take, drop } from 'lodash';
 
 const createElement = (Component, props) => {
-  return (
-    <Component {...props} />
-  );
+  const { route } = props;
+
+  if (route.blockRender) {
+    return route.loader(props);
+  }
+
+  return (<Component {...props} loading={route.loading} />);
 };
+
+const defaultLoader = () => (<div/>);
 
 const normalizeRoutes = routes => {
   return map(routes, route => {
@@ -22,44 +29,39 @@ const normalizeRoutes = routes => {
       route.reducer = state => state;
     }
 
+    if (!route.loader) {
+      route.loader = defaultLoader;
+    }
+
+    route.blockRender = true;
+    route.loading = true;
     return route;
   });
 };
 
-const loadAsyncState = (matchedRoutes, store, replaceAtDepth, cb) => {
-  console.warn('loadAsyncState', matchedRoutes, store);
-  const { routes: rawRoutes, params } = matchedRoutes;
-  const routes = normalizeRoutes(rawRoutes);
+const loadAsyncState = (matchedRoutes, store, replaceAtDepth, cb, stillActive) => {
+  const { routes, params } = matchedRoutes;
   const reducers = map(routes, route => route.reducer);
-
-  let needToLoadCounter = routes.length;
-  const maybeFinish = () => {
-    if (needToLoadCounter === 0) {
-      // console.log('finished!');
-      // cb(null, 'yay!');
-    }
-  };
 
   if (routes.length > 0) {
     nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
-
     forEach(routes, (route, index) => {
       if (route.fetchData) {
         const clientHydrated = false;
         route.fetchData(params, store.dispatch, () => {
-          // console.warn('app done');
+          return stillActive(route, index);
         }, () => {
-          // console.warn('app client ready');
+          cb('done', route, index);
+        }, () => {
+          cb('client', route, index);
         }, clientHydrated, () => {
-          // console.warn('app server ready');
+          // stopBlocking(routes, index); // server render
+          console.error('server');
         });
+      } else {
+        cb('done', route, index);
       }
-
-      needToLoadCounter--;
-      maybeFinish();
     });
-  } else {
-    maybeFinish();
   }
 };
 
@@ -72,16 +74,11 @@ class AsyncRedux extends React.Component {
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
     onError: React.PropTypes.func.isRequired,
-    renderLoading: React.PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     onError(err) {
       throw err;
-    },
-
-    renderLoading() {
-      return null;
     },
 
     render(props) {
@@ -93,25 +90,36 @@ class AsyncRedux extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    console.log(props);
+    const { routes } = props;
+    this.state = {
+      //  isServerRender,
+      routes: normalizeRoutes(routes),
+    };
   }
 
   componentDidMount() {
-    const { routes, location, store } = this.props;
+    const { location, store } = this.props;
+    const { routes } = this.state;
     this.loadAsyncState(routes, location, store, 0);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { routes: prevRoutes, location: prevLocation } = this.props;
+    const { routes: prevRoutes } = this.state;
+    const { location: prevLocation } = this.props;
+
     const routeChanged = nextProps.location !== prevLocation;
     if (!routeChanged) return;
 
-    const { routes, location, store } = nextProps;
-    this.loadAsyncState(routes, location, store, diffRoutes(prevRoutes, routes));
+    const { location, store, routes } = nextProps;
+    const routeDiff = diffRoutes(prevRoutes, routes);
+    const nextRoutes = take(routes, routeDiff).concat(normalizeRoutes(drop(routes, routeDiff)));
+
+    this.setState({ routes: nextRoutes }, () => {
+      this.loadAsyncState(nextRoutes, location, store, routeDiff);
+    });
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount()');
     this._unmounted = true;
   }
 
@@ -126,17 +134,24 @@ class AsyncRedux extends React.Component {
   }
 
   loadAsyncState(routes, location, store, replaceAtDepth) {
-    // loading: true
     matchRoutes(routes, location, (err1, matchedRoutes) => {
       loadAsyncState(
         matchedRoutes,
         store,
         replaceAtDepth,
-        this.handleError((err2, xxx) => {
-          console.log('loadAsnycStateCB', err2, xxx);
-          // loading: false
-          // dispatch to stores
-        })
+        (type, route, index) => {
+          if (!this._unmounted) {
+            const { routes: updatedRoutes } = this.state;
+            if (updatedRoutes[index] === route) {
+              updatedRoutes[index].blockRender = false;
+              if (type === 'done') updatedRoutes[index].loading = false;
+              this.setState({ routes: updatedRoutes });
+            }
+          }
+        },
+        (route, index) => {
+          return this.state.routes[index] === route;
+        }
       );
     });
   }
@@ -151,4 +166,5 @@ export {
   makeHydratable,
   simpleConnect,
   renderChildren,
+  CHILD,
 };

@@ -7,8 +7,9 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 
 ## TODO
 - [x] Route based reducer organization
-- [ ] Data fetching lifecycle
+- [x] Data fetching lifecycle
 - [ ] Server side rendering
+- [ ] Thoughts on proper order or fetchData params?
 - [ ] getReducer to align with getComponent
 - [ ] Make the example app (code) pretty
 - [ ] Tests
@@ -109,4 +110,4 @@ const ChildRouteComponent = ({ data, dispatch }) => {
 
 ---
 
-**Special thanks to [ryan florence](https://github.com/ryanflorence), largely based on [aync-props](https://github.com/rackt/async-props)!**
+**Special thanks to [ryan florence](https://github.com/ryanflorence), somewhat based on [aync-props](https://github.com/rackt/async-props)!**
