@@ -8,11 +8,19 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 ## TODO
 - [x] Route based reducer organization
 - [x] Data fetching lifecycle
-- [ ] Server side rendering
+- [x] Server side rendering
+- [ ] Hydrate client on initial load
+- [ ] Make the example app (code) prettier
+- [ ] Add gif showing this in action
+- [ ] Handle error states in loadAsyncState / ssr
+- [ ] Convert server example to hapi
 - [ ] Thoughts on proper order or fetchData params?
+- [ ] Thoughts on full API / AsyncProps exports?
 - [ ] getReducer to align with getComponent
-- [ ] Make the example app (code) pretty
-- [ ] Tests
+- [ ] Re-read async-props to see if anything else interesting
+- [ ] Tests...
+- [ ] Add to microclient-reference-app
+- [ ] Open source?
 
 ### First class data fetching
 
@@ -29,8 +37,10 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 ###### Data fetching...
 *You can do a lot - everything is optional.*
 ```javascript
-fetchData(params, dispatch, done, clientReady, clientHydrated, serverReady) {
+fetchData(params, dispatch, stillActive, done, clientReady, clientHydrated, serverReady) {
   // render generic loading template
+  // ...
+  // ...
   clientReady(); // render preview template
 
   const promise1 = new Promise((resolve, reject) => {
@@ -38,9 +48,11 @@ fetchData(params, dispatch, done, clientReady, clientHydrated, serverReady) {
       resolve();
     } else {
       fetch('endpoint').then(response => {
-        dispatch(actionAssociatedWithRouteReducer());
-        serverReady(); // block server until...
-        resolve();
+        if (stillActive()) {
+          dispatch(actionAssociatedWithRouteReducer());
+          serverReady(); // block server until...
+          resolve();
+        }
       });
     }
   });
@@ -49,8 +61,10 @@ fetchData(params, dispatch, done, clientReady, clientHydrated, serverReady) {
   if (__CLIENT__) { // finish loading on client.
     const promise2 = new Promise((resolve, reject) => {
       fetch('endpoint').then(response => {
-        dispatch(actionAssociatedWithRouteReducer());
-        resolve();
+        if (stillActive()) {
+          dispatch(actionAssociatedWithRouteReducer());
+          resolve();
+        }
       });
     });
 

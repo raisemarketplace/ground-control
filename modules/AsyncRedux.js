@@ -7,63 +7,13 @@ import makeHydratable from './makeHydratable';
 import simpleConnect from './simpleConnect';
 import renderChildren from './renderChildren';
 import diffRoutes from './diffRoutes';
-import { CHILD } from './constants';
+import loadAsyncState from './loadAsyncState';
+import createElement from './createElement';
+import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
+import loadStateOnServer from './loadStateOnServer';
+import { CHILD } from './constants';
 import { forEach, map, take, drop } from 'lodash';
-
-const createElement = (Component, props) => {
-  const { route } = props;
-
-  if (route.blockRender) {
-    return route.loader(props);
-  }
-
-  return (<Component {...props} loading={route.loading} />);
-};
-
-const defaultLoader = () => (<div/>);
-
-const normalizeRoutes = routes => {
-  return map(routes, route => {
-    if (!route.reducer) {
-      route.reducer = state => state;
-    }
-
-    if (!route.loader) {
-      route.loader = defaultLoader;
-    }
-
-    route.blockRender = true;
-    route.loading = true;
-    return route;
-  });
-};
-
-const loadAsyncState = (matchedRoutes, store, replaceAtDepth, cb, stillActive) => {
-  const { routes, params } = matchedRoutes;
-  const reducers = map(routes, route => route.reducer);
-
-  if (routes.length > 0) {
-    nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
-    forEach(routes, (route, index) => {
-      if (route.fetchData) {
-        const clientHydrated = false;
-        route.fetchData(params, store.dispatch, () => {
-          return stillActive(route, index);
-        }, () => {
-          cb('done', route, index);
-        }, () => {
-          cb('client', route, index);
-        }, clientHydrated, () => {
-          // stopBlocking(routes, index); // server render
-          console.error('server');
-        });
-      } else {
-        cb('done', route, index);
-      }
-    });
-  }
-};
 
 class AsyncRedux extends React.Component {
 
@@ -135,10 +85,13 @@ class AsyncRedux extends React.Component {
 
   loadAsyncState(routes, location, store, replaceAtDepth) {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
+      const reducers = map(routes, route => route.reducer);
+      nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
+
       loadAsyncState(
-        matchedRoutes,
-        store,
-        replaceAtDepth,
+        matchedRoutes.routes,
+        matchedRoutes.params,
+        store.dispatch,
         (type, route, index) => {
           if (!this._unmounted) {
             const { routes: updatedRoutes } = this.state;
@@ -166,5 +119,6 @@ export {
   makeHydratable,
   simpleConnect,
   renderChildren,
+  loadStateOnServer,
   CHILD,
 };

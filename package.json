@@ -2,7 +2,7 @@
   "name": "async-redux",
   "version": "0.1.0",
   "description": "Opinionated data fetching for React Router & Redux",
-  "main": "lib/AsyncRedux",
+  "main": "lib/AsyncRedux.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/CouponTrade/async-redux.git"
@@ -10,7 +10,7 @@
   "bugs": "https://github.com/CouponTrade/async-redux/issues",
   "scripts": {
     "build": "babel ./modules --stage 0 --loose all -d lib --ignore '__tests__'",
-    "start": "babel-node example/server.js"
+    "start": "nodemon example/server.js --exec babel-node"
   },
   "authors": [
     "Nick Dreckshage"
@@ -25,15 +25,18 @@
     "babel-core": "^5.8.34",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^5.4.0",
+    "domready": "^1.0.8",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^1.0.2",
     "eslint-plugin-react": "^3.11.2",
     "express": "^4.13.3",
+    "nodemon": "^1.8.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.6",
     "react-router": "2.0.0-rc4",
     "redux": "^3.0.5",
+    "require-alias": "^1.0.5",
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.4.0"
   },
