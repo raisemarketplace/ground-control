@@ -5,7 +5,6 @@ import { map, cloneDeep } from 'lodash';
 
 export default (props, store, cb) => {
   const { routes: rawRoutes, params } = props;
-
   const routes = cloneDeep(normalizeRoutes(rawRoutes));
   const reducers = map(routes, route => route.reducer);
   nestAndReplaceReducersAndState(store, 0, ...reducers);
@@ -13,7 +12,9 @@ export default (props, store, cb) => {
   let needToLoadCounter = routes.length;
   const maybeFinish = () => {
     if (needToLoadCounter === 0) {
-      cb(null, routes);
+      const json = JSON.stringify({ state: store.getState(), routes });
+      const scriptString = `<script>window.__INITIAL_DATA__=${json}</script>`;
+      cb(null, routes, scriptString);
     }
   };
 

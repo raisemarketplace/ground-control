@@ -14,7 +14,7 @@ const webpackOptions = {
   stats: { colors: true },
 };
 
-const getHtml = (html = '', scriptTag = '') => {
+const getHtml = (html, scriptString) => {
   return (
     `<!DOCTYPE html>
     <html>
@@ -23,13 +23,21 @@ const getHtml = (html = '', scriptTag = '') => {
       </head>
       <body>
         <div id="app">${html}</div>
+        ${scriptString}
       </body>
     </html>`
   );
 };
 
+const asyncReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
+  ...renderProps,
+  routes,
+  store,
+  serverSideRender: true,
+});
+
 const getAppHtml = (store, renderProps, adjustedRoutes) => {
-  const app = createApp(store, <AsyncRedux {...renderProps} routes={adjustedRoutes} store={store} />);
+  const app = createApp(store, <AsyncRedux {...asyncReduxProps(renderProps, adjustedRoutes, store)} />);
   return renderToString(app);
 };
 
@@ -41,11 +49,11 @@ const renderApplication = (req, res) => {
       res.redirect(302, `${redirectLocation.pathname}${redirectLocation.search}`);
     } else if (renderProps) {
       const store = initializeStore();
-      loadStateOnServer(renderProps, store, (loadDataErr, adjustedRoutes, scriptTag) => {
+      loadStateOnServer(renderProps, store, (loadDataErr, adjustedRoutes, scriptString) => {
         if (loadDataErr) {
           res.status(500).send(loadDataErr.message);
         } else {
-          res.status(200).send(getHtml(getAppHtml(store, renderProps, adjustedRoutes)));
+          res.status(200).send(getHtml(getAppHtml(store, renderProps, adjustedRoutes), scriptString));
         }
       });
     } else {

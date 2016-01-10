@@ -6,8 +6,9 @@ const _clientRender = (cb, route, index) => cb('client', route, index);
 const _serverRender = (cb, route, index) => cb('server', route, index);
 
 const DEFAULT_STILL_ACTIVE = () => true;
+const DEFAULT_CLIENT_HYDRATED = () => false;
 
-export default (routes, params, dispatch, cb, __stillActive = DEFAULT_STILL_ACTIVE) => {
+export default (routes, params, dispatch, cb, __stillActive = DEFAULT_STILL_ACTIVE, clientHydrated = DEFAULT_CLIENT_HYDRATED) => {
   if (routes.length > 0) {
     forEach(routes, (route, index) => {
       const stillActive = partial(_stillActive, __stillActive, route, index);
@@ -16,7 +17,6 @@ export default (routes, params, dispatch, cb, __stillActive = DEFAULT_STILL_ACTI
       const serverRender = partial(_serverRender, cb, route, index);
 
       if (route.fetchData) {
-        const clientHydrated = false;
         route.fetchData(
           params,
           dispatch,

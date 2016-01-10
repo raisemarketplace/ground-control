@@ -9,7 +9,8 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [x] Route based reducer organization
 - [x] Data fetching lifecycle
 - [x] Server side rendering
-- [ ] Hydrate client on initial load
+- [x] Hydrate client on initial load
+- [ ] Update fetchData to object
 - [ ] Make the example app (code) prettier
 - [ ] Add gif showing this in action
 - [ ] Handle error states in loadAsyncState / ssr

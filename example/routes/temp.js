@@ -41,13 +41,23 @@ const caReducer = createReducer({
   },
 }, { aCounter: 0 });
 const caFetch = (params, dispatch, stillActive, done, clientRender, clientHydrated, serverRender) => {
-  // console.log('sa', stillActive());
   setTimeout(() => {
     setTimeout(() => {
-      done();
-    }, 2500);
+      setTimeout(() => {
+        console.log('stillActive', stillActive());
+        console.log('clientHydrated', clientHydrated);
+
+        console.log('done');
+        done();
+      }, 1000);
+
+      console.log('serverRender');
+      serverRender();
+    }, 1000);
+
+    console.log('clientRender');
     clientRender();
-  }, 500);
+  }, 1000);
 };
 const ComponentA = props => {
   const { data, dispatch, loading } = props;
