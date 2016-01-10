@@ -39,8 +39,8 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 ```javascript
 fetchData(done, {
   params, dispatch,
-  isMounted, clientHydrated,
-  clientReady, serverReady,
+  isMounted, hydrated,
+  clientRender, serverRender,
   isClient, isServer
 }) {
   // render generic loading template
@@ -49,12 +49,12 @@ fetchData(done, {
   clientReady(); // render preview template
 
   const promise1 = new Promise((resolve, reject) => {
-    if (clientHydrated()) { // initial load, skip fetch
+    if (hydrated()) { // initial load, skip fetch
       resolve();
     } else {
       fetch('endpoint').then(response => {
-        if (stillActive()) {
-          dispatch(actionAssociatedWithRouteReducer());
+        if (isMounted()) { // only really necessary for actions that impact parent
+          dispatch(actionAssociatedWithParentRouteReducer());
           serverReady(); // block server until...
           resolve();
         }
@@ -66,10 +66,8 @@ fetchData(done, {
   if (isClient()) { // finish loading on client.
     const promise2 = new Promise((resolve, reject) => {
       fetch('endpoint').then(response => {
-        if (stillActive()) {
-          dispatch(actionAssociatedWithRouteReducer());
-          resolve();
-        }
+        dispatch(actionAssociatedWithRouteReducer());
+        resolve();
       });
     });
 

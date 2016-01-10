@@ -3,9 +3,9 @@ import { map } from 'lodash';
 
 const defaultLoader = () => <div/>;
 
-export default (routes) => {
+export default (routes, force = false) => {
   return map(routes, route => {
-    if (!route.normalized) {
+    if (!route.normalized || force) {
       route.normalized = true;
 
       if (!route.reducer) {

@@ -25,7 +25,9 @@ export default (props, store, cb) => {
     (type, route, index) => {
       if (type === 'done' || type === 'server') {
         routes[index].blockRender = false;
-        routes[index].loading = false;
+        if (type === 'done') {
+          routes[index].loading = false;
+        }
         --needToLoadCounter;
         maybeFinish();
       }

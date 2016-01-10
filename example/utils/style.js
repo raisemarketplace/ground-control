@@ -1,3 +1,5 @@
+// Recommend using cssmodules, but this is fine for demo...
+
 import { merge } from 'lodash';
 
 export const routeStyle = {
@@ -17,4 +19,16 @@ export const linkStyle = {
 
 export const activeLinkStyle = {
   color: '#b0babf',
+};
+
+export const booksSectionStyle = {
+  padding: 20,
+  border: '1px solid #b0babf',
+};
+
+export const previewTemplateStyle = {
+  width: 300,
+  height: 15,
+  background: '#f4f6f6',
+  marginBottom: 3,
 };

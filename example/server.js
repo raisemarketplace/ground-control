@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 import React from 'react';
 import express from 'express';
 import webpack from 'webpack';

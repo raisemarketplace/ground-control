@@ -3,17 +3,17 @@
 import { HYDRATE } from './constants';
 
 export default store => {
-  const initialData = typeof __INITIAL_DATA__ !== 'undefined' ? __INITIAL_DATA__ : null;
+  const hydratedData = typeof __INITIAL_DATA__ !== 'undefined' ? __INITIAL_DATA__ : null;
   let routes = null;
 
-  if (initialData) {
-    const { state } = initialData;
-    routes = initialData.routes;
+  if (hydratedData) {
+    const { state } = hydratedData;
+    routes = hydratedData.routes;
     store.dispatch({ type: HYDRATE, state });
   }
 
   return {
-    didHydrate: !!initialData,
+    hydratedData,
     routes,
   };
 };

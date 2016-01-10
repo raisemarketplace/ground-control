@@ -11,7 +11,7 @@ import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import hydrateClient from './hydrateClient';
 import makeHydratable from './makeHydratable';
-import { nestAndReplaceReducersAndState } from './nestReducers';
+import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import { CHILD } from './constants';
 import { merge, forEach, map, take, drop } from 'lodash';
@@ -42,15 +42,15 @@ class AsyncRedux extends React.Component {
   constructor(props, context) {
     super(props, context);
     const { store, routes: rawRoutes } = props;
-    let routes = normalizeRoutes(rawRoutes);
-    let hasHydrated = false;
     const clientSideRender = typeof window !== 'undefined';
+    let routes = normalizeRoutes(rawRoutes);
+    let hydratedData = null;
 
     store.replaceReducer(makeHydratable(state => state));
     if (clientSideRender) {
-      const { routes: serverAdjustedRoutes, didHydrate } = hydrateClient(store);
-      if (didHydrate) {
-        hasHydrated = true;
+      const { routes: serverAdjustedRoutes, hydratedData: _hydratedData } = hydrateClient(store);
+      if (!!_hydratedData) {
+        hydratedData = _hydratedData;
         routes = map(routes, (clientRoute, index) => {
           const serverRoute = serverAdjustedRoutes[index];
           clientRoute.blockRender = serverRoute.blockRender;
@@ -62,18 +62,18 @@ class AsyncRedux extends React.Component {
 
     this.state = {
       routes,
-      hasHydrated,
+      hydratedData,
     };
   }
 
   componentDidMount() {
     const { location, store } = this.props;
-    const { routes, hasHydrated } = this.state;
-    this.loadAsyncState(routes, location, store, 0, hasHydrated);
+    const { routes, hydratedData } = this.state;
+    this.loadAsyncState(routes, location, store, 0, hydratedData);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { routes: prevRoutes, hasHydrated } = this.state;
+    const { routes: prevRoutes } = this.state;
     const { location: prevLocation } = this.props;
 
     const routeChanged = nextProps.location !== prevLocation;
@@ -81,10 +81,12 @@ class AsyncRedux extends React.Component {
 
     const { location, store, routes } = nextProps;
     const routeDiff = diffRoutes(prevRoutes, routes);
-    const nextRoutes = take(routes, routeDiff).concat(normalizeRoutes(drop(routes, routeDiff)));
+    const sameRoutes = take(routes, routeDiff);
+    const differentRoutes = normalizeRoutes(drop(routes, routeDiff), true);
+    const nextRoutes = sameRoutes.concat(differentRoutes);
 
-    this.setState({ routes: nextRoutes }, () => {
-      this.loadAsyncState(nextRoutes, location, store, routeDiff, hasHydrated);
+    this.setState({ routes: nextRoutes, hydratedData: null }, () => {
+      this.loadAsyncState(nextRoutes, location, store, routeDiff, false);
     });
   }
 
@@ -102,10 +104,14 @@ class AsyncRedux extends React.Component {
     };
   }
 
-  loadAsyncState(routes, location, store, replaceAtDepth, hasHydrated) {
+  loadAsyncState(routes, location, store, replaceAtDepth, hydratedData) {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
       const reducers = map(routes, route => route.reducer);
-      nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
+      if (!hydratedData) {
+        nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
+      } else {
+        nestAndReplaceReducers(store, ...reducers);
+      }
 
       loadAsyncState(
         matchedRoutes.routes,
@@ -116,7 +122,10 @@ class AsyncRedux extends React.Component {
             const { routes: updatedRoutes } = this.state;
             if (updatedRoutes[index] === route) {
               updatedRoutes[index].blockRender = false;
-              if (type === 'done') updatedRoutes[index].loading = false;
+              if (type === 'done') {
+                updatedRoutes[index].loading = false;
+              }
+
               this.setState({ routes: updatedRoutes });
             }
           }
@@ -124,7 +133,7 @@ class AsyncRedux extends React.Component {
         (route, index) => {
           return this.state.routes[index] === route;
         },
-        () => hasHydrated
+        () => hydratedData
       );
     });
   }
