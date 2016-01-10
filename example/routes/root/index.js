@@ -1,14 +1,4 @@
-import { createReducer } from 'redux-act';
-import { merge } from 'lodash';
-
-import component, { actions } from 'example/routes/root/components';
-
-const reducer = createReducer({
-  [actions.incr]: (state, payload) => {
-    state.counter += payload;
-    return merge({}, state);
-  },
-}, { counter: 0 });
+import component, { reducer } from 'example/routes/root/components';
 
 export default {
   component,

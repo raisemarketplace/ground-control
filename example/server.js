@@ -22,7 +22,7 @@ const getHtml = (html = '', scriptString = '') => {
       <head>
         <script src="/__build__/bundle.js" async></script>
       </head>
-      <body>
+      <body style='margin:0;padding:20px;'>
         <div id="app">${html}</div>
         ${scriptString}
       </body>
