@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { createStore } from 'redux';
-import { makeHydratable } from './../modules/AsyncRedux';
 import { Provider } from 'react-redux';
 
 export const initializeStore = () => {
   const baseReducer = state => state;
-  const store = createStore(makeHydratable(baseReducer));
+  const store = createStore(baseReducer);
   const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
   store.subscribe(s);
   s();

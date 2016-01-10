@@ -3,7 +3,6 @@
 import React from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
 import matchRoutes from 'react-router/lib/matchRoutes';
-import makeHydratable from './makeHydratable';
 import simpleConnect from './simpleConnect';
 import renderChildren from './renderChildren';
 import diffRoutes from './diffRoutes';
@@ -116,7 +115,6 @@ class AsyncRedux extends React.Component {
 
 export default AsyncRedux;
 export {
-  makeHydratable,
   simpleConnect,
   renderChildren,
   loadStateOnServer,
