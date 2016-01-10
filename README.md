@@ -10,12 +10,11 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [x] Data fetching lifecycle
 - [x] Server side rendering
 - [x] Hydrate client on initial load
-- [ ] Update fetchData to object
+- [x] Update fetchData to object
 - [ ] Make the example app (code) prettier
 - [ ] Add gif showing this in action
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
-- [ ] Thoughts on proper order or fetchData params?
 - [ ] Thoughts on full API / AsyncProps exports?
 - [ ] getReducer to align with getComponent
 - [ ] Re-read async-props to see if anything else interesting
@@ -38,14 +37,19 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 ###### Data fetching...
 *You can do a lot - everything is optional.*
 ```javascript
-fetchData(params, dispatch, stillActive, done, clientReady, clientHydrated, serverReady) {
+fetchData(done, {
+  params, dispatch,
+  isMounted, clientHydrated,
+  clientReady, serverReady,
+  isClient, isServer
+}) {
   // render generic loading template
   // ...
   // ...
   clientReady(); // render preview template
 
   const promise1 = new Promise((resolve, reject) => {
-    if (clientHydrated) { // initial load, skip fetch
+    if (clientHydrated()) { // initial load, skip fetch
       resolve();
     } else {
       fetch('endpoint').then(response => {
@@ -59,7 +63,7 @@ fetchData(params, dispatch, stillActive, done, clientReady, clientHydrated, serv
   });
 
   // on server, only load 'top of page' data.
-  if (__CLIENT__) { // finish loading on client.
+  if (isClient()) { // finish loading on client.
     const promise2 = new Promise((resolve, reject) => {
       fetch('endpoint').then(response => {
         if (stillActive()) {

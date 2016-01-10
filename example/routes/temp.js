@@ -40,12 +40,12 @@ const caReducer = createReducer({
     return merge({}, state);
   },
 }, { aCounter: 0 });
-const caFetch = (params, dispatch, stillActive, done, clientRender, clientHydrated, serverRender) => {
+const caFetch = (done, { isMounted, clientHydrated, clientRender, serverRender }) => {
   setTimeout(() => {
     setTimeout(() => {
       setTimeout(() => {
-        console.log('stillActive', stillActive());
-        console.log('clientHydrated', clientHydrated);
+        console.log('stillActive', isMounted());
+        console.log('clientHydrated', clientHydrated());
 
         console.log('done');
         done();
@@ -103,10 +103,10 @@ const cb1Reducer = createReducer({
     return merge({}, state);
   },
 }, { cb1Counter: 0 });
-const cb1Fetch = (params, dispatch, stillActive, done, clientRender, clientHydrated, serverRender) => {
+const cb1Fetch = (done, { isMounted, clientRender }) => {
   clientRender();
   setTimeout(() => {
-    if (stillActive()) {
+    if (isMounted()) {
       done();
     }
   }, 2500);

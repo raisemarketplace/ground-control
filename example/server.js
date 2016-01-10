@@ -33,7 +33,6 @@ const asyncReduxProps = (renderProps, routes, store) => ({ // eslint-disable-lin
   ...renderProps,
   routes,
   store,
-  serverSideRender: true,
 });
 
 const getAppHtml = (store, renderProps, adjustedRoutes) => {

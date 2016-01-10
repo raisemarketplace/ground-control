@@ -41,10 +41,10 @@ class AsyncRedux extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    const { serverSideRender, store, routes: rawRoutes } = props;
+    const { store, routes: rawRoutes } = props;
     let routes = normalizeRoutes(rawRoutes);
-    const clientSideRender = !serverSideRender;
     let hasHydrated = false;
+    const clientSideRender = typeof window !== 'undefined';
 
     store.replaceReducer(makeHydratable(state => state));
     if (clientSideRender) {
@@ -62,8 +62,6 @@ class AsyncRedux extends React.Component {
 
     this.state = {
       routes,
-      serverSideRender,
-      clientSideRender,
       hasHydrated,
     };
   }
