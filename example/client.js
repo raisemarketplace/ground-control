@@ -1,10 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
-import AsyncRedux from './../modules/AsyncRedux';
-import { createApp, initializeStore } from './app';
-import routes from './routes';
 import domready from 'domready';
+import AsyncRedux from 'modules/AsyncRedux';
+
+import { createApp, initializeStore } from 'example/app';
+import routes from 'example/routes';
 
 const routerProps = (history, store) => ({
   routes,

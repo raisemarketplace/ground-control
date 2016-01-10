@@ -1,20 +1,21 @@
 import React from 'react';
 import express from 'express';
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import WebpackConfig from './webpack.config';
-import { renderToString } from 'react-dom/server';
 import { match } from 'react-router';
-import routes from './routes';
-import { createApp, initializeStore } from './app';
-import AsyncRedux, { loadStateOnServer } from './../modules/AsyncRedux';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import { renderToString } from 'react-dom/server';
+import AsyncRedux, { loadStateOnServer } from 'modules/AsyncRedux';
+
+import WebpackConfig from 'example/webpack.config';
+import { createApp, initializeStore } from 'example/app';
+import routes from 'example/routes';
 
 const webpackOptions = {
   publicPath: '/__build__/',
   stats: { colors: true },
 };
 
-const getHtml = (html, scriptString) => {
+const getHtml = (html = '', scriptString = '') => {
   return (
     `<!DOCTYPE html>
     <html>

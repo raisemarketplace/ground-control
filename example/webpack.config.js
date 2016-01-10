@@ -6,6 +6,9 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/__build__/',
   },
+  resolve: {
+    modulesDirectories: ['web_modules', 'node_modules', `${__dirname}/..`],
+  },
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
