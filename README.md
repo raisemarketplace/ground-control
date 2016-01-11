@@ -14,7 +14,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Make the example app (code) prettier
 - [x] Extract into createClient / createServer for easy reuse
 - [x] Rename internally to AsyncNestedRedux
-- [ ] Easy example showing jsx routes
+- [x] Easy example showing jsx routes
 - [ ] Add immutable to 1 reducer in example
 - [ ] Add combineReducers to 1 reducer in example
 - [ ] Add gif showing this in action (like redux-devtools github...)
