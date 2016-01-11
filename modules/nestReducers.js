@@ -1,4 +1,4 @@
-import { HYDRATE, CHILD } from './constants';
+import { HYDRATE, CHILD, SELF } from './constants';
 import makeHydratable from './makeHydratable';
 import { atDepth, omitAtDepth } from './stateAtDepth';
 import { reduceRight } from 'lodash';
@@ -14,12 +14,14 @@ const nestReducers = (...reducers) => {
       const nextState = reducer(previousState, action);
       if (result) {
         return {
-          ...nextState,
+          [SELF]: nextState,
           [CHILD]: result,
         };
       }
 
-      return nextState;
+      return {
+        [SELF]: nextState,
+      };
     }, null);
   };
 };

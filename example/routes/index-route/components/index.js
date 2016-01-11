@@ -24,6 +24,7 @@ export const reducer = createReducer({
 }, { value: 'Simple route with an input...' });
 
 export default props => {
+  console.log(props);
   const { dispatch, data } = props;
   // const value = data.get('value');
   const value = data.value;

@@ -10,7 +10,7 @@ const linkProps = () => ({
 });
 
 export default props => {
-  const { children, dispatch, data } = props;
+  const { children, dispatch, childData } = props;
   return (
     <div style={routeStyle}>
       <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Easy Example</h4>
@@ -19,7 +19,7 @@ export default props => {
         <Link to="/route-2" {...linkProps()}>Route 2</Link>
       </div>
       <div>
-        {renderChildren(children, dispatch, data)}
+        {renderChildren(children, childData, dispatch)}
       </div>
     </div>
   );

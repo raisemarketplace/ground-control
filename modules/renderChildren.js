@@ -1,7 +1,10 @@
 import { cloneElement } from 'react';
-import { CHILD } from './constants';
+import { SELF, CHILD } from './constants';
 
-export default (children, dispatch, data) => {
-  if (!data) throw new Error('renderChildren called without data');
-  return cloneElement(children, { dispatch, data: data[CHILD] });
+export default (children, childData, dispatch) => {
+  return cloneElement(children, {
+    dispatch,
+    data: childData[SELF],
+    childData: childData[CHILD],
+  });
 };

@@ -31,7 +31,7 @@ const specialAction = count => (dispatch/* , getState */) => {
 };
 
 const Component = props => {
-  const { children, dispatch, data, appCounter } = props;
+  const { children, dispatch, data, appCounter, childData } = props;
   return (
     <div style={routeStyle}>
       <div style={navStyle}>
@@ -46,7 +46,7 @@ const Component = props => {
           <button onClick={() => { dispatch(specialAction(1)); }}>+</button>
         </p>
         <div>
-          {renderChildren(children, dispatch, data)}
+          {renderChildren(children, childData, dispatch)}
         </div>
       </div>
     </div>

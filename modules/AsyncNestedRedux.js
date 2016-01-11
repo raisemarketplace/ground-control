@@ -55,7 +55,7 @@ class AsyncNestedRedux extends React.Component {
     store.replaceReducer(makeHydratable(state => state));
     if (clientSideRender) {
       hydratedData = hydrateClient();
-      if (!!hydratedData) {
+      if (hydratedData.didHydrate) {
         const { routes: hydratedRoutes } = hydratedData;
         let { state: hydratedState } = hydratedData;
 

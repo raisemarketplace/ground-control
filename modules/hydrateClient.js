@@ -4,13 +4,16 @@ export default () => {
   const hydratedData = typeof __INITIAL_DATA__ !== 'undefined' ? __INITIAL_DATA__ : null;
   let state = null;
   let routes = null;
+  let didHydrate = false;
 
   if (hydratedData) {
+    didHydrate = true;
     state = hydratedData.state;
     routes = hydratedData.routes;
   }
 
   return {
+    didHydrate,
     state,
     routes,
   };

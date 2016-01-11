@@ -92,14 +92,20 @@ fetchData(done, {
 ```
 
 ###### Nested reducers...
-*Look like this, but @@child is hidden from developer.*
+*Look like this, but @@SELF/@@CHILD are internal.*
 ```
 {
-  counter,
-  @@child: {
-    counter,
-    @@child: {
+  @@SELF: {
+    counter
+  },
+  @@CHILD: {
+    @@SELF: {
       counter
+    },
+    @@CHILD: {
+      @@SELF: {
+        counter
+      }
     }
   }
 }
@@ -117,17 +123,17 @@ thunkedAction = () => (dispatch, getState) {
 ###### Component data...
 *Automatically pass in nested data to nested routes.*
 ```javascript
-// { counter: 0, ['@@CHILD']: { counter: 0 }}
-
-const ParentRouteComponent = ({ children, data, dispatch }) => {
+// { ['@@SELF']: { counter: 0 }, ['@@CHILD']: { ['@@SELF']: { counter: 0 }}}
+const ParentRouteComponent = ({ children, data, dispatch, childData }) => {
   return (
     <div>
       <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>
-      {renderChildren(children, data, dispatch)}
+      {renderChildren(children, childData, dispatch)}
     </div>
   );
 };
 
+// { ['@@SELF']: { counter: 0 }}
 const ChildRouteComponent = ({ data, dispatch }) => {
   return (
     <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>
