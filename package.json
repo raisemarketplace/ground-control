@@ -1,5 +1,5 @@
 {
-  "name": "async-redux",
+  "name": "async-nested-redux",
   "version": "0.1.0",
   "description": "Opinionated data fetching for React Router & Redux",
   "main": "lib/AsyncNestedRedux.js",
