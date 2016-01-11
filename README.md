@@ -136,7 +136,7 @@ const ChildRouteComponent = ({ data, dispatch }) => {
 ```
 
 ### How to use...
-[See example implementation](tree/master/example).
+See [easy example](easy-example) or [more complex example](example).
 
 ---
 
