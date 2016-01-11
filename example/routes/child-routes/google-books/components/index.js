@@ -2,7 +2,7 @@ import React from 'react';
 import { createReducer } from 'redux-act';
 import { merge, map } from 'lodash';
 
-import Book from 'example/routes/google-books/components/book';
+import Book from 'example/routes/child-routes/google-books/components/book';
 import createActions from 'example/utils/createActions';
 import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'example/utils/style';
 

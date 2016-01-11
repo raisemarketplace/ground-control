@@ -1,12 +1,14 @@
 /* eslint-disable react/no-multi-comp, no-console */
 
 import React from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 export const initializeStore = () => {
   const baseReducer = state => state;
-  const store = createStore(baseReducer);
+  const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+  const store = createStoreWithMiddleware(baseReducer);
   const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
   store.subscribe(s);
   s();

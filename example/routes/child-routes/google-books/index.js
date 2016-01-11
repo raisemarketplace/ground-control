@@ -1,6 +1,6 @@
 import { map, pick } from 'lodash';
-import component, { reducer, actions } from 'example/routes/google-books/components';
-import loader from 'example/routes/google-books/components/loader';
+import component, { reducer, actions } from 'example/routes/child-routes/google-books/components';
+import loader from 'example/routes/child-routes/google-books/components/loader';
 
 const API = 'https://www.googleapis.com/books/v1/volumes?q=subject:';
 const cache = {};

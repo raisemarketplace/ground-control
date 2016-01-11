@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import { simpleConnect } from 'modules/AsyncRedux';
 
-import Layout from 'example/routes/layout';
-import indexRoute from 'example/routes/root';
-import googleBooksRoute from 'example/routes/google-books';
-import nestedCountersRoute from 'example/routes/nested-counters';
+import App, { reducer } from 'example/routes/components';
+import indexRoute from 'example/routes/index-route';
+import googleBooksRoute from 'example/routes/child-routes/google-books';
+import nestedCountersRoute from 'example/routes/child-routes/nested-counters';
 
 // connect top level only & everything is automatic.
-const component = simpleConnect(connect, Layout);
+const component = simpleConnect(connect, App);
 
 // adjusted route api...
 // {
@@ -24,8 +24,9 @@ const component = simpleConnect(connect, Layout);
 // routes can be defined using jsx, or as an object (my preference, especially with larger api)
 export default {
   path: '/',
-  indexRoute,
   component,
+  reducer,
+  indexRoute,
   childRoutes: [
     googleBooksRoute,
     nestedCountersRoute,

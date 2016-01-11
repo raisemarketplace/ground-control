@@ -11,12 +11,12 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [x] Server side rendering
 - [x] Hydrate client on initial load
 - [x] Update fetchData to object
-- [ ] Make the example app (code) prettier
-- [ ] Add gif showing this in action
+- [x] Make the example app (code) prettier
+- [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
 - [ ] Thoughts on full API / AsyncProps exports?
-- [ ] getReducer to align with getComponent
+- [ ] getReducer to align with getComponent, or not necessary w/ getChildRoutes?
 - [ ] Re-read async-props to see if anything else interesting
 - [ ] Tests...
 - [ ] Add to microclient-reference-app
@@ -25,7 +25,7 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 ### First class data fetching
 
 - opinion: co-located component data fetching only makes sense with a sophisticated, declarative data fetching service (graphql, falcor). custom endpoints are better handled at router level.
-- optimal loading control - easily specify exactly when to render route component on server / client. ex - on server, fetch 'top of page' data blocking render, finish loading 'bottom of page' data on client. on client, render 'preview template' immediately & fetch async.
+- optimal loading control - api to specify exactly when to render route component on server / client. ex - on server, fetch 'top of page' data blocking render, finish loading 'bottom of page' data on client. on client, render 'preview template' immediately & fetch async.
 
 ### Route based reducer organization
 
@@ -40,6 +40,7 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 fetchData(done, {
   params, dispatch,
   isMounted, hydrated,
+  hydratedDataForRoute,
   clientRender, serverRender,
   isClient, isServer
 }) {
@@ -72,7 +73,7 @@ fetchData(done, {
     });
 
     Promise.all([promise1, promise2]).then(() => {
-      done(); // w00t. loading = false.
+      done(); // w00t. sets props.loading to false.
     });
   }
 }
@@ -123,8 +124,8 @@ const ChildRouteComponent = ({ data, dispatch }) => {
 ```
 
 ### How to use...
-[See example implementation]('todo')
+[See example implementation]('tree/master/example').
 
 ---
 
-**Special thanks to [ryan florence](https://github.com/ryanflorence), somewhat based on [aync-props](https://github.com/rackt/async-props)!**
+**Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props) but extended quite a bit!**
