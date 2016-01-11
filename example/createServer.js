@@ -9,8 +9,6 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import { renderToString } from 'react-dom/server';
 import AsyncNestedRedux, { loadStateOnServer } from 'modules/AsyncNestedRedux';
 
-import WebpackConfig from 'example/webpack.config';
-
 const webpackOptions = {
   publicPath: '/__build__/',
   stats: { colors: true },
@@ -31,14 +29,14 @@ const getHtml = (html = '', scriptString = '') => {
   );
 };
 
-const AsyncNestedReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
+const asyncNestedReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
   ...renderProps,
   routes,
   store,
 });
 
 const getAppHtml = (createApp, store, renderProps, adjustedRoutes) => {
-  const app = createApp(store, <AsyncNestedRedux {...AsyncNestedReduxProps(renderProps, adjustedRoutes, store)} />);
+  const app = createApp(store, <AsyncNestedRedux {...asyncNestedReduxProps(renderProps, adjustedRoutes, store)} />);
   return renderToString(app);
 };
 
@@ -63,7 +61,7 @@ const _renderApplication = (routes, initializeStore, createApp, req, res) => {
   });
 };
 
-export default (renderServerSide, routes, initializeStore, createApp) => {
+export default (renderServerSide, routes, initializeStore, createApp, WebpackConfig) => {
   let renderApplication = (req, res) => res.status(200).send(getHtml());
   if (renderServerSide) renderApplication = partial(_renderApplication, routes, initializeStore, createApp);
   express()

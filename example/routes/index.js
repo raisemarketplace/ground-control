@@ -21,7 +21,7 @@ const component = simpleConnect(connect, App);
 //   loader (optional),
 // }
 
-// routes can be defined using jsx, or as an object (my preference, especially with larger api)
+// routes can be defined using jsx, or as an object (my preference, especially with larger app)
 export default {
   path: '/',
   component,
