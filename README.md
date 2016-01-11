@@ -12,6 +12,11 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [x] Hydrate client on initial load
 - [x] Update fetchData to object
 - [x] Make the example app (code) prettier
+- [x] Extract into createClient / createServer for easy reuse
+- [ ] Rename internally to AsyncNestedRedux
+- [ ] Easy example showing jsx routes
+- [ ] Add immutable to 1 reducer in example
+- [ ] Add combineReducers to 1 reducer in example
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
@@ -20,17 +25,24 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [ ] Re-read async-props to see if anything else interesting
 - [ ] Tests...
 - [ ] Add to microclient-reference-app
+- [ ] Rename repo to async-nested-redux
 - [ ] Open source?
 
-### First class data fetching
+### Problems...
 
-- opinion: co-located component data fetching only makes sense with a sophisticated, declarative data fetching service (graphql, falcor). custom endpoints are better handled at router level.
-- optimal loading control - api to specify exactly when to render route component on server / client. ex - on server, fetch 'top of page' data blocking render, finish loading 'bottom of page' data on client. on client, render 'preview template' immediately & fetch async.
+- Using Redux with React-Router: React is easy. Redux is easy. React-Router is easy. All 3 combined is hard! The developer needs to keep React-Router and Redux in sync ([redux-simple-router](https://github.com/rackt/redux-simple-router), [redux-router](https://github.com/acdlite/redux-router)), as reducers are not route-based.
+- Data fetching best practices: Best practices for React-Router data fetching are [still being established](https://github.com/rackt/react-router/issues/2638). New versions of React-Router & libraries like [async-props](https://github.com/rackt/async-props) are starting to do nice things.
+- Reducer wild wild west: Using something like ```combineReducers``` in a complex single page app creates a flat reducer structure. And it is difficult to have a sense of overall application state when a route changes - what did the previous route, if any, do to application state? Global reducers can get messy.
 
-### Route based reducer organization
+### Solution: route based reducer organization
 
-- opinion: react is easy. redux is easy. react-router is easy. all 3 combined is hard! organizing reducers in line with routing structure simplifies overall application state and helps react-router & redux get along (without redux-simple-router, etc).
-- automatic nested reducers - reducers are nested in line with routing structure. when a route changes, the corresponding state is cleared & replaced with the reducer for the new route. this preserves state associated with the parent route reducer. this mimics a server side refresh, but lets developer store certain state a level higher to persist data.
+- Opinion: Organizing reducers in line with routing structure simplifies overall application state and helps React-Router & redux get along (without redux-simple-router, etc).
+- Automatic nested reducers - reducers are nested in line with routing structure. When a route changes, the corresponding state is cleared & replaced with the reducer for the new route, preserving state associated with the parent route reducer. This mimics a server side refresh, but lets developer store certain state a level higher to persist data.
+
+### Solution: first class data fetching
+
+- Opinion: Co-located component data fetching only makes sense with a sophisticated, declarative data fetching service (graphql, falcor). Custom endpoints are better handled at router level.
+- Optimal loading control - API to specify exactly when to render route component on server / client. Ex - on server, fetch 'top of page' data, blocking render, and finish loading 'bottom of page' data on client; on client, render 'preview template' immediately & fetch async.
 
 ---
 
@@ -124,7 +136,7 @@ const ChildRouteComponent = ({ data, dispatch }) => {
 ```
 
 ### How to use...
-[See example implementation]('tree/master/example').
+[See example implementation](tree/master/example).
 
 ---
 
