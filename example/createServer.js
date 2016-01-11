@@ -63,8 +63,9 @@ const _renderApplication = (routes, initializeStore, createApp, req, res) => {
   });
 };
 
-export default (routes, initializeStore, createApp) => {
-  const renderApplication = partial(_renderApplication, routes, initializeStore, createApp);
+export default (renderServerSide, routes, initializeStore, createApp) => {
+  let renderApplication = (req, res) => res.status(200).send(getHtml());
+  if (renderServerSide) renderApplication = partial(_renderApplication, routes, initializeStore, createApp);
   express()
       .use(webpackDevMiddleware(webpack(WebpackConfig), webpackOptions))
       .get('*', renderApplication)
