@@ -1,19 +1,17 @@
 /* global __INITIAL_DATA__ */
 
-import { HYDRATE } from './constants';
-
-export default store => {
+export default () => {
   const hydratedData = typeof __INITIAL_DATA__ !== 'undefined' ? __INITIAL_DATA__ : null;
+  let state = null;
   let routes = null;
 
   if (hydratedData) {
-    const { state } = hydratedData;
+    state = hydratedData.state;
     routes = hydratedData.routes;
-    store.dispatch({ type: HYDRATE, state });
   }
 
   return {
-    hydratedData,
+    state,
     routes,
   };
 };

@@ -16,6 +16,15 @@ export const atDepth = (state, depth) => {
   return isEmpty(adjustedState) ? undefined : adjustedState;
 };
 
+export const setAtDepth = (state, data, depth) => {
+  if (depth === 0) {
+    return data;
+  }
+
+  const key = keyForDepth(depth - 1);
+  return set(state, key, data);
+};
+
 export const omitAtDepth = (state, depth) => {
   if (depth === 0) {
     return {};

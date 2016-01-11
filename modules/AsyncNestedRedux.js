@@ -11,9 +11,10 @@ import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import hydrateClient from './hydrateClient';
 import makeHydratable from './makeHydratable';
+import { atDepth, setAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { CHILD } from './constants';
+import { CHILD, HYDRATE } from './constants';
 import { merge, forEach, map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -24,12 +25,17 @@ class AsyncNestedRedux extends React.Component {
     location: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
+    hydrationSerializer: React.PropTypes.func.isRequired,
     onError: React.PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     onError(err) {
       throw err;
+    },
+
+    hydrationSerializer(route) {
+      return route;
     },
 
     render(props) {
@@ -41,22 +47,34 @@ class AsyncNestedRedux extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    const { store, routes: rawRoutes } = props;
+    const { store, routes: rawRoutes, hydrationSerializer } = props;
     const clientSideRender = typeof window !== 'undefined';
     let routes = normalizeRoutes(rawRoutes);
     let hydratedData = null;
 
     store.replaceReducer(makeHydratable(state => state));
     if (clientSideRender) {
-      const { routes: serverAdjustedRoutes, hydratedData: _hydratedData } = hydrateClient(store);
-      if (!!_hydratedData) {
-        hydratedData = _hydratedData;
+      hydratedData = hydrateClient();
+      if (!!hydratedData) {
+        const { routes: hydratedRoutes } = hydratedData;
+        let { state: hydratedState } = hydratedData;
+
         routes = map(routes, (clientRoute, index) => {
-          const serverRoute = serverAdjustedRoutes[index];
-          clientRoute.blockRender = serverRoute.blockRender;
-          clientRoute.loading = serverRoute.loading;
+          const hydratedRoute = hydratedRoutes[index];
+          clientRoute.blockRender = hydratedRoute.blockRender;
+          clientRoute.loading = hydratedRoute.loading;
+
+          // if (hydratedState) {
+          //   hydratedState = setAtDepth(
+          //     hydratedState,
+          //     hydrationSerializer(atDepth(hydratedState, index), clientRoute),
+          //     index
+          //   );
+          // }
           return clientRoute;
         });
+
+        store.dispatch({ type: HYDRATE, state: hydratedState });
       }
     }
 
