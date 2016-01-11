@@ -7,7 +7,7 @@ import { match } from 'react-router';
 import { partial } from 'lodash';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import { renderToString } from 'react-dom/server';
-import AsyncRedux, { loadStateOnServer } from 'modules/AsyncRedux';
+import AsyncNestedRedux, { loadStateOnServer } from 'modules/AsyncNestedRedux';
 
 import WebpackConfig from 'example/webpack.config';
 
@@ -31,14 +31,14 @@ const getHtml = (html = '', scriptString = '') => {
   );
 };
 
-const asyncReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
+const AsyncNestedReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
   ...renderProps,
   routes,
   store,
 });
 
 const getAppHtml = (createApp, store, renderProps, adjustedRoutes) => {
-  const app = createApp(store, <AsyncRedux {...asyncReduxProps(renderProps, adjustedRoutes, store)} />);
+  const app = createApp(store, <AsyncNestedRedux {...AsyncNestedReduxProps(renderProps, adjustedRoutes, store)} />);
   return renderToString(app);
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
-import { renderChildren } from 'modules/AsyncRedux';
+import { renderChildren } from 'modules/AsyncNestedRedux';
 
 import createActions from 'example/utils/createActions';
 import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/style';

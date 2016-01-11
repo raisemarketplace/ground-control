@@ -3,7 +3,7 @@ import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { connect } from 'react-redux';
 import { merge } from 'lodash';
-import { renderChildren } from 'modules/AsyncRedux';
+import { renderChildren } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'example/routes/components/index';
 import createActions from 'example/utils/createActions';

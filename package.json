@@ -2,7 +2,7 @@
   "name": "async-redux",
   "version": "0.1.0",
   "description": "Opinionated data fetching for React Router & Redux",
-  "main": "lib/AsyncRedux.js",
+  "main": "lib/AsyncNestedRedux.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/CouponTrade/async-redux.git"

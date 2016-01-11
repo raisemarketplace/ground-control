@@ -1,9 +1,9 @@
-# AsyncRedux
+# AsyncNestedRedux
 
 opinionated new friend for react-router that aims to simplify
 the react/redux/react-router setup by giving a bit more power to your routes.
 
-javascript fatigue is real...make your life easier with AsyncRedux!
+javascript fatigue is real...make your life easier with AsyncNestedRedux!
 
 ## TODO
 - [x] Route based reducer organization
@@ -13,7 +13,7 @@ javascript fatigue is real...make your life easier with AsyncRedux!
 - [x] Update fetchData to object
 - [x] Make the example app (code) prettier
 - [x] Extract into createClient / createServer for easy reuse
-- [ ] Rename internally to AsyncNestedRedux
+- [x] Rename internally to AsyncNestedRedux
 - [ ] Easy example showing jsx routes
 - [ ] Add immutable to 1 reducer in example
 - [ ] Add combineReducers to 1 reducer in example

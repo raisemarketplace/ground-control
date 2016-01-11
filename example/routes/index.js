@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { simpleConnect } from 'modules/AsyncRedux';
+import { simpleConnect } from 'modules/AsyncNestedRedux';
 
 import App, { reducer } from 'example/routes/components';
 import indexRoute from 'example/routes/index-route';

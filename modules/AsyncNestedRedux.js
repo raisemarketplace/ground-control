@@ -16,7 +16,7 @@ import loadStateOnServer from './loadStateOnServer';
 import { CHILD } from './constants';
 import { merge, forEach, map, take, drop } from 'lodash';
 
-class AsyncRedux extends React.Component {
+class AsyncNestedRedux extends React.Component {
 
   static propTypes = {
     render: React.PropTypes.func.isRequired,
@@ -143,7 +143,7 @@ class AsyncRedux extends React.Component {
   }
 }
 
-export default AsyncRedux;
+export default AsyncNestedRedux;
 export {
   simpleConnect,
   renderChildren,
