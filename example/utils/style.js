@@ -18,7 +18,7 @@ export const linkStyle = {
 };
 
 export const activeLinkStyle = {
-  color: '#b0babf',
+  fontWeight: 'bold',
 };
 
 export const booksSectionStyle = {
