@@ -42,7 +42,7 @@
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.4.0",
     "lodash": "^3.10.1",
-    "redux-act": "^0.3.0",
+    "redux-act": "^0.3.0"
   },
   "tags": [
     "react",
