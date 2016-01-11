@@ -40,7 +40,9 @@
     "redux-thunk": "^1.0.3",
     "require-alias": "^1.0.5",
     "webpack": "^1.12.9",
-    "webpack-dev-middleware": "^1.4.0"
+    "webpack-dev-middleware": "^1.4.0",
+    "lodash": "^3.10.1",
+    "redux-act": "^0.3.0",
   },
   "tags": [
     "react",
@@ -51,9 +53,5 @@
     "react",
     "react router",
     "data"
-  ],
-  "dependencies": {
-    "lodash": "^3.10.1",
-    "redux-act": "^0.3.0"
-  }
+  ]
 }

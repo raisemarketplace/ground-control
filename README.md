@@ -47,7 +47,7 @@ fetchData(done, {
   // render generic loading template
   // ...
   // ...
-  clientReady(); // render preview template
+  clientRender(); // render preview template
 
   const promise1 = new Promise((resolve, reject) => {
     if (hydrated()) { // initial load, skip fetch
@@ -56,7 +56,7 @@ fetchData(done, {
       fetch('endpoint').then(response => {
         if (isMounted()) { // only really necessary for actions that impact parent
           dispatch(actionAssociatedWithParentRouteReducer());
-          serverReady(); // block server until...
+          serverRender(); // block server until...
           resolve();
         }
       });

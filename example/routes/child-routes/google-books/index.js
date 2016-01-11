@@ -57,7 +57,7 @@ const fetchData = (done, { dispatch, hydrated, hydratedDataForRoute, clientRende
               dispatch(actions.loadJavascript(items));
               resolve();
             });
-      }, 1000);
+      }, 1500);
     });
 
     Promise.all([topOfPagePromise, bottomOfPagePromise]).then(done);
