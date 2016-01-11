@@ -8,7 +8,8 @@ export const routeStyle = {
 };
 
 export const navStyle = merge({}, routeStyle, {
-  borderColor: '#077e87',
+  borderColor: '#b0babf',
+  backgroundColor: '#f4f6f6',
   marginBottom: 20,
 });
 
