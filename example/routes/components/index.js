@@ -25,6 +25,7 @@ export default props => {
   const { children, dispatch, data } = props;
   return (
     <div style={routeStyle}>
+      <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Example</h4>
       <div style={navStyle}>
         <IndexLink to="/" {...linkProps()}>Home</IndexLink>
         <Link to="/google-books" {...linkProps()}>Google Books (Data Fetching Demo)</Link>
