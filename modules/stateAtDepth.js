@@ -1,5 +1,5 @@
 import { CHILD, SELF } from './constants';
-import { reduce, get, set, omit, isEmpty } from 'lodash';
+import { reduce, get, set, omit } from 'lodash';
 const ROOT = '@@ROOT';
 
 const keyForDepth = depth => {
@@ -11,16 +11,16 @@ const keyForDepth = depth => {
 const normalizeStateShape = state => ({ [ROOT]: state });
 
 export const atDepth = (state, depth) => {
-  let nestedState = get(normalizeStateShape(state), keyForDepth(depth));
-  nestedState = nestedState ? get(nestedState, SELF) : nestedState;
-  return isEmpty(nestedState) ? undefined : nestedState;
+  const nestedState = get(normalizeStateShape(state), keyForDepth(depth));
+  return nestedState ? get(nestedState, SELF) : nestedState;
 };
 
 export const setAtDepth = (state, data, depth) => {
-  console.warn('todo');
-  // if (depth === 0) return data;
-  // const key = keyForDepth(depth);
-  // return set(state, key, data);
+  const key = keyForDepth(depth);
+  const normalizedState = normalizeStateShape(state);
+  const currentStateAtDepth = get(normalizedState, key);
+  const updatedStateAtDepth = set(currentStateAtDepth, SELF, data);
+  return set(normalizedState, key, updatedStateAtDepth)[ROOT];
 };
 
 export const omitAtDepth = (state, depth) => {

@@ -1,5 +1,3 @@
-/* eslint-disable react/no-multi-comp, no-console, no-unused-vars */
-
 import React from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
 import matchRoutes from 'react-router/lib/matchRoutes';
@@ -15,7 +13,7 @@ import { atDepth, setAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import { CHILD, HYDRATE } from './constants';
-import { merge, forEach, map, take, drop } from 'lodash';
+import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
 
@@ -34,8 +32,8 @@ class AsyncNestedRedux extends React.Component {
       throw err;
     },
 
-    hydrationSerializer(route) {
-      return route;
+    hydrationSerializer(data/* , route */) {
+      return data;
     },
 
     render(props) {
@@ -63,14 +61,14 @@ class AsyncNestedRedux extends React.Component {
           const hydratedRoute = hydratedRoutes[index];
           clientRoute.blockRender = hydratedRoute.blockRender;
           clientRoute.loading = hydratedRoute.loading;
+          if (hydratedState) {
+            hydratedState = setAtDepth(
+              hydratedState,
+              hydrationSerializer(atDepth(hydratedState, index), clientRoute),
+              index
+            );
+          }
 
-          // if (hydratedState) {
-          //   hydratedState = setAtDepth(
-          //     hydratedState,
-          //     hydrationSerializer(atDepth(hydratedState, index), clientRoute),
-          //     index
-          //   );
-          // }
           return clientRoute;
         });
 

@@ -6,9 +6,9 @@ import AsyncNestedRedux from 'modules/AsyncNestedRedux';
 import { fromJS } from 'immutable';
 
 const serialize = (data, route) => {
-  // if (route.reducer.immutable) {
-  //   return fromJS(data);
-  // }
+  if (route.reducer.immutable) {
+    return fromJS(data);
+  }
   return data;
 };
 
