@@ -4,11 +4,11 @@ import { Router, browserHistory } from 'react-router';
 import domready from 'domready';
 import AsyncNestedRedux from 'modules/AsyncNestedRedux';
 
-// if you use immutable for route reducers, set a property on route & use app level serializer (optional)
+// if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
 // ...if you need to do something crazy like use combineReducers & immutable you can specify
 // that on the route itself (see example/index-route/index.js)
-const hydrationSerializer = (clientRoute, data) => {
-  // if (clientRoute.serializeImmutable) return fromJS(data);
+const deserializer = (clientRoute, data) => {
+  // if (clientRoute.deserializeImmutable) return fromJS(data);
   return data;
 };
 
@@ -17,7 +17,7 @@ export default (routes, initializeStore, createApp) => {
     routes,
     history,
     render: props => (
-      <AsyncNestedRedux {...props} store={store} hydrationSerializer={hydrationSerializer} />
+      <AsyncNestedRedux {...props} store={store} deserializer={deserializer} />
     ),
   });
 

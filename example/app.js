@@ -10,11 +10,11 @@ export const initializeStore = () => {
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
   // initial state works if using redux-devtools, etc. but we hydrate for you in loadAsyncState
   // set your default data on the route
-  const initialState = { overWrittenWhenAppRenders: 'if it doesnt match { @@SELF: {}}!' };
+  const initialState = { overWrittenWhenAppRenders: 'if it doesn\'t match expected shape!' };
   const store = createStoreWithMiddleware(baseReducer, initialState);
-  const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
-  store.subscribe(s);
-  s();
+  const logState = () => console.log('STATE --->', JSON.stringify(store.getState()));
+  store.subscribe(logState);
+  logState();
   return store;
 };
 

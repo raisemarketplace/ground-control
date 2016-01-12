@@ -1,11 +1,11 @@
 import component, { reducer } from 'example/routes/index-route/components';
 import { fromJS } from 'immutable';
 
-// set property for app level serializer
-// const serializeImmutable = true;
+// set property for app level deserializer
+// const deserializeImmutable = true;
 
 // or a custom route one
-const serializer = data => {
+const deserializer = data => {
   data.forwards = fromJS(data.forwards);
   return data;
 };
@@ -13,6 +13,6 @@ const serializer = data => {
 export default {
   component,
   reducer,
-  // serializeImmutable,
-  serializer,
+  // deserializeImmutable,
+  deserializer,
 };

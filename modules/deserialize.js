@@ -12,8 +12,8 @@ export default (state, routes, deserializer) => {
     const dataAtDepth = atDepth(updatedState, index);
 
     let deserializedData;
-    if (route.serializer) {
-      deserializedData = route.serializer(dataAtDepth);
+    if (route.deserializer) {
+      deserializedData = route.deserializer(dataAtDepth);
     } else {
       deserializedData = deserializer(route, dataAtDepth);
     }

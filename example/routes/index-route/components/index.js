@@ -16,7 +16,7 @@ const forwards = createReducer({
   [actions.update]: (state, payload) => {
     return state.set('value', payload);
   },
-}, Map({ value: palindrome })); // support for immutable.js/etc w/ hydrationSerializer
+}, Map({ value: palindrome })); // support for immutable.js/etc w/ deserializer
 
 const backwards = createReducer({
   [actions.update]: (state, payload) => {

@@ -24,7 +24,7 @@ class AsyncNestedRedux extends React.Component {
     location: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
-    hydrationSerializer: React.PropTypes.func.isRequired,
+    deserializer: React.PropTypes.func.isRequired,
     onError: React.PropTypes.func.isRequired,
   }
 
@@ -33,7 +33,7 @@ class AsyncNestedRedux extends React.Component {
       throw err;
     },
 
-    hydrationSerializer(clientRoute, data) {
+    deserializer(clientRoute, data) {
       return data;
     },
 
@@ -46,11 +46,11 @@ class AsyncNestedRedux extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    const { store, routes: rawRoutes, hydrationSerializer } = props;
+    const { store, routes: rawRoutes, deserializer } = props;
     let useHydratedData = false;
 
     let routes = normalizeRoutes(rawRoutes);
-    let state = deserialize(store.getState(), routes, hydrationSerializer);
+    let state = deserialize(store.getState(), routes, deserializer);
     if (state) useHydratedData = true;
 
     const reducer = makeHydratable(s => s);
@@ -71,7 +71,7 @@ class AsyncNestedRedux extends React.Component {
           return clientRoute;
         });
 
-        state = deserialize(hydratedState, routes, hydrationSerializer);
+        state = deserialize(hydratedState, routes, deserializer);
       }
     }
 
