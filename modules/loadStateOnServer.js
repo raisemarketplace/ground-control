@@ -2,6 +2,10 @@ import loadAsyncState from './loadAsyncState';
 import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
 import { map, cloneDeep } from 'lodash';
+import {
+  FD_SERVER_RENDER,
+  FD_DONE,
+} from './constants';
 
 export default (props, store, cb) => {
   const { routes: rawRoutes, params } = props;
@@ -23,14 +27,16 @@ export default (props, store, cb) => {
     params,
     store.dispatch,
     (type, route, index) => {
-      if (type === 'done' || type === 'server') {
+      if (type === FD_DONE || type === FD_SERVER_RENDER) {
         routes[index].blockRender = false;
-        if (type === 'done') {
+        if (type === FD_DONE) {
           routes[index].loading = false;
         }
         --needToLoadCounter;
         maybeFinish();
       }
-    }
+    },
+    () => true,
+    false
   );
 };

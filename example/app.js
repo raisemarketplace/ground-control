@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 export const initializeStore = () => {
   const baseReducer = state => state;
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-  const store = createStoreWithMiddleware(baseReducer);
+  const store = createStoreWithMiddleware(baseReducer, { overWrittenWhenAppRenders: '!!!' });
   const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
   store.subscribe(s);
   s();

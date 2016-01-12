@@ -1,26 +1,27 @@
 import { forEach, partial } from 'lodash';
 import { atDepth } from './stateAtDepth';
-
-const DEFAULT_STILL_ACTIVE = () => true;
-const DEFAULT_HYDRATED_DATA = () => null;
+import getHydratedData from './getHydratedData';
+import {
+  FD_SERVER_RENDER,
+  FD_CLIENT_RENDER,
+  FD_DONE,
+} from './constants';
 
 const IS_CLIENT = typeof window !== 'undefined';
 const IS_SERVER = !IS_CLIENT;
 const isClient = () => IS_CLIENT;
 const isServer = () => IS_SERVER;
 
-const _stillActive = (__stillActive, route, index) => __stillActive(route, index);
-const _done = (cb, route, index) => cb('done', route, index);
-const _clientRender = (cb, route, index) => cb('client', route, index);
+const _stillActive = (cb, route, index) => cb(route, index);
+const _done = (cb, route, index) => cb(FD_DONE, route, index);
+const _clientRender = (cb, route, index) => cb(FD_CLIENT_RENDER, route, index);
 const _serverRender = (cb, route, index) => {
-  if (IS_SERVER) {
-    cb('server', route, index);
-  }
+  if (IS_SERVER) cb(FD_SERVER_RENDER, route, index);
 };
 
-export default (routes, params, dispatch, cb, stillActive = DEFAULT_STILL_ACTIVE, getHydratedData = DEFAULT_HYDRATED_DATA) => {
+export default (routes, params, dispatch, cb, stillActive, initialPageLoad) => {
   if (routes.length > 0) {
-    const hydratedData = getHydratedData();
+    const hydratedData = getHydratedData(initialPageLoad);
     const hydrated = () => hydratedData.didHydrate;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
@@ -28,7 +29,7 @@ export default (routes, params, dispatch, cb, stillActive = DEFAULT_STILL_ACTIVE
       const clientRender = partial(_clientRender, cb, route, index);
       const serverRender = partial(_serverRender, cb, route, index);
       const hydratedDataForRoute = () => {
-        if (hydratedData) {
+        if (hydratedData.didHydrate) {
           return atDepth(hydratedData.state, index);
         }
         return null;
