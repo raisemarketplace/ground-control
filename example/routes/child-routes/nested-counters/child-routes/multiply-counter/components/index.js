@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import createActions from 'example/utils/createActions';
 import { routeStyle } from 'example/utils/style';
 
-export const actions = createActions('incr');
+export const actions = createActions('MultiplyCounters', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state) => {
     const updatedState = merge({}, state);

@@ -6,7 +6,7 @@ import Book from 'example/routes/child-routes/google-books/components/book';
 import createActions from 'example/utils/createActions';
 import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'example/utils/style';
 
-export const actions = createActions('loadFiction', 'loadJavascript');
+export const actions = createActions('GoogleBooks', ['loadFiction', 'loadJavascript']);
 export const reducer = createReducer({
   [actions.loadFiction]: (state, payload) => {
     const updatedState = merge({}, state);

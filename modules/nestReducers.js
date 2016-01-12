@@ -1,6 +1,7 @@
-import { HYDRATE, CHILD, SELF } from './constants';
+import { HYDRATE } from './constants';
 import makeHydratable from './makeHydratable';
 import { atDepth, omitAtDepth } from './stateAtDepth';
+import { setShape } from './stateShape';
 import { reduceRight } from 'lodash';
 
 const nestReducers = (...reducers) => {
@@ -13,26 +14,24 @@ const nestReducers = (...reducers) => {
       const previousState = atDepth(state, depth);
       const nextState = reducer(previousState, action);
       if (result) {
-        return {
-          [SELF]: nextState,
-          [CHILD]: result,
-        };
+        const newResult = setShape(nextState, result);
+        return newResult;
       }
 
-      return {
-        [SELF]: nextState,
-      };
+      return setShape(nextState);
     }, null);
   };
 };
 
 export const nestAndReplaceReducers = (store, ...reducers) => {
-  store.replaceReducer(makeHydratable(nestReducers(...reducers)));
+  const nestedReducer = nestReducers(...reducers);
+  const hydratableReducer = makeHydratable(nestedReducer);
+  store.replaceReducer(hydratableReducer);
 };
 
 export const nestAndReplaceReducersAndState = (store, depth, ...reducers) => {
-  const state = store.getState();
-  const adjustedState = omitAtDepth(state, depth);
+  // clear out state at x depth, then replace reducer
+  const adjustedState = omitAtDepth(store.getState(), depth);
   store.dispatch({ type: HYDRATE, state: adjustedState });
   nestAndReplaceReducers(store, ...reducers);
 };

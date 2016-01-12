@@ -22,6 +22,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [ ] Ensure it plays nice w redux-devtools & various other redux friends
 - [ ] Add getState to data fetch api
 - [ ] Add gif showing this in action (like redux-devtools github...)
+- [ ] Get tape setup so we can start writing tests
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
 - [ ] Thoughts on full API / AsyncProps exports?

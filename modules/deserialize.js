@@ -1,12 +1,10 @@
 import { atDepth, setAtDepth } from './stateAtDepth';
-import { forEach, merge, isObject } from 'lodash';
-import { SELF } from './constants';
-
-const sanityCheck = state => isObject(state) && state.hasOwnProperty(SELF);
+import { forEach, merge } from 'lodash';
+import { validateShape, setShape } from './stateShape';
 
 export default (state, routes, deserializer) => {
   let updatedState = merge({}, state);
-  if (!sanityCheck(updatedState)) return null;
+  if (!validateShape(updatedState)) return setShape();
 
   forEach(routes, (route, index) => {
     const dataAtDepth = atDepth(updatedState, index);

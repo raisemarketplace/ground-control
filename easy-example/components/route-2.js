@@ -5,7 +5,7 @@ import { merge, map } from 'lodash';
 import createActions from 'example/utils/createActions';
 import { routeStyle, previewTemplateStyle } from 'example/utils/style';
 
-export const actions = createActions(['load']);
+export const actions = createActions('Route-2', ['load']);
 export const reducer = createReducer({
   [actions.load]: (state, payload) => {
     const updatedState = merge({}, state);

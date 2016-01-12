@@ -9,7 +9,7 @@ import { actions as appActions } from 'example/routes/components/index';
 import createActions from 'example/utils/createActions';
 import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/style';
 
-export const actions = createActions('incr');
+export const actions = createActions('NestedCounters', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
     const updatedState = merge({}, state);

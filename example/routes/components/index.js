@@ -7,7 +7,7 @@ import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 import createActions from 'example/utils/createActions';
 import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/style';
 
-export const actions = createActions('incr');
+export const actions = createActions('Index', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
     if (!state.counter) state.counter = 0;

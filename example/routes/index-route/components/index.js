@@ -8,7 +8,7 @@ import { Map } from 'immutable';
 import createActions from 'example/utils/createActions';
 import { routeStyle } from 'example/utils/style';
 
-export const actions = createActions(['update']);
+export const actions = createActions('IndexRoute', ['update']);
 
 const palindrome = 'tacocat';
 
