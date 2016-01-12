@@ -2,7 +2,7 @@ import React from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
 import matchRoutes from 'react-router/lib/matchRoutes';
 import simpleConnect from './simpleConnect';
-import renderChildren from './renderChildren';
+import renderNestedRoute from './renderNestedRoute';
 import diffRoutes from './diffRoutes';
 import loadAsyncState from './loadAsyncState';
 import createElement from './createElement';
@@ -163,7 +163,7 @@ class AsyncNestedRedux extends React.Component {
 export default AsyncNestedRedux;
 export {
   simpleConnect,
-  renderChildren,
+  renderNestedRoute,
   loadStateOnServer,
   CHILD,
 };

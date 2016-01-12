@@ -1,6 +1,6 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
-import { renderChildren } from 'modules/AsyncNestedRedux';
+import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 
 import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/style';
 
@@ -10,7 +10,7 @@ const linkProps = () => ({
 });
 
 export default props => {
-  const { children, dispatch, childData } = props;
+  const { children, dispatch, nestedData } = props;
   return (
     <div style={routeStyle}>
       <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Easy Example</h4>
@@ -19,7 +19,7 @@ export default props => {
         <Link to="/route-2" {...linkProps()}>Route 2</Link>
       </div>
       <div>
-        {renderChildren(children, childData, dispatch)}
+        {renderNestedRoute(children, nestedData, dispatch)}
       </div>
     </div>
   );

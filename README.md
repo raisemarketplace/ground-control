@@ -17,7 +17,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Easy example showing jsx routes
 - [x] Add immutable to 1 reducer in example
 - [x] Add combineReducers to 1 reducer in example
-- [ ] Rename renderChildren to renderNestedRoute
+- [x] Rename renderChildren to renderNestedRoute
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
@@ -125,11 +125,11 @@ thunkedAction = () => (dispatch, getState) {
 *Automatically pass in nested data to nested routes.*
 ```javascript
 // { ['@@SELF']: { counter: 0 }, ['@@CHILD']: { ['@@SELF']: { counter: 0 }}}
-const ParentRouteComponent = ({ children, data, dispatch, childData }) => {
+const ParentRouteComponent = ({ children, data, dispatch, nestedData }) => {
   return (
     <div>
       <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>
-      {renderChildren(children, childData, dispatch)}
+      {renderNestedRoute(children, nestedData, dispatch)}
     </div>
   );
 };

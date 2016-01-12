@@ -3,7 +3,7 @@ import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { connect } from 'react-redux';
 import { merge } from 'lodash';
-import { renderChildren } from 'modules/AsyncNestedRedux';
+import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'example/routes/components/index';
 import createActions from 'example/utils/createActions';
@@ -31,7 +31,7 @@ const specialAction = count => (dispatch/* , getState */) => {
 };
 
 const Component = props => {
-  const { children, dispatch, data, appCounter, childData } = props;
+  const { children, dispatch, data, appCounter, nestedData } = props;
   return (
     <div style={routeStyle}>
       <div style={navStyle}>
@@ -46,7 +46,7 @@ const Component = props => {
           <button onClick={() => { dispatch(specialAction(1)); }}>+</button>
         </p>
         <div>
-          {renderChildren(children, childData, dispatch)}
+          {renderNestedRoute(children, nestedData, dispatch)}
         </div>
       </div>
     </div>

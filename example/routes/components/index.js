@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
-import { renderChildren } from 'modules/AsyncNestedRedux';
+import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 
 import createActions from 'example/utils/createActions';
 import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/style';
@@ -22,7 +22,7 @@ const linkProps = () => ({
 });
 
 export default props => {
-  const { children, childData, dispatch } = props;
+  const { children, nestedData, dispatch } = props;
   return (
     <div style={routeStyle}>
       <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Example</h4>
@@ -32,7 +32,7 @@ export default props => {
         <Link to="/nested-counters" {...linkProps()}>Nested Counters (Nested Reducers Demo)</Link>
       </div>
       <div>
-        {renderChildren(children, childData, dispatch)}
+        {renderNestedRoute(children, nestedData, dispatch)}
       </div>
     </div>
   );

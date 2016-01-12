@@ -1,10 +1,10 @@
 import { cloneElement } from 'react';
 import { SELF, CHILD } from './constants';
 
-export default (children, childData, dispatch) => {
+export default (children, nestedData, dispatch) => {
   return cloneElement(children, {
     dispatch,
-    data: childData[SELF],
-    childData: childData[CHILD],
+    data: nestedData[SELF],
+    nestedData: nestedData[CHILD],
   });
 };
