@@ -32,7 +32,7 @@ class AsyncNestedRedux extends React.Component {
       throw err;
     },
 
-    hydrationSerializer(data/* , route */) {
+    hydrationSerializer(clientRoute, data) {
       return data;
     },
 
@@ -62,9 +62,10 @@ class AsyncNestedRedux extends React.Component {
           clientRoute.blockRender = hydratedRoute.blockRender;
           clientRoute.loading = hydratedRoute.loading;
           if (hydratedState) {
+            const stateAtDepth = atDepth(hydratedState, index);
             hydratedState = setAtDepth(
               hydratedState,
-              hydrationSerializer(atDepth(hydratedState, index), clientRoute),
+              clientRoute.serializer ? clientRoute.serializer(stateAtDepth) : hydrationSerializer(clientRoute, stateAtDepth),
               index
             );
           }

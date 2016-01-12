@@ -27,7 +27,7 @@ export default props => {
     <div style={routeStyle}>
       <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Example</h4>
       <div style={navStyle}>
-        <IndexLink to="/" {...linkProps()}>Home</IndexLink>
+        <IndexLink to="/" {...linkProps()}>Palindrome (Combined / Immutable Reducers Demo)</IndexLink>
         <Link to="/google-books" {...linkProps()}>Google Books (Data Fetching Demo)</Link>
         <Link to="/nested-counters" {...linkProps()}>Nested Counters (Nested Reducers Demo)</Link>
       </div>
