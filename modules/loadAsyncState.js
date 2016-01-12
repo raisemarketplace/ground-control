@@ -5,10 +5,10 @@ import {
   FD_SERVER_RENDER,
   FD_CLIENT_RENDER,
   FD_DONE,
+  IS_CLIENT,
+  IS_SERVER,
 } from './constants';
 
-const IS_CLIENT = typeof window !== 'undefined';
-const IS_SERVER = !IS_CLIENT;
 const isClient = () => IS_CLIENT;
 const isServer = () => IS_SERVER;
 

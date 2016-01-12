@@ -18,6 +18,9 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Add immutable to 1 reducer in example
 - [x] Add combineReducers to 1 reducer in example
 - [x] Rename renderChildren to renderNestedRoute
+- [x] Deserializers...
+- [ ] Ensure it plays nice w redux-devtools & various other redux friends
+- [ ] Add getState to data fetch api
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi

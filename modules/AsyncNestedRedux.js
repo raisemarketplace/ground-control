@@ -13,7 +13,7 @@ import deserialize from './deserialize';
 import { atDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { HYDRATE, FD_DONE } from './constants';
+import { HYDRATE, FD_DONE, IS_SERVER, IS_CLIENT } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -49,21 +49,19 @@ class AsyncNestedRedux extends React.Component {
     const { store, routes: rawRoutes, deserializer } = props;
     let useHydratedData = false;
 
+    let state = store.getState();
     let routes = normalizeRoutes(rawRoutes);
-    let state = deserialize(store.getState(), routes, deserializer);
+    if (IS_CLIENT) state = deserialize(state, routes, deserializer);
     if (state) useHydratedData = true;
 
+    const hydratedData = getHydratedData(IS_CLIENT);
     const reducer = makeHydratable(s => s);
     store.replaceReducer(reducer);
 
-    const clientSideRender = typeof window !== 'undefined';
-    const hydratedData = getHydratedData(clientSideRender);
-
-    if (clientSideRender) {
+    if (IS_CLIENT) {
       useHydratedData = hydratedData.useHydratedData;
       if (useHydratedData) {
         const { state: hydratedState, routes: hydratedRoutes } = hydratedData;
-
         routes = map(routes, (clientRoute, index) => {
           const hydratedRoute = hydratedRoutes[index];
           clientRoute.blockRender = hydratedRoute.blockRender;
