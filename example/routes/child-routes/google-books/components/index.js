@@ -9,12 +9,14 @@ import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'example/uti
 export const actions = createActions('loadFiction', 'loadJavascript');
 export const reducer = createReducer({
   [actions.loadFiction]: (state, payload) => {
-    state.fiction = payload;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.fiction = payload;
+    return updatedState;
   },
   [actions.loadJavascript]: (state, payload) => {
-    state.javascript = payload;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.javascript = payload;
+    return updatedState;
   },
 }, {
   fiction: [],

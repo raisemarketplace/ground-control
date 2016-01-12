@@ -8,8 +8,9 @@ import { routeStyle } from 'example/utils/style';
 export const actions = createActions(['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state) => {
-    state.counter++;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.counter++;
+    return updatedState;
   },
 }, { counter: 0 });
 

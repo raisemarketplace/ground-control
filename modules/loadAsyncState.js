@@ -22,16 +22,14 @@ const _serverRender = (cb, route, index) => {
 export default (routes, params, dispatch, cb, stillActive, initialPageLoad) => {
   if (routes.length > 0) {
     const hydratedData = getHydratedData(initialPageLoad);
-    const hydrated = () => hydratedData.didHydrate;
+    const hydrated = () => hydratedData.useHydratedData;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
       const done = partial(_done, cb, route, index);
       const clientRender = partial(_clientRender, cb, route, index);
       const serverRender = partial(_serverRender, cb, route, index);
       const hydratedDataForRoute = () => {
-        if (hydratedData.didHydrate) {
-          return atDepth(hydratedData.state, index);
-        }
+        if (hydratedData.useHydratedData) return atDepth(hydratedData.state, index);
         return null;
       };
 

@@ -11,8 +11,9 @@ export const actions = createActions('incr');
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
     if (!state.counter) state.counter = 0;
-    state.counter += payload;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.counter += payload;
+    return updatedState;
   },
 }, {});
 

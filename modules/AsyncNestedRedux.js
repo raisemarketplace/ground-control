@@ -12,7 +12,7 @@ import makeHydratable from './makeHydratable';
 import { atDepth, setAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { CHILD, HYDRATE } from './constants';
+import { CHILD, HYDRATE, FD_DONE } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -53,7 +53,7 @@ class AsyncNestedRedux extends React.Component {
     let routes = normalizeRoutes(rawRoutes);
 
     if (clientSideRender) {
-      if (hydratedData.didHydrate) {
+      if (hydratedData.useHydratedData) {
         const { routes: hydratedRoutes } = hydratedData;
         let { state: hydratedState } = hydratedData;
 
@@ -124,9 +124,9 @@ class AsyncNestedRedux extends React.Component {
 
   loadAsyncState(routes, location, store, replaceAtDepth, hydratedData) {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
-      const { didHydrate } = hydratedData;
+      const { useHydratedData } = hydratedData;
       const reducers = map(routes, route => route.reducer);
-      if (didHydrate) {
+      if (useHydratedData) {
         nestAndReplaceReducers(store, ...reducers);
       } else {
         nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
@@ -141,7 +141,7 @@ class AsyncNestedRedux extends React.Component {
             const { routes: updatedRoutes } = this.state;
             if (updatedRoutes[index] === route) {
               updatedRoutes[index].blockRender = false;
-              if (type === 'done') {
+              if (type === FD_DONE) {
                 updatedRoutes[index].loading = false;
               }
 
@@ -150,7 +150,7 @@ class AsyncNestedRedux extends React.Component {
           }
         },
         (route, index) => this.state.routes[index] === route,
-        didHydrate
+        useHydratedData
       );
     });
   }

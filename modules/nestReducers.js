@@ -27,8 +27,7 @@ const nestReducers = (...reducers) => {
 };
 
 export const nestAndReplaceReducers = (store, ...reducers) => {
-  const reducer = makeHydratable(nestReducers(...reducers));
-  store.replaceReducer(reducer);
+  store.replaceReducer(makeHydratable(nestReducers(...reducers)));
 };
 
 export const nestAndReplaceReducersAndState = (store, depth, ...reducers) => {

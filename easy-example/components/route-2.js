@@ -8,8 +8,9 @@ import { routeStyle, previewTemplateStyle } from 'example/utils/style';
 export const actions = createActions(['load']);
 export const reducer = createReducer({
   [actions.load]: (state, payload) => {
-    state.items = payload;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.items = payload;
+    return updatedState;
   },
 }, { items: [] });
 

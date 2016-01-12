@@ -12,8 +12,9 @@ import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'example/utils/
 export const actions = createActions('incr');
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
-    state.counter += payload;
-    return merge({}, state);
+    const updatedState = merge({}, state);
+    updatedState.counter += payload;
+    return updatedState;
   },
 }, {
   counter: 0,

@@ -3,7 +3,7 @@ import { reduce, get, set, omit } from 'lodash';
 const ROOT = '@@ROOT';
 
 const keyForDepth = depth => {
-  return reduce(Array(depth), result => {
+  return reduce(Array(depth >= 0 ? depth : 0), result => {
     return result + `[${CHILD}]`;
   }, `[${ROOT}]`);
 };
@@ -24,8 +24,9 @@ export const setAtDepth = (state, data, depth) => {
 };
 
 export const omitAtDepth = (state, depth) => {
-  const key = keyForDepth(depth);
+  const key = keyForDepth(depth - 1);
   const normalizedState = normalizeStateShape(state);
-  const nestedState = omit(get(normalizedState, key), [SELF, CHILD]);
-  return set(normalizedState, key, nestedState)[ROOT];
+  const nestedState = get(normalizedState, key);
+  const severedState = omit(nestedState, CHILD);
+  return set(normalizedState, key, severedState)[ROOT];
 };

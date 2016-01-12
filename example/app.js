@@ -9,6 +9,8 @@ export const initializeStore = () => {
   const baseReducer = state => state;
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
   const store = createStoreWithMiddleware(baseReducer, { overWrittenWhenAppRenders: '!!!' });
+  // const data = {"@@SELF":{},"@@CHILD":{"@@SELF":{"forwards":{"value":"cooolio"},"backwards":"evencooler"}}};
+  const store = createStoreWithMiddleware(baseReducer, data);
   const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
   store.subscribe(s);
   s();
