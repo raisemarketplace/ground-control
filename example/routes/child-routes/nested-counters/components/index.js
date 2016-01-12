@@ -3,7 +3,7 @@ import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { connect } from 'react-redux';
 import { merge } from 'lodash';
-import { renderNestedRoute } from 'modules/AsyncNestedRedux';
+import { renderNestedRoute, stateAtDepth } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'example/routes/components/index';
 import createActions from 'example/utils/createActions';
@@ -31,7 +31,7 @@ const specialAction = count => (dispatch/* , getState */) => {
 };
 
 const Component = props => {
-  const { children, dispatch, data, appCounter, nestedData } = props;
+  const { children, dispatch, data, appData, nestedData } = props;
   return (
     <div style={routeStyle}>
       <div style={navStyle}>
@@ -41,7 +41,7 @@ const Component = props => {
       </div>
       <div>
         <p>
-          <span>App Counter: {appCounter || 0}</span>&nbsp;
+          <span>App Counter: {appData.counter || 0}</span>&nbsp;
           <span>Counter: {data.counter}</span>&nbsp;
           <button onClick={() => { dispatch(specialAction(1)); }}>+</button>
         </p>
@@ -55,5 +55,5 @@ const Component = props => {
 
 // if you want access in view to higher level app state, just connect
 export default connect(state => ({
-  appCounter: state.counter,
+  appData: stateAtDepth(state, 0) || {},
 }))(Component);

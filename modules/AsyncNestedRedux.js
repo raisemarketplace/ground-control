@@ -165,5 +165,5 @@ export {
   simpleConnect,
   renderNestedRoute,
   loadStateOnServer,
-  CHILD,
+  atDepth as stateAtDepth,
 };
