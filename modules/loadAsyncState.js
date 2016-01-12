@@ -21,7 +21,7 @@ const _serverRender = (cb, route, index) => {
 export default (routes, params, dispatch, cb, stillActive = DEFAULT_STILL_ACTIVE, getHydratedData = DEFAULT_HYDRATED_DATA) => {
   if (routes.length > 0) {
     const hydratedData = getHydratedData();
-    const hydrated = () => !!hydratedData;
+    const hydrated = () => hydratedData.didHydrate;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
       const done = partial(_done, cb, route, index);
