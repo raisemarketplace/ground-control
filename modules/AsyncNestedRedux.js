@@ -9,10 +9,11 @@ import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import getHydratedData from './getHydratedData';
 import makeHydratable from './makeHydratable';
-import { atDepth, setAtDepth } from './stateAtDepth';
+import deserialize from './deserialize';
+import { atDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { CHILD, HYDRATE, FD_DONE } from './constants';
+import { HYDRATE, FD_DONE } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -46,47 +47,45 @@ class AsyncNestedRedux extends React.Component {
   constructor(props, context) {
     super(props, context);
     const { store, routes: rawRoutes, hydrationSerializer } = props;
-    store.replaceReducer(makeHydratable(state => state));
+    let useHydratedData = false;
+
+    let routes = normalizeRoutes(rawRoutes);
+    let state = deserialize(store.getState(), routes, hydrationSerializer);
+    if (state) useHydratedData = true;
+
+    const reducer = makeHydratable(s => s);
+    store.replaceReducer(reducer);
 
     const clientSideRender = typeof window !== 'undefined';
     const hydratedData = getHydratedData(clientSideRender);
-    let routes = normalizeRoutes(rawRoutes);
 
     if (clientSideRender) {
-      if (hydratedData.useHydratedData) {
-        const { routes: hydratedRoutes } = hydratedData;
-        let { state: hydratedState } = hydratedData;
+      useHydratedData = hydratedData.useHydratedData;
+      if (useHydratedData) {
+        const { state: hydratedState, routes: hydratedRoutes } = hydratedData;
 
         routes = map(routes, (clientRoute, index) => {
           const hydratedRoute = hydratedRoutes[index];
           clientRoute.blockRender = hydratedRoute.blockRender;
           clientRoute.loading = hydratedRoute.loading;
-          if (hydratedState) {
-            const stateAtDepth = atDepth(hydratedState, index);
-            hydratedState = setAtDepth(
-              hydratedState,
-              clientRoute.serializer ? clientRoute.serializer(stateAtDepth) : hydrationSerializer(clientRoute, stateAtDepth),
-              index
-            );
-          }
-
           return clientRoute;
         });
 
-        store.dispatch({ type: HYDRATE, state: hydratedState });
+        state = deserialize(hydratedState, routes, hydrationSerializer);
       }
     }
 
+    store.dispatch({ type: HYDRATE, state });
     this.state = {
       routes,
-      hydratedData,
+      useHydratedData,
     };
   }
 
   componentDidMount() {
     const { location, store } = this.props;
-    const { routes, hydratedData } = this.state;
-    this.loadAsyncState(routes, location, store, 0, hydratedData);
+    const { routes, useHydratedData } = this.state;
+    this.loadAsyncState(routes, location, store, 0, useHydratedData);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -102,9 +101,9 @@ class AsyncNestedRedux extends React.Component {
     const differentRoutes = normalizeRoutes(drop(routes, routeDiff), true);
     const nextRoutes = sameRoutes.concat(differentRoutes);
 
-    const resetHydratedData = getHydratedData(false);
-    this.setState({ routes: nextRoutes, hydratedData: resetHydratedData }, () => {
-      this.loadAsyncState(nextRoutes, location, store, routeDiff, resetHydratedData);
+    const useHydratedData = false;
+    this.setState({ routes: nextRoutes, useHydratedData }, () => {
+      this.loadAsyncState(nextRoutes, location, store, routeDiff, useHydratedData);
     });
   }
 
@@ -122,9 +121,8 @@ class AsyncNestedRedux extends React.Component {
     };
   }
 
-  loadAsyncState(routes, location, store, replaceAtDepth, hydratedData) {
+  loadAsyncState(routes, location, store, replaceAtDepth, useHydratedData) {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
-      const { useHydratedData } = hydratedData;
       const reducers = map(routes, route => route.reducer);
       if (useHydratedData) {
         nestAndReplaceReducers(store, ...reducers);

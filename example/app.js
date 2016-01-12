@@ -8,9 +8,10 @@ import thunk from 'redux-thunk';
 export const initializeStore = () => {
   const baseReducer = state => state;
   const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-  const store = createStoreWithMiddleware(baseReducer, { overWrittenWhenAppRenders: '!!!' });
-  // const data = {"@@SELF":{},"@@CHILD":{"@@SELF":{"forwards":{"value":"cooolio"},"backwards":"evencooler"}}};
-  const store = createStoreWithMiddleware(baseReducer, data);
+  // initial state works if using redux-devtools, etc. but we hydrate for you in loadAsyncState
+  // set your default data on the route
+  const initialState = { overWrittenWhenAppRenders: 'if it doesnt match { @@SELF: {}}!' };
+  const store = createStoreWithMiddleware(baseReducer, initialState);
   const s = () => console.log('STATE --->', JSON.stringify(store.getState()));
   store.subscribe(s);
   s();
