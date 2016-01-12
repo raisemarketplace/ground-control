@@ -32,7 +32,5 @@ export const setAtDepth = (state, data, depth) => {
 export const omitAtDepth = (state, depth) => {
   const key = keyForDepth(depth);
   const normalizedState = normalizeStateShape(state);
-  const nestedState = get(normalizedState, key);
-  const severedState = setShape(get(nestedState, SELF));
-  return set(normalizedState, key, severedState)[ROOT];
+  return set(normalizedState, key, setShape())[ROOT];
 };
