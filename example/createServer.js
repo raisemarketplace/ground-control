@@ -45,7 +45,12 @@ const getAppHtml = (renderProps, store, routes, reducers) => {
   );
 };
 
-const render = (routes, additionalReducers, enableThunk, initialState, req, res) => {
+const render = ({
+  routes,
+  additionalReducers,
+  enableThunk,
+  initialState,
+}, req, res) => {
   match({ routes, location: req.url }, (routingErr, redirectLocation, renderProps) => {
     if (routingErr) {
       res.status(500).send(routingErr.message);
@@ -82,7 +87,14 @@ export default ({
   routes,
 }) => {
   let finalRender = (req, res) => res.status(200).send(getHtml());
-  if (enableServerRender) finalRender = partial(render, routes, additionalReducers, enableThunk, initialState);
+  if (enableServerRender) {
+    finalRender = partial(render, {
+      routes,
+      additionalReducers,
+      enableThunk,
+      initialState,
+    });
+  }
 
   express()
       .use(webpackDevMiddleware(webpack(webpackConfig), webpackOptions))

@@ -7,8 +7,6 @@ import createStore from 'example/createStore';
 import DevTools from 'example/devtools';
 import domready from 'domready';
 
-// import { syncHistory, routeReducer } from 'redux-simple-router';
-
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
 // ...if you need to do something crazy like use combineReducers & immutable you can specify
 // that on the route itself (see example/index-route/index.js)
@@ -32,6 +30,7 @@ const routerProps = (routes, history, store, reducers) => ({
 
 export default ({
   additionalReducers,
+  enableReduxSimpleRouter,
   enableDevTools,
   enableThunk,
   initialState,
@@ -39,9 +38,11 @@ export default ({
 }) => {
   const store = createStore({
     additionalReducers,
+    enableReduxSimpleRouter,
     enableDevTools,
     enableThunk,
     initialState,
+    history: browserHistory,
   });
 
   domready(() => {
