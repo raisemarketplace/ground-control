@@ -18,6 +18,4 @@ export const initializeStore = (devtools = defaultStoreEnhancer) => {
   return finalCreateStore(baseReducer, initialState);
 };
 
-export const createApp = (store, routerContext) => (
-  <Provider store={store}>{routerContext}</Provider>
-);
+export const createApp = (store, routerContext) => <Provider store={store} children={routerContext} />;

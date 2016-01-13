@@ -11,11 +11,14 @@ export const navStyle = merge({}, routeStyle, {
   borderColor: '#b0babf',
   backgroundColor: '#f4f6f6',
   marginBottom: 20,
+  paddingBottom: 10,
 });
 
 export const linkStyle = {
+  display: 'block',
   color: '#31c1c9',
-  paddingRight: 20,
+  marginBottom: '10px',
+  textDecoration: 'none',
 };
 
 export const activeLinkStyle = {

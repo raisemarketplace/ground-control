@@ -5,6 +5,7 @@ import { createDevTools } from 'redux-devtools';
 import LogMonitor from 'redux-devtools-log-monitor';
 import DockMonitor from 'redux-devtools-dock-monitor';
 import AsyncNestedRedux from 'modules/AsyncNestedRedux';
+// import { syncHistory, routeReducer } from 'redux-simple-router';
 import domready from 'domready';
 
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
