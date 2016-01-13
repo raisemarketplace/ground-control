@@ -10,7 +10,7 @@
   "bugs": "https://github.com/CouponTrade/async-redux/issues",
   "scripts": {
     "build": "babel ./modules --stage 0 --loose all -d lib --ignore '__tests__'",
-    "start": "nodemon example/server_.js --exec babel-node",
+    "start": "nodemon complex-example/server_.js --exec babel-node",
     "easy-example": "nodemon easy-example/server_.js --exec babel-node"
   },
   "authors": [
