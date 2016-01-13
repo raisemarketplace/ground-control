@@ -14,7 +14,7 @@ import deserialize from './deserialize';
 import { rootStateAtDepth, rootValidAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { HYDRATE, CLIENT_HYDRATE, FD_DONE, IS_CLIENT, ANR_ROOT } from './constants';
+import { REHYDRATE_REDUCERS, HYDRATE_CLIENT, FD_DONE, IS_CLIENT, ANR_ROOT } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -63,7 +63,7 @@ class AsyncNestedRedux extends React.Component {
     store.replaceReducer(reducer);
 
     if (useHydratedData) {
-      store.dispatch({ type: HYDRATE, state });
+      store.dispatch({ type: REHYDRATE_REDUCERS, state });
     } else if (IS_CLIENT) {
       const hydratedData = getHydratedData(IS_CLIENT);
       useHydratedData = hydratedData.useHydratedData;
@@ -79,7 +79,7 @@ class AsyncNestedRedux extends React.Component {
         });
 
         state = deserialize(hydratedState, routes, deserializer);
-        store.dispatch({ type: CLIENT_HYDRATE, state });
+        store.dispatch({ type: HYDRATE_CLIENT, state });
       }
     }
 

@@ -1,7 +1,8 @@
 export const IS_CLIENT = typeof window !== 'undefined';
 export const IS_SERVER = !IS_CLIENT;
-export const HYDRATE = '@@AsyncNestedRedux/HYDRATE';
-export const CLIENT_HYDRATE = '@@AsyncNestedRedux/CLIENT_HYDRATE';
+export const REHYDRATE_REDUCERS = '@@AsyncNestedRedux/REHYDRATE_REDUCERS';
+export const HYDRATE_CLIENT = '@@AsyncNestedRedux/HYDRATE_CLIENT';
+export const SEVER_STATE = '@@AsyncNestedRedux/SEVER_STATE';
 export const ANR_ROOT = 'ANR';
 export const CHILD = 'CHILD';
 export const SELF = 'SELF';

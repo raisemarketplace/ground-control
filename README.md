@@ -34,6 +34,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [ ] Add to microclient-reference-app
 - [ ] Rename repo to async-nested-redux
 - [ ] Open source?
+- [ ] KNOWN BUG: Redux-DevTools reruns all actions on @@INIT, which runs with store.replaceReducer. Not a big deal but, if using combineReducers etc, could give warning about unexpected keys.
 
 ### Problems...
 
