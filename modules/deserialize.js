@@ -1,13 +1,19 @@
-import { atDepth, setAtDepth } from './stateAtDepth';
+import { setAtDepth, rootStateAtDepth } from './stateAtDepth';
 import { forEach, merge } from 'lodash';
-import { validateShape, setShape } from './stateShape';
+import { validateRootShape, setShape } from './stateShape';
+import { ANR_ROOT } from './constants';
 
 export default (state, routes, deserializer) => {
-  let updatedState = merge({}, state);
-  if (!validateShape(updatedState)) return setShape();
+  const updatedState = merge({}, state);
+  if (!validateRootShape(updatedState)) {
+    return {
+      ...updatedState,
+      [ANR_ROOT]: setShape(),
+    };
+  }
 
   forEach(routes, (route, index) => {
-    const dataAtDepth = atDepth(updatedState, index);
+    const dataAtDepth = rootStateAtDepth(updatedState, index);
 
     let deserializedData;
     if (route.deserializer) {
@@ -16,7 +22,7 @@ export default (state, routes, deserializer) => {
       deserializedData = deserializer(route, dataAtDepth);
     }
 
-    updatedState = setAtDepth(state, deserializedData, index);
+    updatedState[ANR_ROOT] = setAtDepth(state[ANR_ROOT], deserializedData, index);
   });
 
   return updatedState;

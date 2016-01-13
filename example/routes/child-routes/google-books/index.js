@@ -29,6 +29,9 @@ const fetchData = (done, { dispatch, hydrated, hydratedDataForRoute, clientRende
       if (cache[fictionKey]) {
         topDone(cache[fictionKey]);
       } else {
+        // await topData();
+        // clientRender();
+        // serverRender();
         setTimeout(() => {
           fetch(fictionKey)
               .then(response => response.json())

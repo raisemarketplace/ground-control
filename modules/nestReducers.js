@@ -1,7 +1,8 @@
-import { HYDRATE } from './constants';
+import { HYDRATE, ANR_ROOT } from './constants';
 import makeHydratable from './makeHydratable';
-import { atDepth, omitAtDepth } from './stateAtDepth';
+import { atDepth, rootOmitAtDepth } from './stateAtDepth';
 import { setShape } from './stateShape';
+import { combineReducers } from 'redux';
 import { reduceRight } from 'lodash';
 
 const nestReducers = (...reducers) => {
@@ -19,15 +20,16 @@ const nestReducers = (...reducers) => {
   };
 };
 
-export const nestAndReplaceReducers = (store, ...reducers) => {
-  const nestedReducer = nestReducers(...reducers);
-  const hydratableReducer = makeHydratable(nestedReducer);
-  store.replaceReducer(hydratableReducer);
+export const nestAndReplaceReducers = (store, baseReducers, ...reducers) => {
+  store.replaceReducer(combineReducers({
+    ...baseReducers,
+    [ANR_ROOT]: makeHydratable(nestReducers(...reducers)),
+  }));
 };
 
-export const nestAndReplaceReducersAndState = (store, depth, ...reducers) => {
+export const nestAndReplaceReducersAndState = (store, depth, baseReducers, ...reducers) => {
   // getState ------> replaceReducers ------> replaceState
-  const adjustedState = omitAtDepth(store.getState(), depth);
-  nestAndReplaceReducers(store, ...reducers);
+  const adjustedState = rootOmitAtDepth(store.getState(), depth);
+  nestAndReplaceReducers(store, baseReducers, ...reducers);
   store.dispatch({ type: HYDRATE, state: adjustedState });
 };

@@ -30,10 +30,15 @@ const getHtml = (html = '', scriptString = '') => {
   );
 };
 
+const reducers = {
+  somethingElse: (state = 'hello') => state,
+};
+
 const asyncNestedReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
   ...renderProps,
   routes,
   store,
+  reducers,
 });
 
 const getAppHtml = (createApp, store, renderProps, adjustedRoutes) => {
@@ -48,8 +53,8 @@ const _renderApplication = (routes, initializeStore, createApp, req, res) => {
     } else if (redirectLocation) {
       res.redirect(302, `${redirectLocation.pathname}${redirectLocation.search}`);
     } else if (renderProps) {
-      const store = initializeStore();
-      loadStateOnServer(renderProps, store, (loadDataErr, adjustedRoutes, scriptString) => {
+      const store = initializeStore(reducers);
+      loadStateOnServer(renderProps, store, reducers, (loadDataErr, adjustedRoutes, scriptString) => {
         if (loadDataErr) {
           res.status(500).send(loadDataErr.message);
         } else {

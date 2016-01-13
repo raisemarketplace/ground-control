@@ -1,10 +1,10 @@
-import { SELF, CHILD } from './constants';
+import { SELF, CHILD, ANR_ROOT } from './constants';
 
 export default (connect, Component) => {
   return connect(state => {
     return {
-      data: state[SELF],
-      nestedData: state[CHILD],
+      data: state[ANR_ROOT][SELF],
+      nestedData: state[ANR_ROOT][CHILD],
     };
   })(Component);
 };

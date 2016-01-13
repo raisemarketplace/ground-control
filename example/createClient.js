@@ -5,8 +5,9 @@ import { createDevTools } from 'redux-devtools';
 import LogMonitor from 'redux-devtools-log-monitor';
 import DockMonitor from 'redux-devtools-dock-monitor';
 import AsyncNestedRedux from 'modules/AsyncNestedRedux';
-// import { syncHistory, routeReducer } from 'redux-simple-router';
 import domready from 'domready';
+
+// import { syncHistory, routeReducer } from 'redux-simple-router';
 
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
 // ...if you need to do something crazy like use combineReducers & immutable you can specify
@@ -22,20 +23,29 @@ const DevTools = createDevTools(
   </DockMonitor>
 );
 
+const reducers = {
+  somethingElse: (state = 'hello') => state,
+};
+
 const routerProps = (routes, history, store) => ({
   routes,
   history,
   render: props => (
-    <AsyncNestedRedux {...props} store={store} deserializer={deserializer} />
+    <AsyncNestedRedux
+        {...props}
+        store={store}
+        deserializer={deserializer}
+        reducers={reducers}
+        />
   ),
 });
 
-export default (routes, initializeStore, createApp) => {
-  const store = initializeStore(DevTools.instrument());
+export default (useDevTools, routes, initializeStore, createApp) => {
+  const store = initializeStore(reducers, useDevTools ? DevTools.instrument() : undefined);
   const app = createApp(store, <Router {...routerProps(routes, browserHistory, store)} />);
 
   domready(() => {
     render(app, document.getElementById('app'));
-    render(<DevTools store={store} />, document.getElementById('dev'));
+    if (useDevTools) render(<DevTools store={store} />, document.getElementById('dev'));
   });
 };

@@ -7,11 +7,11 @@ import {
   FD_DONE,
 } from './constants';
 
-export default (props, store, cb) => {
+export default (props, store, baseReducers, cb) => {
   const { routes: rawRoutes, params } = props;
   const routes = cloneDeep(normalizeRoutes(rawRoutes));
   const reducers = map(routes, route => route.reducer);
-  nestAndReplaceReducersAndState(store, 0, ...reducers);
+  nestAndReplaceReducersAndState(store, 0, baseReducers, ...reducers);
 
   let needToLoadCounter = routes.length;
   const maybeFinish = () => {
@@ -25,7 +25,7 @@ export default (props, store, cb) => {
   loadAsyncState(
     routes,
     params,
-    store.dispatch,
+    store,
     (type, route, index) => {
       if (type === FD_DONE || type === FD_SERVER_RENDER) {
         routes[index].blockRender = false;

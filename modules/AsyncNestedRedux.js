@@ -1,4 +1,5 @@
 import React from 'react';
+import { combineReducers } from 'redux';
 import RouterContext from 'react-router/lib/RouterContext';
 import matchRoutes from 'react-router/lib/matchRoutes';
 import simpleConnect from './simpleConnect';
@@ -10,10 +11,10 @@ import normalizeRoutes from './normalizeRoutes';
 import getHydratedData from './getHydratedData';
 import makeHydratable from './makeHydratable';
 import deserialize from './deserialize';
-import { atDepth, validAtDepth } from './stateAtDepth';
+import { rootStateAtDepth, rootValidAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { HYDRATE, CLIENT_HYDRATE, FD_DONE, IS_CLIENT } from './constants';
+import { HYDRATE, CLIENT_HYDRATE, FD_DONE, IS_CLIENT, ANR_ROOT } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -24,6 +25,7 @@ class AsyncNestedRedux extends React.Component {
     location: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
+    reducers: React.PropTypes.object.isRequired,
     deserializer: React.PropTypes.func.isRequired,
     onError: React.PropTypes.func.isRequired,
   }
@@ -35,6 +37,10 @@ class AsyncNestedRedux extends React.Component {
 
     deserializer(clientRoute, data) {
       return data;
+    },
+
+    reducers: {
+      [ANR_ROOT]: (s = {}) => s,
     },
 
     render(props) {
@@ -49,10 +55,11 @@ class AsyncNestedRedux extends React.Component {
     const { store, routes: rawRoutes, deserializer } = props;
     let routes = normalizeRoutes(rawRoutes);
     let state = store.getState();
+    if (!props.reducers.hasOwnProperty(ANR_ROOT)) props.reducers[ANR_ROOT] = (s = {}) => s;
 
     if (IS_CLIENT) state = deserialize(state, routes, deserializer);
-    let useHydratedData = validAtDepth(state, 0);
-    const reducer = makeHydratable(s => s);
+    let useHydratedData = rootValidAtDepth(state, 0);
+    const reducer = makeHydratable(combineReducers(props.reducers));
     store.replaceReducer(reducer);
 
     if (useHydratedData) {
@@ -125,15 +132,15 @@ class AsyncNestedRedux extends React.Component {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
       const reducers = map(routes, route => route.reducer);
       if (useHydratedData) {
-        nestAndReplaceReducers(store, ...reducers);
+        nestAndReplaceReducers(store, this.props.reducers, ...reducers);
       } else {
-        nestAndReplaceReducersAndState(store, replaceAtDepth, ...reducers);
+        nestAndReplaceReducersAndState(store, replaceAtDepth, this.props.reducers, ...reducers);
       }
 
       loadAsyncState(
         matchedRoutes.routes,
         matchedRoutes.params,
-        store.dispatch,
+        store,
         (type, route, index) => {
           if (!this._unmounted) {
             const { routes: updatedRoutes } = this.state;
@@ -163,5 +170,5 @@ export {
   simpleConnect,
   renderNestedRoute,
   loadStateOnServer,
-  atDepth as stateAtDepth,
+  rootStateAtDepth as stateAtDepth,
 };

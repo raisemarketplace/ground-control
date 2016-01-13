@@ -3,4 +3,5 @@ import { initializeStore, createApp } from 'example/app';
 import routes from 'example/routes';
 import WebpackConfig from 'example/webpack.config';
 
-createServer(true, routes, initializeStore, createApp, WebpackConfig);
+const enableServerRender = true;
+createServer(enableServerRender, routes, initializeStore, createApp, WebpackConfig);
