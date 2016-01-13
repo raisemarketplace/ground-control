@@ -25,7 +25,7 @@ class AsyncNestedRedux extends React.Component {
     location: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
-    reducers: React.PropTypes.object.isRequired,
+    reducers: React.PropTypes.object,
     deserializer: React.PropTypes.func.isRequired,
     onError: React.PropTypes.func.isRequired,
   }
@@ -37,10 +37,6 @@ class AsyncNestedRedux extends React.Component {
 
     deserializer(clientRoute, data) {
       return data;
-    },
-
-    reducers: {
-      [ANR_ROOT]: (s = {}) => s,
     },
 
     render(props) {
@@ -55,11 +51,10 @@ class AsyncNestedRedux extends React.Component {
     const { store, routes: rawRoutes, deserializer } = props;
     let routes = normalizeRoutes(rawRoutes);
     let state = store.getState();
-    if (!props.reducers.hasOwnProperty(ANR_ROOT)) props.reducers[ANR_ROOT] = (s = {}) => s;
 
     if (IS_CLIENT) state = deserialize(state, routes, deserializer);
     let useHydratedData = rootValidAtDepth(state, 0);
-    const reducer = makeHydratable(combineReducers(props.reducers));
+    const reducer = this.getReducer();
     store.replaceReducer(reducer);
 
     if (useHydratedData) {
@@ -116,6 +111,13 @@ class AsyncNestedRedux extends React.Component {
 
   componentWillUnmount() {
     this._unmounted = true;
+  }
+
+  getReducer() {
+    let reducers = this.props.reducers;
+    if (!reducers) reducers = {};
+    reducers[ANR_ROOT] = (s = {}) => s;
+    return makeHydratable(combineReducers(reducers));
   }
 
   handleError(cb) {

@@ -2,8 +2,12 @@ import { map, pick } from 'lodash';
 import component, { reducer, actions } from 'example/routes/child-routes/google-books/components';
 import loader from 'example/routes/child-routes/google-books/components/loader';
 
-const API = 'https://www.googleapis.com/books/v1/volumes?q=subject:';
 const cache = {};
+const FICTION_KEY = 'FICTION';
+
+const API = 'https://www.googleapis.com/books/v1/volumes?q=subject:';
+const FICTION = `${API}fiction`;
+const JAVASCRIPT = `${API}javascript`;
 
 const adjustResponse = data => {
   return map(data.items, item => {
@@ -14,56 +18,55 @@ const adjustResponse = data => {
   });
 };
 
-// Complex example to show full power of API...
-const fetchData = (done, { dispatch, hydrated, hydratedDataForRoute, clientRender, serverRender, isClient }) => {
-  const topOfPagePromise = new Promise((resolve) => {
-    const fictionKey = `${API}fiction`;
-    if (!hydrated()) {
-      const topDone = items => {
-        dispatch(actions.loadFiction(items));
-        clientRender();
-        serverRender();
-        resolve();
-      };
-
-      if (cache[fictionKey]) {
-        topDone(cache[fictionKey]);
-      } else {
-        // await topData();
-        // clientRender();
-        // serverRender();
-        setTimeout(() => {
-          fetch(fictionKey)
-              .then(response => response.json())
-              .then(adjustResponse)
-              .then((items) => {
-                if (isClient()) cache[fictionKey] = items;
-                topDone(items);
-              });
-        }, 500);
-      }
+const fetchFiction = async (isClient) => {
+  return new Promise(resolve => {
+    if (cache[FICTION_KEY]) {
+      resolve(cache[FICTION_KEY]);
     } else {
-      const hydratedData = hydratedDataForRoute();
-      if (hydratedData && hydratedData.fiction) cache[fictionKey] = hydratedData.fiction;
-      clientRender();
-      resolve();
-    }
-  });
-
-  if (isClient()) {
-    const bottomOfPagePromise = new Promise((resolve) => {
       setTimeout(() => {
-        fetch(`${API}javascript`)
+        fetch(FICTION)
             .then(response => response.json())
             .then(adjustResponse)
-            .then((items) => {
-              dispatch(actions.loadJavascript(items));
-              resolve();
+            .then(books => {
+              if (isClient) cache[FICTION_KEY] = books;
+              resolve(books);
             });
-      }, 1500);
-    });
+      }, 500);
+    }
+  });
+};
 
-    Promise.all([topOfPagePromise, bottomOfPagePromise]).then(done);
+const fetchJavascript = async () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      fetch(JAVASCRIPT)
+          .then(response => response.json())
+          .then(adjustResponse)
+          .then(books => resolve(books));
+    }, 500);
+  });
+};
+
+// Complex example to show full power of API!
+const fetchData = async (done, {
+  dispatch, hydrated, clientRender, serverRender,
+  isClient, isMounted, hydratedDataForRoute,
+}) => {
+  if (!hydrated()) {
+    const fiction = await fetchFiction(isClient());
+    if (isMounted()) dispatch(actions.loadFiction(fiction));
+  } else {
+    const hydratedData = hydratedDataForRoute();
+    if (hydratedData && hydratedData.fiction) cache[FICTION_KEY] = hydratedData.fiction;
+  }
+
+  clientRender();
+  serverRender();
+
+  if (isClient()) {
+    const javascript = await fetchJavascript();
+    if (isMounted()) dispatch(actions.loadJavascript(javascript));
+    done();
   }
 };
 

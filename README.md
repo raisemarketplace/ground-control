@@ -21,7 +21,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Deserializers...
 - [x] Ensure it plays nice w redux-devtools & various other redux friends
 - [x] Ensure it plays nice w redux-simple-router
-- [ ] Add async / await to demo
+- [x] Add async / await to demo
 - [ ] Add loading to reducer state rather than as prop.
 - [ ] Add getState to data fetch api
 - [ ] Add gif showing this in action (like redux-devtools github...)
@@ -57,46 +57,25 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 ###### Data fetching...
 *You can do a lot - everything is optional.*
 ```javascript
-fetchData(done, {
-  params, dispatch,
-  isMounted, hydrated,
-  hydratedDataForRoute,
-  clientRender, serverRender,
-  isClient, isServer
-}) {
-  // render generic loading template
-  // ...
-  // ...
-  clientRender(); // render preview template
-
-  const promise1 = new Promise((resolve, reject) => {
-    if (hydrated()) { // initial load, skip fetch
-      resolve();
-    } else {
-      fetch('endpoint').then(response => {
-        if (isMounted()) { // only really necessary for actions that impact parent
-          dispatch(actionAssociatedWithParentRouteReducer());
-          serverRender(); // block server until...
-          resolve();
-        }
-      });
-    }
-  });
-
-  // on server, only load 'top of page' data.
-  if (isClient()) { // finish loading on client.
-    const promise2 = new Promise((resolve, reject) => {
-      fetch('endpoint').then(response => {
-        dispatch(actionAssociatedWithRouteReducer());
-        resolve();
-      });
-    });
-
-    Promise.all([promise1, promise2]).then(() => {
-      done(); // w00t. sets props.loading to false.
-    });
+async function fetchData(done, { dispatch, hydrated, clientRender, serverRender, isClient }) => {
+  // don't repeat request if server hydrated client!
+  if (!hydrated()) {
+    const topOfPageData = await fetchTopOfPage();
+    dispatch(actions.loadTop(topOfPageData));
   }
-}
+
+  // render loading template until we call...
+  clientRender(); // render preview template!
+  // block server until we call...
+  serverRender();
+
+  // load top of page data on server, all data on client
+  if (isClient()) {
+    const bottomOfPageData = await fetchBottomOfPage();
+    dispatch(actions.loadBottom(bottomOfPageData));
+    done(); // sets props.loading to false in component!
+  }
+};
 ```
 
 ###### Nested reducers...
