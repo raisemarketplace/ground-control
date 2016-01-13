@@ -20,8 +20,9 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Rename renderChildren to renderNestedRoute
 - [x] Deserializers...
 - [x] Ensure it plays nice w redux-devtools & various other redux friends
-- [ ] Ensure it plays nice w redux-simple-router
+- [x] Ensure it plays nice w redux-simple-router
 - [ ] Add async / await to demo
+- [ ] Add loading to reducer state rather than as prop.
 - [ ] Add getState to data fetch api
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Get tape setup so we can start writing tests
