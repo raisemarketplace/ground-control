@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { createDevTools } from 'redux-devtools';
-import LogMonitor from 'redux-devtools-log-monitor';
-import DockMonitor from 'redux-devtools-dock-monitor';
 import AsyncNestedRedux from 'modules/AsyncNestedRedux';
+import createStore from 'example/createStore';
+import DevTools from 'example/devtools';
 import domready from 'domready';
 
 // import { syncHistory, routeReducer } from 'redux-simple-router';
@@ -17,17 +17,7 @@ const deserializer = (clientRoute, data) => {
   return data;
 };
 
-const DevTools = createDevTools(
-  <DockMonitor toggleVisibilityKey="ctrl-h" changePositionKey="ctrl-q">
-    <LogMonitor theme="solarized" />
-  </DockMonitor>
-);
-
-const reducers = {
-  somethingElse: (state = 'hello') => state,
-};
-
-const routerProps = (routes, history, store) => ({
+const routerProps = (routes, history, store, reducers) => ({
   routes,
   history,
   render: props => (
@@ -40,12 +30,29 @@ const routerProps = (routes, history, store) => ({
   ),
 });
 
-export default (useDevTools, routes, initializeStore, createApp) => {
-  const store = initializeStore(reducers, useDevTools ? DevTools.instrument() : undefined);
-  const app = createApp(store, <Router {...routerProps(routes, browserHistory, store)} />);
+export default ({
+  additionalReducers,
+  enableDevTools,
+  enableThunk,
+  initialState,
+  routes,
+}) => {
+  const store = createStore({
+    additionalReducers,
+    enableDevTools,
+    enableThunk,
+    initialState,
+  });
 
   domready(() => {
-    render(app, document.getElementById('app'));
-    if (useDevTools) render(<DevTools store={store} />, document.getElementById('dev'));
+    render((
+      <Provider store={store}>
+        <Router {...routerProps(routes, browserHistory, store, additionalReducers)} />
+      </Provider>
+    ), document.getElementById('app'));
+
+    if (enableDevTools) {
+      render(<DevTools store={store} />, document.getElementById('dev'));
+    }
   });
 };

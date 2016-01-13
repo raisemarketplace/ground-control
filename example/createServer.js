@@ -5,9 +5,11 @@ import express from 'express';
 import webpack from 'webpack';
 import { match } from 'react-router';
 import { partial } from 'lodash';
+import { Provider } from 'react-redux';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import { renderToString } from 'react-dom/server';
 import AsyncNestedRedux, { loadStateOnServer } from 'modules/AsyncNestedRedux';
+import createStore from 'example/createStore';
 
 const webpackOptions = {
   publicPath: '/__build__/',
@@ -30,35 +32,39 @@ const getHtml = (html = '', scriptString = '') => {
   );
 };
 
-const reducers = {
-  somethingElse: (state = 'hello') => state,
+const getAppHtml = (renderProps, store, routes, reducers) => {
+  return renderToString(
+    <Provider store={store}>
+      <AsyncNestedRedux
+          {...renderProps}
+          store={store}
+          routes={routes}
+          reducers={reducers}
+          />
+    </Provider>
+  );
 };
 
-const asyncNestedReduxProps = (renderProps, routes, store) => ({ // eslint-disable-line
-  ...renderProps,
-  routes,
-  store,
-  reducers,
-});
-
-const getAppHtml = (createApp, store, renderProps, adjustedRoutes) => {
-  const app = createApp(store, <AsyncNestedRedux {...asyncNestedReduxProps(renderProps, adjustedRoutes, store)} />);
-  return renderToString(app);
-};
-
-const _renderApplication = (routes, initializeStore, createApp, req, res) => {
+const render = (routes, additionalReducers, enableThunk, initialState, req, res) => {
   match({ routes, location: req.url }, (routingErr, redirectLocation, renderProps) => {
     if (routingErr) {
       res.status(500).send(routingErr.message);
     } else if (redirectLocation) {
       res.redirect(302, `${redirectLocation.pathname}${redirectLocation.search}`);
     } else if (renderProps) {
-      const store = initializeStore(reducers);
-      loadStateOnServer(renderProps, store, reducers, (loadDataErr, adjustedRoutes, scriptString) => {
+      const store = createStore({
+        additionalReducers,
+        enableThunk,
+        initialState,
+      });
+
+      loadStateOnServer(renderProps, store, additionalReducers, (loadDataErr, adjustedRoutes, scriptString) => {
         if (loadDataErr) {
           res.status(500).send(loadDataErr.message);
         } else {
-          res.status(200).send(getHtml(getAppHtml(createApp, store, renderProps, adjustedRoutes), scriptString));
+          const appHtml = getAppHtml(renderProps, store, adjustedRoutes, additionalReducers);
+          const html = getHtml(appHtml, scriptString);
+          res.status(200).send(html);
         }
       });
     } else {
@@ -67,12 +73,19 @@ const _renderApplication = (routes, initializeStore, createApp, req, res) => {
   });
 };
 
-export default (renderServerSide, routes, initializeStore, createApp, WebpackConfig) => {
-  let renderApplication = (req, res) => res.status(200).send(getHtml());
-  if (renderServerSide) renderApplication = partial(_renderApplication, routes, initializeStore, createApp);
+export default ({
+  webpackConfig,
+  additionalReducers,
+  enableServerRender,
+  enableThunk,
+  initialState,
+  routes,
+}) => {
+  let finalRender = (req, res) => res.status(200).send(getHtml());
+  if (enableServerRender) finalRender = partial(render, routes, additionalReducers, enableThunk, initialState);
 
   express()
-      .use(webpackDevMiddleware(webpack(WebpackConfig), webpackOptions))
-      .get('*', renderApplication)
+      .use(webpackDevMiddleware(webpack(webpackConfig), webpackOptions))
+      .get('*', finalRender)
       .listen(8081, () => { console.log('Server started: 8081'); }); // eslint-disable-line
 };
