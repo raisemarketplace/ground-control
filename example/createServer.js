@@ -23,6 +23,7 @@ const getHtml = (html = '', scriptString = '') => {
       </head>
       <body style='margin:0;padding:20px;'>
         <div id="app">${html}</div>
+        <div id="dev"></div>
         ${scriptString}
       </body>
     </html>`
@@ -64,6 +65,7 @@ const _renderApplication = (routes, initializeStore, createApp, req, res) => {
 export default (renderServerSide, routes, initializeStore, createApp, WebpackConfig) => {
   let renderApplication = (req, res) => res.status(200).send(getHtml());
   if (renderServerSide) renderApplication = partial(_renderApplication, routes, initializeStore, createApp);
+
   express()
       .use(webpackDevMiddleware(webpack(WebpackConfig), webpackOptions))
       .get('*', renderApplication)

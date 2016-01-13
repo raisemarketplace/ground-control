@@ -6,10 +6,6 @@ import { reduceRight } from 'lodash';
 
 const nestReducers = (...reducers) => {
   return (state, action) => {
-    if (action.type === HYDRATE) {
-      return state;
-    }
-
     return reduceRight(reducers, (result, reducer, depth) => {
       const previousState = atDepth(state, depth);
       const nextState = reducer(previousState, action);
@@ -30,8 +26,8 @@ export const nestAndReplaceReducers = (store, ...reducers) => {
 };
 
 export const nestAndReplaceReducersAndState = (store, depth, ...reducers) => {
-  // clear out state at x depth, then replace reducer
+  // getState ------> replaceReducers ------> replaceState
   const adjustedState = omitAtDepth(store.getState(), depth);
-  store.dispatch({ type: HYDRATE, state: adjustedState });
   nestAndReplaceReducers(store, ...reducers);
+  store.dispatch({ type: HYDRATE, state: adjustedState });
 };

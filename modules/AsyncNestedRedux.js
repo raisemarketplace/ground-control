@@ -13,7 +13,7 @@ import deserialize from './deserialize';
 import { atDepth, validAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import { HYDRATE, FD_DONE, IS_CLIENT } from './constants';
+import { HYDRATE, CLIENT_HYDRATE, FD_DONE, IS_CLIENT } from './constants';
 import { map, take, drop } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -47,22 +47,21 @@ class AsyncNestedRedux extends React.Component {
   constructor(props, context) {
     super(props, context);
     const { store, routes: rawRoutes, deserializer } = props;
-
-    let useHydratedData = false;
-    let state = store.getState();
     let routes = normalizeRoutes(rawRoutes);
+    let state = store.getState();
 
     if (IS_CLIENT) state = deserialize(state, routes, deserializer);
-    if (validAtDepth(state, 0)) useHydratedData = true;
-
+    const useHydratedData = validAtDepth(state, 0);
     const reducer = makeHydratable(s => s);
     store.replaceReducer(reducer);
 
-    if (IS_CLIENT && !useHydratedData) {
+    if (useHydratedData) {
+      store.dispatch({ type: HYDRATE, state });
+    } else if (IS_CLIENT) {
       const hydratedData = getHydratedData(IS_CLIENT);
-      useHydratedData = hydratedData.useHydratedData;
+      const useClientHydratedData = hydratedData.useHydratedData;
 
-      if (useHydratedData) {
+      if (useClientHydratedData) {
         const { state: hydratedState, routes: hydratedRoutes } = hydratedData;
 
         routes = map(routes, (clientRoute, index) => {
@@ -73,11 +72,8 @@ class AsyncNestedRedux extends React.Component {
         });
 
         state = deserialize(hydratedState, routes, deserializer);
+        store.dispatch({ type: CLIENT_HYDRATE, state });
       }
-    }
-
-    if (useHydratedData) {
-      store.dispatch({ type: HYDRATE, state });
     }
 
     this.state = {
