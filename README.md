@@ -19,7 +19,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Add combineReducers to 1 reducer in example
 - [x] Rename renderChildren to renderNestedRoute
 - [x] Deserializers...
-- [ ] Ensure it plays nice w redux-devtools & various other redux friends
+- [x] Ensure it plays nice w redux-devtools & various other redux friends
 - [ ] Ensure it plays nice w redux-simple-router
 - [ ] Add async / await to demo
 - [ ] Add getState to data fetch api
@@ -34,7 +34,6 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [ ] Add to microclient-reference-app
 - [ ] Rename repo to async-nested-redux
 - [ ] Open source?
-- [ ] KNOWN BUG: Redux-DevTools reruns all actions on @@INIT, which runs with store.replaceReducer. Not a big deal but, if using combineReducers etc, could give warning about unexpected keys.
 
 ### Problems...
 
