@@ -51,7 +51,7 @@ class AsyncNestedRedux extends React.Component {
     let state = store.getState();
 
     if (IS_CLIENT) state = deserialize(state, routes, deserializer);
-    const useHydratedData = validAtDepth(state, 0);
+    let useHydratedData = validAtDepth(state, 0);
     const reducer = makeHydratable(s => s);
     store.replaceReducer(reducer);
 
@@ -59,9 +59,9 @@ class AsyncNestedRedux extends React.Component {
       store.dispatch({ type: HYDRATE, state });
     } else if (IS_CLIENT) {
       const hydratedData = getHydratedData(IS_CLIENT);
-      const useClientHydratedData = hydratedData.useHydratedData;
+      useHydratedData = hydratedData.useHydratedData;
 
-      if (useClientHydratedData) {
+      if (useHydratedData) {
         const { state: hydratedState, routes: hydratedRoutes } = hydratedData;
 
         routes = map(routes, (clientRoute, index) => {
