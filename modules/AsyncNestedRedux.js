@@ -130,6 +130,21 @@ class AsyncNestedRedux extends React.Component {
     };
   }
 
+  fetchDataCallback(type, route, index) {
+    if (!this._unmounted) {
+      const { routes: updatedRoutes } = this.state;
+      if (updatedRoutes[index] === route) {
+        updatedRoutes[index].blockRender = false;
+        if (type === FD_DONE) updatedRoutes[index].loading = false;
+        this.setState({ routes: updatedRoutes });
+      }
+    }
+  }
+
+  stillActiveCallback(route, index) {
+    return this.state.routes[index] === route;
+  }
+
   loadAsyncState(routes, location, store, replaceAtDepth, useHydratedData) {
     matchRoutes(routes, location, (err1, matchedRoutes) => {
       const reducers = map(routes, route => route.reducer);
@@ -143,20 +158,8 @@ class AsyncNestedRedux extends React.Component {
         matchedRoutes.routes,
         matchedRoutes.params,
         store,
-        (type, route, index) => {
-          if (!this._unmounted) {
-            const { routes: updatedRoutes } = this.state;
-            if (updatedRoutes[index] === route) {
-              updatedRoutes[index].blockRender = false;
-              if (type === FD_DONE) {
-                updatedRoutes[index].loading = false;
-              }
-
-              this.setState({ routes: updatedRoutes });
-            }
-          }
-        },
-        (route, index) => this.state.routes[index] === route,
+        this.fetchDataCallback.bind(this),
+        this.stillActiveCallback.bind(this),
         useHydratedData
       );
     });
