@@ -1,18 +1,23 @@
 import React from 'react';
-import { createReducer } from 'redux-act';
 import { merge, map } from 'lodash';
-
-import createActions from 'complex-example/utils/createActions';
 import { routeStyle, previewTemplateStyle } from 'complex-example/utils/style';
 
-export const actions = createActions('Route-2', ['load']);
-export const reducer = createReducer({
-  [actions.load]: (state, payload) => {
+const initialState = { items: [] };
+
+export const actions = {
+  load: items => ({ type: 'Route2Load', payload: items }),
+};
+
+export const reducer = (state = initialState, action) => {
+  switch (action.type) {
+  case 'Route2Load':
     const updatedState = merge({}, state);
-    updatedState.items = payload;
+    updatedState.items = action.payload;
     return updatedState;
-  },
-}, { items: [] });
+  default:
+    return state;
+  }
+};
 
 const getData = async () => new Promise((resolve) => {
   setTimeout(() => {

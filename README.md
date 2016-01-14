@@ -24,7 +24,7 @@ Scalable reducer management & powerful data fetching micro-framework for React R
 - [x] Get tape setup so we can start writing tests
 - [x] Refactor
 - [x] Fix checksum bug for when JSX routes are used
-- [ ] Remove redux-act from easy-example (not complex one)
+- [x] Remove redux-act from easy-example (not complex one)
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
