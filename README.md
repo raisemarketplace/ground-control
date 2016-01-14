@@ -18,23 +18,22 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Add immutable to 1 reducer in example
 - [x] Add combineReducers to 1 reducer in example
 - [x] Rename renderChildren to renderNestedRoute
+- [x] Rename repo to async-nested-redux
 - [x] Deserializers...
 - [x] Ensure it plays nice w redux-devtools & various other redux friends
 - [x] Ensure it plays nice w redux-simple-router
 - [x] Add async / await to demo
-- [ ] Add loading to reducer state rather than as prop.
-- [ ] Add getState to data fetch api
+- [x] Add getState to data fetch api
+- [x] Get tape setup so we can start writing tests
 - [ ] Add gif showing this in action (like redux-devtools github...)
-- [ ] Get tape setup so we can start writing tests
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
 - [ ] Thoughts on full API / AsyncProps exports?
-- [ ] getReducer to align with getComponent, or not necessary w/ getChildRoutes?
 - [ ] Re-read async-props to see if anything else interesting
 - [ ] Tests...
 - [ ] Add to microclient-reference-app
-- [ ] Rename repo to async-nested-redux
-- [ ] Open source?
+- [ ] Improve readme.
+- [ ] Open source.
 
 ### Problems...
 
@@ -79,22 +78,24 @@ async function fetchData(done, { dispatch, hydrated, clientRender, serverRender,
 ```
 
 ###### Nested reducers...
-*Look like this, but @@SELF/@@CHILD are internal.*
+*Look like this, but anr/self/child are internal.*
 ```
 {
-  @@SELF: {
-    counter
-  },
-  @@CHILD: {
-    @@SELF: {
-      counter
+  anr: {
+    self: {
+      counter,
     },
-    @@CHILD: {
-      @@SELF: {
-        counter
-      }
-    }
-  }
+    child: {
+      self: {
+        counter,
+      },
+      child: {
+        self: {
+          counter,
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -110,7 +111,7 @@ thunkedAction = () => (dispatch, getState) {
 ###### Component data...
 *Automatically pass in nested data to nested routes.*
 ```javascript
-// { ['@@SELF']: { counter: 0 }, ['@@CHILD']: { ['@@SELF']: { counter: 0 }}}
+// { self: { counter: 0 }, child: { self: { counter: 0 }}}
 const ParentRouteComponent = ({ children, data, dispatch, nestedData }) => {
   return (
     <div>
@@ -120,7 +121,7 @@ const ParentRouteComponent = ({ children, data, dispatch, nestedData }) => {
   );
 };
 
-// { ['@@SELF']: { counter: 0 }}
+// { self: { counter: 0 }}
 const ChildRouteComponent = ({ data, dispatch }) => {
   return (
     <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>

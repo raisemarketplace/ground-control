@@ -28,7 +28,7 @@ class AsyncNestedRedux extends React.Component {
     reducers: React.PropTypes.object,
     deserializer: React.PropTypes.func.isRequired,
     onError: React.PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     onError(err) {
@@ -44,7 +44,7 @@ class AsyncNestedRedux extends React.Component {
         <RouterContext {...props} createElement={createElement} />
       );
     },
-  }
+  };
 
   constructor(props, context) {
     super(props, context);
