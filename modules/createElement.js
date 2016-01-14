@@ -7,5 +7,11 @@ export default (Component, props) => {
     return route.loader(props);
   }
 
-  return (<Component {...props} loading={route.loading} />);
+  return (
+    <Component
+        {...props}
+        loading={route.loading}
+        loadingError={route.loadingError}
+        />
+  );
 };

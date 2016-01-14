@@ -17,13 +17,10 @@ const webpackOptions = {
 };
 
 const getHtml = (enableClientRender, html = '', scriptString = '') => {
-  let script = '';
-  if (enableClientRender) script = `<script src="/__build__/bundle.js" async></script>`;
-
   return (
     `<!DOCTYPE html>
     <html>
-      <head>${script}</head>
+      <head>${enableClientRender ? `<script src="/__build__/bundle.js" async></script>` : ''}</head>
       <body style='margin:0;padding:0;'>
         <div id="app" style='padding:20px;width:70%;box-sizing:border-box;'>${html}</div>
         <div id="dev"></div>
@@ -51,11 +48,15 @@ const render = ({
   initialState,
   enableClientRender,
 }, req, res) => {
-  match({ routes, location: req.url }, (routingErr, redirectLocation, renderProps) => {
+  match({ routes, location: req.url }, (
+    routingErr,
+    routingRedirectLocation,
+    renderProps
+  ) => {
     if (routingErr) {
       res.status(500).send(routingErr.message);
-    } else if (redirectLocation) {
-      res.redirect(302, `${redirectLocation.pathname}${redirectLocation.search}`);
+    } else if (routingRedirectLocation) {
+      res.redirect(302, `${routingRedirectLocation.pathname}${routingRedirectLocation.search}`);
     } else if (renderProps) {
       const store = createStore({
         additionalReducers,
@@ -63,9 +64,16 @@ const render = ({
         initialState: {},
       });
 
-      loadStateOnServer(renderProps, store, additionalReducers, (loadDataErr, initialData, scriptString) => {
+      loadStateOnServer(renderProps, store, additionalReducers, (
+        loadDataErr,
+        loadDataRedirectLocation,
+        initialData,
+        scriptString
+      ) => {
         if (loadDataErr) {
           res.status(500).send(loadDataErr.message);
+        } else if (loadDataRedirectLocation) {
+          res.redirect(302, `${loadDataRedirectLocation.pathname}${loadDataRedirectLocation.search}`);
         } else {
           const appHtml = getAppHtml(renderProps, store, initialData, additionalReducers);
           const html = getHtml(enableClientRender, appHtml, scriptString);

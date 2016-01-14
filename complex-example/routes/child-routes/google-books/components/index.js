@@ -6,6 +6,8 @@ import Book from 'complex-example/routes/child-routes/google-books/components/bo
 import createActions from 'complex-example/utils/createActions';
 import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'complex-example/utils/style';
 
+const FROWN_FACE = ':(';
+
 export const actions = createActions('GoogleBooks', ['loadFiction', 'loadJavascript']);
 export const reducer = createReducer({
   [actions.loadFiction]: (state, payload) => {
@@ -24,17 +26,24 @@ export const reducer = createReducer({
 });
 
 export default props => {
-  const { data, loading } = props;
+  const { data, loading, loadingError } = props;
+
+  let topBooks;
+  if (loadingError && loadingError.topBooks) {
+    topBooks = (
+      <div>{FROWN_FACE}</div>
+    );
+  } else {
+    topBooks = map(data.fiction, (book, index) => (
+      <Book key={index} {...book} />
+    ));
+  }
 
   let bottomBooks;
   if (loading) {
-    bottomBooks = (
-      <div>
-        {map(Array(10), (_, index) => (
-          <div key={index} style={previewTemplateStyle} />
-        ))}
-      </div>
-    );
+    bottomBooks = map(Array(10), (_, index) => (
+      <div key={index} style={previewTemplateStyle} />
+    ));
   } else {
     bottomBooks = map(data.javascript, (book, index) => (
       <Book key={index} {...book} />
@@ -45,17 +54,11 @@ export default props => {
     <div style={routeStyle}>
       <div style={merge({}, booksSectionStyle, { marginBottom: 20 })}>
         <p style={{ marginTop: 0 }}>Top of page: fiction</p>
-        <div>
-          {map(data.fiction, (book, index) => (
-            <Book key={index} {...book} />
-          ))}
-        </div>
+        <div>{topBooks}</div>
       </div>
       <div style={booksSectionStyle}>
         <p style={{ marginTop: 0 }}>Bottom of page: javascript</p>
-        <div>
-          {bottomBooks}
-        </div>
+        <div>{bottomBooks}</div>
       </div>
     </div>
   );

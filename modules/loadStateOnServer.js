@@ -16,11 +16,14 @@ const createFetchDataCallback = (initialRoutes, store, cb) => {
       const initialData = { initialState, initialRoutes };
       const json = JSON.stringify(initialData);
       const scriptString = `<script>window.__INITIAL_DATA__=${json}</script>`;
-      cb(null, initialData, scriptString);
+      cb(null, null, initialData, scriptString);
     }
   };
 
-  return (type, route, index) => {
+  return (err, redirect, type, route, index) => {
+    if (err) cb(err);
+    if (redirect) cb(null, redirect);
+
     if (type === FD_DONE || type === FD_SERVER_RENDER) {
       initialRoutes[index].blockRender = false;
       if (type === FD_DONE) {

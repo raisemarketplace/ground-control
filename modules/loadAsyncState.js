@@ -12,22 +12,34 @@ const isClient = () => IS_CLIENT;
 const isServer = () => IS_SERVER;
 
 const _stillActive = (cb, route, index) => cb(route, index);
-const _done = (cb, route, index) => cb(FD_DONE, route, index);
-const _clientRender = (cb, route, index) => cb(FD_CLIENT_RENDER, route, index);
+const _done = (cb, route, index) => cb(null, null, FD_DONE, route, index);
+const _err = (cb, route, index, errorObject = {}) => cb(errorObject, null, null, route, index);
+const _redirect = (cb, redirectObject) => cb(null, redirectObject);
+const _clientRender = (cb, route, index) => cb(null, null, FD_CLIENT_RENDER, route, index);
 const _serverRender = (cb, route, index) => {
-  if (IS_SERVER) cb(FD_SERVER_RENDER, route, index);
+  if (IS_SERVER) cb(null, null, FD_SERVER_RENDER, route, index);
 };
 
-export default (routes, params, store, cb, stillActive, useInitialState, initialState = {}) => {
+export default (
+  routes,
+  params,
+  store,
+  fetchDataCallback,
+  stillActive,
+  useInitialState,
+  initialState = {}
+) => {
   const { dispatch, getState } = store;
 
   if (routes.length > 0) {
     const hydrated = () => useInitialState;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
-      const done = partial(_done, cb, route, index);
-      const clientRender = partial(_clientRender, cb, route, index);
-      const serverRender = partial(_serverRender, cb, route, index);
+      const done = partial(_done, fetchDataCallback, route, index);
+      const clientRender = partial(_clientRender, fetchDataCallback, route, index);
+      const serverRender = partial(_serverRender, fetchDataCallback, route, index);
+      const err = partial(_err, fetchDataCallback, route, index);
+      const redirect = partial(_redirect, fetchDataCallback);
       const hydratedDataForRoute = () => {
         if (useInitialState) return rootStateAtDepth(initialState, index);
         return null;
@@ -35,9 +47,9 @@ export default (routes, params, store, cb, stillActive, useInitialState, initial
 
       if (route.fetchData) {
         route.fetchData(done, {
-          params, dispatch, getState, isMounted,
-          hydrated, hydratedDataForRoute, clientRender,
-          serverRender, isClient, isServer,
+          clientRender, serverRender, redirect, err,
+          params, dispatch, getState, isMounted, isClient,
+          hydrated, hydratedDataForRoute, isServer,
         });
       } else {
         done();

@@ -16,6 +16,7 @@ const deserializeRoutes = (routes, hydratedRoutes) => {
   return map(normalizeRoutes(routes), (route, index) => {
     const hydratedRoute = hydratedRoutes[index];
     route.blockRender = hydratedRoute.blockRender;
+    route.loadingError = hydratedRoute.loadingError;
     route.loading = hydratedRoute.loading;
     return route;
   });

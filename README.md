@@ -1,6 +1,6 @@
 # AsyncNestedRedux
 
-Scalable reducer management & powerful data fetching micro-framework for React Router. Member of Redux & Friends.
+Scalable reducer management & powerful data fetching for React Router & Redux.
 
 ## TODO
 - [x] Route based reducer organization
@@ -25,12 +25,14 @@ Scalable reducer management & powerful data fetching micro-framework for React R
 - [x] Refactor
 - [x] Fix checksum bug for when JSX routes are used
 - [x] Remove redux-act from easy-example (not complex one)
-- [ ] Add gif showing this in action (like redux-devtools github...)
-- [ ] Handle error states in loadAsyncState / ssr
-- [ ] Convert server example to hapi
-- [ ] Thoughts on full API / AsyncProps exports?
-- [ ] Re-read async-props to see if anything else interesting
+- [x] Handle error states in loadAsyncState / ssr
+- [ ] Upgrade to React Router rc5
 - [ ] Tests...
+- [ ] Add gif showing this in action (like redux-devtools github...)
+- [ ] Convert server example to hapi?
+- [ ] Document api. Thoughts on full API / AsyncProps exports?
+- [ ] Re-read async-props to see if anything else interesting
+- [ ] More tests...
 - [ ] Add to microclient-reference-app
 - [ ] Improve readme.
 - [ ] Open source.
@@ -108,7 +110,7 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 ```
 
 ###### Redux & friends
-*Plays nicely (hopefully) with everything else...*
+*Plays nicely (hopefully)...*
 
 - [x] React
 - [x] Redux
@@ -117,7 +119,7 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - [x] Redux Simple Router
 - [x] React-Redux
 - [x] Redux DevTools
-- [x] Middleware/store enhancers
+- [x] Thunk / middleware
 - [ ] Others?
 
 ### How to use...

@@ -2,7 +2,7 @@ import routes from 'complex-example/routes';
 import webpackConfig from 'complex-example/webpack.config';
 import { routeReducer } from 'redux-simple-router';
 
-const enableServerRender = true;
+const enableServerRender = false;
 const enableClientRender = true;
 const enableReduxSimpleRouter = true;
 const enableDevTools = true;

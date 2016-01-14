@@ -18,20 +18,16 @@ class AsyncNestedRedux extends React.Component {
     render: React.PropTypes.func.isRequired,
     routes: React.PropTypes.array.isRequired,
     location: React.PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
     initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
-    onError: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    onError(err) {
-      throw err;
-    },
-
-    reducers: {},
     initialState: {},
+    reducers: {},
 
     render(props, routes) {
       return (
@@ -111,21 +107,17 @@ class AsyncNestedRedux extends React.Component {
     }
   }
 
-  handleError(cb) {
-    return (err, ...args) => {
-      if (err && this.props.onError) {
-        this.props.onError(err);
-      } else {
-        cb(null, ...args);
-      }
-    };
-  }
-
-  fetchDataCallback(type, route, index) {
+  fetchDataCallback(err, redirect, type, route, index) {
     if (!this._unmounted) {
       const { routes } = this.state;
       if (routes[index] === route) {
-        routes[index].blockRender = false;
+        if (redirect) {
+          this.props.router.replace(redirect.pathname);
+          return;
+        }
+
+        if (err) routes[index].loadingError = err;
+        if (!!type) routes[index].blockRender = false;
         if (type === FD_DONE) routes[index].loading = false;
         this.setState({ routes });
       }

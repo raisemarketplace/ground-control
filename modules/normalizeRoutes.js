@@ -18,6 +18,7 @@ export default (routes, force = false) => {
 
       route.blockRender = true;
       route.loading = true;
+      route.loadingError = null;
     }
 
     return route;
