@@ -23,7 +23,8 @@ export default ({
   routes,
 }) => {
   domready(() => {
-    loadStateOnClient(routes, initialState => {
+    loadStateOnClient(routes, initialData => {
+      const { initialState } = initialData;
       const store = createStore({
         additionalReducers,
         enableReduxSimpleRouter,
@@ -42,7 +43,7 @@ export default ({
                 <AsyncNestedRedux
                     {...props}
                     store={store}
-                    initialState={initialState}
+                    initialData={initialData}
                     reducers={additionalReducers}
                     />
               )}/>

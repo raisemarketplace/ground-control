@@ -20,7 +20,7 @@ class AsyncNestedRedux extends React.Component {
     location: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
-    initialState: React.PropTypes.object.isRequired,
+    initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
     onError: React.PropTypes.func.isRequired,
   };
@@ -42,9 +42,10 @@ class AsyncNestedRedux extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    const { initialState, store, routes: baseRoutes } = props;
+    const { initialData, store, routes: baseRoutes } = props;
+    const { initialState, initialRoutes } = initialData;
 
-    const routes = normalizeRoutes(baseRoutes);
+    const routes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
     const useInitialState = rootValidAtDepth(initialState, ROOT_DEPTH) && rootValidAtDepth(store.getState(), ROOT_DEPTH);
     const reducers = this.normalizeReducers();
 
@@ -136,8 +137,9 @@ class AsyncNestedRedux extends React.Component {
   }
 
   loadAsyncState(routes, params, replaceAtDepth) {
-    const { store, initialState } = this.props;
+    const { store, initialData } = this.props;
     const { useInitialState } = this.state;
+    const { initialState } = initialData;
 
     this.nestReducers(useInitialState, routes, replaceAtDepth);
     loadAsyncState(
