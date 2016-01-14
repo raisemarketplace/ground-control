@@ -1,36 +1,31 @@
-import { ANR_ROOT, SEVER_STATE, REHYDRATE_REDUCERS } from './constants';
+import { ANR_ROOT, REHYDRATE_REDUCERS } from './constants';
 import makeHydratable from './makeHydratable';
 import { atDepth, rootOmitAtDepth } from './stateAtDepth';
 import { setShape } from './stateShape';
 import { combineReducers } from 'redux';
 import { reduceRight, omit } from 'lodash';
 
-const nestReducers = (...reducers) => {
+const nestReducers = (...routeReducers) => {
   return (state, action) => {
-    return reduceRight(reducers, (result, reducer, depth) => {
+    return reduceRight(routeReducers, (result, reducer, depth) => {
       const previousState = atDepth(state, depth);
       const nextState = reducer(previousState, action);
-      if (result) {
-        const newResult = setShape(nextState, result);
-        return newResult;
-      }
-
+      if (result) return setShape(nextState, result);
       return setShape(nextState);
     }, null);
   };
 };
 
-export const nestAndReplaceReducers = (store, baseReducers, ...reducers) => {
+export const nestAndReplaceReducers = (store, baseReducers, ...routeReducers) => {
   const otherReducers = omit(baseReducers, ANR_ROOT);
-  store.replaceReducer(combineReducers({
-    ...otherReducers,
-    [ANR_ROOT]: makeHydratable(nestReducers(...reducers)),
-  }));
+  const nestedReducer = nestReducers(...routeReducers);
+  const hydratedNestedReducer = makeHydratable(nestedReducer);
+  const reducer = combineReducers({ ...otherReducers, [ANR_ROOT]: hydratedNestedReducer });
+  store.replaceReducer(reducer);
 };
 
-export const nestAndReplaceReducersAndState = (store, depth, baseReducers, ...reducers) => {
+export const nestAndReplaceReducersAndState = (store, depth, baseReducers, ...routeReducers) => {
   const adjustedState = rootOmitAtDepth(store.getState(), depth);
-  store.dispatch({ type: SEVER_STATE, state: adjustedState });
-  nestAndReplaceReducers(store, baseReducers, ...reducers);
+  nestAndReplaceReducers(store, baseReducers, ...routeReducers);
   store.dispatch({ type: REHYDRATE_REDUCERS, state: adjustedState });
 };

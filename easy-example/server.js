@@ -1,6 +1,3 @@
 import createServer from 'complex-example/createServer';
-import { initializeStore, createApp } from 'easy-example/app';
-import routes from 'easy-example/routes';
-import WebpackConfig from 'easy-example/webpack.config';
-
-createServer(true, routes, initializeStore, createApp, WebpackConfig);
+import config from 'easy-example/config';
+createServer(config);

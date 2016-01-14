@@ -37,16 +37,9 @@ export default (routes, params, store, cb, stillActive, initialPageLoad) => {
 
       if (route.fetchData) {
         route.fetchData(done, {
-          params,
-          dispatch,
-          getState,
-          isMounted,
-          hydrated,
-          hydratedDataForRoute,
-          clientRender,
-          serverRender,
-          isClient,
-          isServer,
+          params, dispatch, getState, isMounted,
+          hydrated, hydratedDataForRoute, clientRender,
+          serverRender, isClient, isServer,
         });
       } else {
         done();

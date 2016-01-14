@@ -15,19 +15,6 @@ const deserializer = (clientRoute, data) => {
   return data;
 };
 
-const routerProps = (routes, history, store, reducers) => ({
-  routes,
-  history,
-  render: props => (
-    <AsyncNestedRedux
-        {...props}
-        store={store}
-        deserializer={deserializer}
-        reducers={reducers}
-        />
-  ),
-});
-
 export default ({
   additionalReducers,
   enableReduxSimpleRouter,
@@ -48,12 +35,24 @@ export default ({
   domready(() => {
     render((
       <Provider store={store}>
-        <Router {...routerProps(routes, browserHistory, store, additionalReducers)} />
+        <Router
+            routes={routes}
+            history={browserHistory}
+            render={(props) => (
+              <AsyncNestedRedux
+                  {...props}
+                  store={store}
+                  deserializer={deserializer}
+                  reducers={additionalReducers}
+                  />
+            )}/>
       </Provider>
     ), document.getElementById('app'));
 
     if (enableDevTools) {
-      render(<DevTools store={store} />, document.getElementById('dev'));
+      render((
+        <DevTools store={store} />
+      ), document.getElementById('dev'));
     }
   });
 };

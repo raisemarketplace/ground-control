@@ -1,9 +1,6 @@
 # AsyncNestedRedux
 
-opinionated new friend for react-router that aims to simplify
-the react/redux/react-router setup by giving a bit more power to your routes.
-
-javascript fatigue is real...make your life easier with AsyncNestedRedux!
+Scalable reducer management & powerful data fetching for React Router.
 
 ## TODO
 - [x] Route based reducer organization
@@ -25,6 +22,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 - [x] Add async / await to demo
 - [x] Add getState to data fetch api
 - [x] Get tape setup so we can start writing tests
+- [ ] Remove redux-act from easy-example (not complex one)
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr
 - [ ] Convert server example to hapi
@@ -54,7 +52,7 @@ javascript fatigue is real...make your life easier with AsyncNestedRedux!
 ---
 
 ###### Data fetching...
-*You can do a lot - everything is optional.*
+*Inversed route lifecycle hooks - you tell the framework what to do.*
 ```javascript
 async function fetchData(done, { dispatch, hydrated, clientRender, serverRender, isClient }) => {
   // don't repeat request if server hydrated client!
@@ -78,56 +76,47 @@ async function fetchData(done, { dispatch, hydrated, clientRender, serverRender,
 ```
 
 ###### Nested reducers...
-*Look like this, but anr/self/child are internal.*
+*Reducers & state automatically mirror your nested routes...*
 ```
 {
   anr: {
-    self: {
-      counter,
-    },
+    self: { counter },
     child: {
-      self: {
-        counter,
-      },
+      self: { counter },
       child: {
-        self: {
-          counter,
-        },
+        self: { counter },
       },
     },
   },
 }
 ```
 
-###### Isolated reducers...
-*A child can't access parent. If you need to, use thunk.*
-```javascript
-thunkedAction = () => (dispatch, getState) {
-  const applicationCounter = getState().counter;
-  dispatch(nestedRouteAction.incr(applicationCounter));
-}
-```
-
-###### Component data...
-*Automatically pass in nested data to nested routes.*
+*...and the data is fed in to your components.*
 ```javascript
 // { self: { counter: 0 }, child: { self: { counter: 0 }}}
-const ParentRouteComponent = ({ children, data, dispatch, nestedData }) => {
-  return (
-    <div>
-      <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>
-      {renderNestedRoute(children, nestedData, dispatch)}
-    </div>
-  );
-};
+const ParentRouteComponent = ({ children, data, dispatch, nestedData }) => (
+  <div>
+    <p>{data.counter}</p>
+    {renderNestedRoute(children, nestedData, dispatch)}
+  </div>
+);
 
 // { self: { counter: 0 }}
-const ChildRouteComponent = ({ data, dispatch }) => {
-  return (
-    <p onClick={() => {dispatch(actions.incr());}}>{data.counter}</p>
-  );
-};
+const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 ```
+
+###### Redux & friends
+*Plays nicely (hopefully) with everything else...*
+
+- [x] React
+- [x] Redux
+- [x] React Router
+- [x] Immutable.js
+- [x] Redux Simple Router
+- [x] React-Redux
+- [x] Redux DevTools
+- [x] Middleware/store enhancers
+- [ ] Others?
 
 ### How to use...
 See [easy example](easy-example) or [more complex example](example).
