@@ -1,5 +1,4 @@
 import { ANR_ROOT, REHYDRATE_REDUCERS } from './constants';
-import makeHydratable from './makeHydratable';
 import { atDepth, rootOmitAtDepth } from './stateAtDepth';
 import { setShape } from './stateShape';
 import { combineReducers } from 'redux';
@@ -7,8 +6,13 @@ import { reduceRight, omit } from 'lodash';
 
 const nestReducers = (...routeReducers) => {
   return (state, action) => {
+    let currentState = state;
+    if (action.type === REHYDRATE_REDUCERS) {
+      currentState = action.state;
+    }
+
     return reduceRight(routeReducers, (result, reducer, depth) => {
-      const previousState = atDepth(state, depth);
+      const previousState = atDepth(currentState, depth);
       const nextState = reducer(previousState, action);
       if (result) return setShape(nextState, result);
       return setShape(nextState);
@@ -19,8 +23,8 @@ const nestReducers = (...routeReducers) => {
 export const nestAndReplaceReducers = (store, baseReducers, ...routeReducers) => {
   const otherReducers = omit(baseReducers, ANR_ROOT);
   const nestedReducer = nestReducers(...routeReducers);
-  const hydratedNestedReducer = makeHydratable(nestedReducer);
-  const reducer = combineReducers({ ...otherReducers, [ANR_ROOT]: hydratedNestedReducer });
+  const reducers = { ...otherReducers, [ANR_ROOT]: nestedReducer };
+  const reducer = combineReducers(reducers);
   store.replaceReducer(reducer);
 };
 

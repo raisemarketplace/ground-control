@@ -1,7 +1,9 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { syncHistory } from 'redux-simple-router';
 import DevTools from 'complex-example/devtools';
+import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
+import { ANR_ROOT } from 'modules/AsyncNestedRedux';
 
 export default ({
   additionalReducers,
@@ -25,8 +27,12 @@ export default ({
     ...storeEnhancers
   )(createStore);
 
+  const defaultReducer = (state = {}) => state;
   const store = finalCreateStore(
-    additionalReducers ? combineReducers(additionalReducers) : s => s,
+    !isEmpty(additionalReducers) ? combineReducers({
+      ...additionalReducers,
+      [ANR_ROOT]: defaultReducer,
+    }) : defaultReducer,
     initialState
   );
 

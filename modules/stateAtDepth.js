@@ -25,8 +25,9 @@ export const setAtDepth = (state, data, depth) => {
 };
 
 export const rootValidAtDepth = (state, depth) => {
+  if (!state) return false;
   const valid = partial(atDepth, state[ANR_ROOT], depth);
-  return valid(SELF) || valid(CHILD);
+  return !!valid(SELF) || !!valid(CHILD);
 };
 
 export const rootStateAtDepth = (state, data, depth) => {

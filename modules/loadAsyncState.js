@@ -1,6 +1,5 @@
 import { forEach, partial } from 'lodash';
 import { rootStateAtDepth } from './stateAtDepth';
-import getHydratedData from './getHydratedData';
 import {
   FD_SERVER_RENDER,
   FD_CLIENT_RENDER,
@@ -19,19 +18,18 @@ const _serverRender = (cb, route, index) => {
   if (IS_SERVER) cb(FD_SERVER_RENDER, route, index);
 };
 
-export default (routes, params, store, cb, stillActive, initialPageLoad) => {
+export default (routes, params, store, cb, stillActive, useInitialState, initialState = {}) => {
   const { dispatch, getState } = store;
 
   if (routes.length > 0) {
-    const hydratedData = getHydratedData(initialPageLoad);
-    const hydrated = () => hydratedData.useHydratedData;
+    const hydrated = () => useInitialState;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
       const done = partial(_done, cb, route, index);
       const clientRender = partial(_clientRender, cb, route, index);
       const serverRender = partial(_serverRender, cb, route, index);
       const hydratedDataForRoute = () => {
-        if (hydratedData.useHydratedData) return rootStateAtDepth(hydratedData.state, index);
+        if (useInitialState) return rootStateAtDepth(initialState, index);
         return null;
       };
 

@@ -1,10 +1,10 @@
 export const IS_CLIENT = typeof window !== 'undefined';
 export const IS_SERVER = !IS_CLIENT;
 export const REHYDRATE_REDUCERS = '@@anr/REHYDRATE_REDUCERS';
-export const HYDRATE_CLIENT = '@@anr/HYDRATE_CLIENT';
 export const ANR_ROOT = 'anr';
 export const CHILD = 'child';
 export const SELF = 'self';
 export const FD_DONE = 'done';
 export const FD_CLIENT_RENDER = 'client';
 export const FD_SERVER_RENDER = 'server';
+export const ROOT_DEPTH = 0;

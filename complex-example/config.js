@@ -3,26 +3,27 @@ import webpackConfig from 'complex-example/webpack.config';
 import { routeReducer } from 'redux-simple-router';
 
 const enableServerRender = true;
-const enableReduxSimpleRouter = false; // disabling bc of context/history warnings w react-router 2.0
+const enableClientRender = true;
+const enableReduxSimpleRouter = true;
 const enableDevTools = true;
 const enableThunk = true;
+const runWebpack = enableClientRender;
 
-let additionalReducers = null;
+let additionalReducers = {};
 if (enableReduxSimpleRouter) {
   additionalReducers = {
     routing: routeReducer,
   };
 }
 
-const initialState = {};
-
 export default {
   webpackConfig,
+  runWebpack,
   additionalReducers,
   enableServerRender,
+  enableClientRender,
   enableReduxSimpleRouter,
   enableDevTools,
   enableThunk,
-  initialState,
   routes,
 };

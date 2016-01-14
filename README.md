@@ -22,6 +22,7 @@ Scalable reducer management & powerful data fetching for React Router.
 - [x] Add async / await to demo
 - [x] Add getState to data fetch api
 - [x] Get tape setup so we can start writing tests
+- [x] Refactor
 - [ ] Remove redux-act from easy-example (not complex one)
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Handle error states in loadAsyncState / ssr

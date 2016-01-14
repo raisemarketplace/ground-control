@@ -16,13 +16,14 @@ const webpackOptions = {
   stats: { colors: true },
 };
 
-const getHtml = (html = '', scriptString = '') => {
+const getHtml = (enableClientRender, html = '', scriptString = '') => {
+  let script = '';
+  if (enableClientRender) script = `<script src="/__build__/bundle.js" async></script>`;
+
   return (
     `<!DOCTYPE html>
     <html>
-      <head>
-        <script src="/__build__/bundle.js" async></script>
-      </head>
+      <head>${script}</head>
       <body style='margin:0;padding:0;'>
         <div id="app" style='padding:20px;width:70%;box-sizing:border-box;'>${html}</div>
         <div id="dev"></div>
@@ -32,13 +33,13 @@ const getHtml = (html = '', scriptString = '') => {
   );
 };
 
-const getAppHtml = (renderProps, store, routes, reducers) => {
+const getAppHtml = (renderProps, store, initialState, reducers) => {
   return renderToString(
     <Provider store={store}>
       <AsyncNestedRedux
           {...renderProps}
           store={store}
-          routes={routes}
+          initialState={initialState}
           reducers={reducers}
           />
     </Provider>
@@ -50,6 +51,7 @@ const render = ({
   additionalReducers,
   enableThunk,
   initialState,
+  enableClientRender,
 }, req, res) => {
   match({ routes, location: req.url }, (routingErr, redirectLocation, renderProps) => {
     if (routingErr) {
@@ -60,15 +62,15 @@ const render = ({
       const store = createStore({
         additionalReducers,
         enableThunk,
-        initialState,
+        initialState: {},
       });
 
-      loadStateOnServer(renderProps, store, additionalReducers, (loadDataErr, adjustedRoutes, scriptString) => {
+      loadStateOnServer(renderProps, store, additionalReducers, (loadDataErr, initialData, scriptString) => {
         if (loadDataErr) {
           res.status(500).send(loadDataErr.message);
         } else {
-          const appHtml = getAppHtml(renderProps, store, adjustedRoutes, additionalReducers);
-          const html = getHtml(appHtml, scriptString);
+          const appHtml = getAppHtml(renderProps, store, initialData, additionalReducers);
+          const html = getHtml(enableClientRender, appHtml, scriptString);
           res.status(200).send(html);
         }
       });
@@ -80,24 +82,32 @@ const render = ({
 
 export default ({
   webpackConfig,
+  runWebpack,
   additionalReducers,
   enableServerRender,
+  enableClientRender,
   enableThunk,
   initialState,
   routes,
 }) => {
-  let finalRender = (req, res) => res.status(200).send(getHtml());
+  let finalRender = (req, res) => res.status(200).send(getHtml(enableClientRender));
   if (enableServerRender) {
     finalRender = partial(render, {
       routes,
       additionalReducers,
       enableThunk,
       initialState,
+      enableClientRender,
     });
   }
 
+  const webpackMiddleware = () => {
+    if (runWebpack) return webpackDevMiddleware(webpack(webpackConfig), webpackOptions);
+    return (req, res, next) => next();
+  };
+
   express()
-      .use(webpackDevMiddleware(webpack(webpackConfig), webpackOptions))
+      .use(webpackMiddleware())
       .get('*', finalRender)
       .listen(8081, () => { console.log('Server started: 8081'); }); // eslint-disable-line
 };

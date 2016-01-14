@@ -52,12 +52,12 @@ const fetchData = async (done, {
   dispatch, hydrated, clientRender, serverRender,
   isClient, isMounted, hydratedDataForRoute,
 }) => {
-  if (!hydrated()) {
-    const fiction = await fetchFiction(isClient());
-    if (isMounted()) dispatch(actions.loadFiction(fiction));
-  } else {
+  if (hydrated()) {
     const hydratedData = hydratedDataForRoute();
     if (hydratedData && hydratedData.fiction) cache[FICTION_KEY] = hydratedData.fiction;
+  } else {
+    const fiction = await fetchFiction(isClient());
+    if (isMounted()) dispatch(actions.loadFiction(fiction));
   }
 
   clientRender();
