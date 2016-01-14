@@ -13,5 +13,5 @@ export const setShape = (self, child) => {
 };
 
 export const validateRootShape = state => {
-  return isObject(state) && state.hasOwnProperty(ANR_ROOT) && state[ANR_ROOT].hasOwnProperty(SELF);
+  return isObject(state) && state.hasOwnProperty(ANR_ROOT) && (state[ANR_ROOT].hasOwnProperty(SELF) || state[ANR_ROOT].hasOwnProperty(CHILD));
 };

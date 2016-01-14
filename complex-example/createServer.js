@@ -33,18 +33,16 @@ const getHtml = (enableClientRender, html = '', scriptString = '') => {
   );
 };
 
-const getAppHtml = (renderProps, store, initialState, reducers) => {
-  return renderToString(
-    <Provider store={store}>
-      <AsyncNestedRedux
-          {...renderProps}
-          store={store}
-          initialState={initialState}
-          reducers={reducers}
-          />
-    </Provider>
-  );
-};
+const getAppHtml = (renderProps, store, initialState, reducers) => renderToString(
+  <Provider store={store}>
+    <AsyncNestedRedux
+        {...renderProps}
+        store={store}
+        initialState={initialState}
+        reducers={reducers}
+        />
+  </Provider>
+);
 
 const render = ({
   routes,

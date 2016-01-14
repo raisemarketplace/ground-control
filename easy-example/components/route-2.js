@@ -14,13 +14,22 @@ export const reducer = createReducer({
   },
 }, { items: [] });
 
-export const fetchData = (done, { dispatch, clientRender }) => {
-  clientRender();
+const getData = async () => new Promise((resolve) => {
   setTimeout(() => {
     const data = map(Array(10), () => 'AsyncNestedRedux!');
+    resolve(data);
+  }, 1000);
+});
+
+export const fetchData = async (done, { dispatch, clientRender, hydrated }) => {
+  if (hydrated()) {
+    done();
+  } else {
+    clientRender();
+    const data = await getData(data);
     dispatch(actions.load(data));
     done();
-  }, 1000);
+  }
 };
 
 export default props => {
@@ -28,22 +37,10 @@ export default props => {
 
   let items;
   if (loading) {
-    items = (
-      <div>
-        {map(Array(10), (_, index) => (
-          <div key={index} style={previewTemplateStyle} />
-        ))}
-      </div>
-    );
+    items = <div>{map(Array(10), (_, index) => <div key={index} style={previewTemplateStyle} />)}</div>;
   } else {
-    items = map(data.items, (item, index) => (
-      <p style={{ margin: 0 }} key={index}>{item}</p>
-    ));
+    items = map(data.items, (item, index) => <p style={{ margin: 0 }} key={index}>{item}</p>);
   }
 
-  return (
-    <div style={routeStyle}>
-      {items}
-    </div>
-  );
+  return <div style={routeStyle}>{items}</div>;
 };

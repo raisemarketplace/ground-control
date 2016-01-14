@@ -1,6 +1,6 @@
 # AsyncNestedRedux
 
-Scalable reducer management & powerful data fetching for React Router.
+Scalable reducer management & powerful data fetching micro-framework for React Router. Member of Redux & Friends.
 
 ## TODO
 - [x] Route based reducer organization
