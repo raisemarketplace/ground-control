@@ -43,8 +43,8 @@ Scalable reducer management & powerful data fetching for React Router & Redux. R
 
 ### Solution: Route based reducer organization
 
-- Opinion: Organizing reducers in line with routing structure simplifies overall application state, and provides more structure for single page applications.
-- Automatic nested reducers - reducers are nested in line with nested routing structure. When a nested route changes, the corresponding level of state is cleared & replaced with the reducer for the new route.
+- Opinion: Organizing reducers based on routes simplifies overall application state, and provides more structure for single page applications.
+- Automatic nested reducers - reducers are nested in line with nested routing structure. When a nested route changes, the corresponding level of state is cleared & the old reducer is replace with the reducer for the new route / nested routes.
 - State associated with the parent route reducer is preserved. This mimics a server side refresh, but lets developer store certain state a level higher to easily persist data (current user objects, etc).
 - Reducers are isolated / pure & easily testable on their own.
 
