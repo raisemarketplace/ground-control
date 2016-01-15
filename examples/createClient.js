@@ -25,7 +25,7 @@ export default ({
   domready(() => {
     loadStateOnClient(routes, initialData => {
       const { initialState } = initialData;
-      const store = createStore({
+      const { store, reducers} = createStore({
         additionalReducers,
         enableReduxSimpleRouter,
         enableDevTools,
@@ -44,7 +44,7 @@ export default ({
                     {...props}
                     store={store}
                     initialData={initialData}
-                    reducers={additionalReducers}
+                    reducers={reducers}
                     />
               )}/>
         </Provider>

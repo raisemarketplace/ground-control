@@ -58,13 +58,13 @@ const render = ({
     } else if (routingRedirectLocation) {
       res.redirect(302, `${routingRedirectLocation.pathname}${routingRedirectLocation.search}`);
     } else if (renderProps) {
-      const store = createStore({
+      const { store, reducers } = createStore({
         additionalReducers,
         enableThunk,
         initialState: {},
       });
 
-      loadStateOnServer(renderProps, store, additionalReducers, (
+      loadStateOnServer(renderProps, store, reducers, (
         loadDataErr,
         loadDataRedirectLocation,
         initialData,
@@ -75,7 +75,7 @@ const render = ({
         } else if (loadDataRedirectLocation) {
           res.redirect(302, `${loadDataRedirectLocation.pathname}${loadDataRedirectLocation.search}`);
         } else {
-          const appHtml = getAppHtml(renderProps, store, initialData, additionalReducers);
+          const appHtml = getAppHtml(renderProps, store, initialData, reducers);
           const html = getHtml(enableClientRender, appHtml, scriptString);
           res.status(200).send(html);
         }

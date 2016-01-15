@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { syncHistory } from 'redux-simple-router';
+import { syncHistory, routeReducer } from 'redux-simple-router';
 import DevTools from 'examples/utils/devtools';
 import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
@@ -27,18 +27,25 @@ export default ({
     ...storeEnhancers
   )(createStore);
 
+  const adjustedAdditionalReducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
+  if (enableReduxSimpleRouter) {
+    adjustedAdditionalReducers.routing = routeReducer;
+  }
+
   const defaultReducer = (state = {}) => state;
-  const store = finalCreateStore(
-    !isEmpty(additionalReducers) ? combineReducers({
-      ...additionalReducers,
-      [ANR_ROOT]: defaultReducer,
-    }) : defaultReducer,
-    initialState
-  );
+  const finalReducers = {
+    ...adjustedAdditionalReducers,
+    [ANR_ROOT]: defaultReducer,
+  };
+
+  const store = finalCreateStore(combineReducers(finalReducers), initialState);
 
   if (reduxSimpleRouterMiddleware) {
     reduxSimpleRouterMiddleware.listenForReplays(store);
   }
 
-  return store;
+  return {
+    store,
+    reducers: finalReducers,
+  };
 };
