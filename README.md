@@ -1,6 +1,6 @@
 # AsyncNestedRedux
 
-Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing stale state on route transitions. Renders on server for universal (isomorphic) single page applications, and inverts route lifecycle hooks for detailed rendering control.
+Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing reducers & removing stale state on route transitions. Renders on server for universal (isomorphic) single page applications, and inverts route lifecycle hooks for detailed rendering control.
 
 ## TODO
 - [x] Route based reducer organization
