@@ -28,10 +28,9 @@ Scalable reducer management & powerful data fetching for React Router & Redux. R
 - [x] Handle error states in loadAsyncState / ssr
 - [x] Redirect / error examples
 - [x] Upgrade to React Router rc5
+- [x] Start writing tests...
 - [x] Helper to connect to appliationState
 - [x] Basic documentation for api.
-- [ ] Start writing tests...
-- [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Add to microclient-reference-app
 - [ ] Setup build tools for npm etc
 - [ ] Open source.
@@ -147,7 +146,7 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - [loadStateOnClient(routes, callback, deserializer)](complex-example/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
 - [simpleConnect(connect, Component)](complex-example/routes/index.js) - helper pass data to top level component as props.
 - [renderNestedRoute(children, nestedData, dispatch)](complex-example/routes/components/index.js#L45) - helper to render children and pass data as props.
-- [applicationState(state, level)][complex-example/routes/child-routes/nested-counters/components/index.js#L59] - helper to access parent data in connect. To access parent data in reducers, it is recommended to use thunk actions.
+- [applicationState(state, level)](complex-example/routes/child-routes/nested-counters/components/index.js#L59) - helper to access parent data in connect. To access parent data in reducers, it is recommended to use thunk actions.
 
 ###### AsyncNestedRedux Props
 - [initialData](complex-example/createClient.js) - for universal applications, pass initialData to hydrate client. You get initialData in the callback for loadStateOnClient & loadStateOnServer.

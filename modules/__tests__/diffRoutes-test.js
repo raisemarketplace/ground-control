@@ -1,7 +1,12 @@
 import { test } from 'tape';
-// import diffRoutes from '../diffRoutes';
+import diffRoutes from '../diffRoutes';
 
-test('stub', t => {
+test('diffRoutes() returns index of split point', t => {
   t.plan(1);
-  t.equal(typeof Date.now, 'function');
+  t.equal(
+    diffRoutes(
+      ['a', 'b', 'c', 'd'],
+      ['a', 'b', 'd', 'e']
+    ), 2
+  );
 });
