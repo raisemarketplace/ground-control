@@ -1,4 +1,4 @@
-import { setAtDepth, rootStateAtDepth } from './stateAtDepth';
+import { setAtDepth, applicationState } from './stateAtDepth';
 import { forEach, merge } from 'lodash';
 import { validateRootShape, setShape } from './stateShape';
 import { ANR_ROOT } from './constants';
@@ -13,7 +13,7 @@ export default (state, routes, deserializer) => {
   }
 
   forEach(routes, (route, index) => {
-    const dataAtDepth = rootStateAtDepth(updatedState, index);
+    const dataAtDepth = applicationState(updatedState, index);
 
     let deserializedData;
     if (route.deserializer) {

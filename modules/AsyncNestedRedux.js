@@ -6,7 +6,7 @@ import diffRoutes from './diffRoutes';
 import loadAsyncState from './loadAsyncState';
 import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
-import { rootStateAtDepth, rootValidAtDepth } from './stateAtDepth';
+import { applicationState, rootValidAtDepth } from './stateAtDepth';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import loadStateOnClient from './loadStateOnClient';
@@ -156,5 +156,5 @@ export {
   renderNestedRoute,
   loadStateOnServer,
   loadStateOnClient,
-  rootStateAtDepth as stateAtDepth,
+  applicationState,
 };

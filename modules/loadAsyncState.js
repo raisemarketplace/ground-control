@@ -1,5 +1,5 @@
 import { forEach, partial } from 'lodash';
-import { rootStateAtDepth } from './stateAtDepth';
+import { applicationState } from './stateAtDepth';
 import {
   FD_SERVER_RENDER,
   FD_CLIENT_RENDER,
@@ -41,7 +41,7 @@ export default (
       const err = partial(_err, fetchDataCallback, route, index);
       const redirect = partial(_redirect, fetchDataCallback);
       const hydratedDataForRoute = () => {
-        if (useInitialState) return rootStateAtDepth(initialState, index);
+        if (useInitialState) return applicationState(initialState, index);
         return null;
       };
 

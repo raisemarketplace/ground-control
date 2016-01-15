@@ -1,3 +1,4 @@
+
 import { CHILD, SELF, ANR_ROOT } from './constants';
 import { setShape } from './stateShape';
 import { partial, reduce, get, set } from 'lodash';
@@ -16,6 +17,8 @@ export const atDepth = (state, depth, key = SELF) => {
   return nestedState ? get(nestedState, key) : nestedState;
 };
 
+export const applicationState = (state, depth = 0) => atDepth(state[ANR_ROOT], depth);
+
 export const setAtDepth = (state, data, depth) => {
   const key = keyForDepth(depth);
   const normalizedState = normalizeStateShape(state);
@@ -28,10 +31,6 @@ export const rootValidAtDepth = (state, depth) => {
   if (!state) return false;
   const valid = partial(atDepth, state[ANR_ROOT], depth);
   return !!valid(SELF) || !!valid(CHILD);
-};
-
-export const rootStateAtDepth = (state, data, depth) => {
-  return atDepth(state[ANR_ROOT], data, depth);
 };
 
 export const rootOmitAtDepth = (state, depth) => {

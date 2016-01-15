@@ -3,7 +3,7 @@ import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { connect } from 'react-redux';
 import { merge } from 'lodash';
-import { renderNestedRoute, stateAtDepth } from 'modules/AsyncNestedRedux';
+import { renderNestedRoute, applicationState } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'complex-example/routes/components/index';
 import createActions from 'complex-example/utils/createActions';
@@ -55,6 +55,7 @@ const Component = props => {
 };
 
 // if you want access in view to higher level app state, just connect
-export default connect(state => ({
-  appData: stateAtDepth(state, 0) || {},
-}))(Component);
+export default connect(state => {
+  const appData = applicationState(state) || {};
+  return { appData };
+})(Component);
