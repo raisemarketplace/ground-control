@@ -1,7 +1,8 @@
 import loadAsyncState from './loadAsyncState';
 import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
-import { map } from 'lodash';
+import createMemoryHistory from 'react-router/lib/createMemoryHistory';
+import { map, reduce, isEmpty } from 'lodash';
 import {
   FD_SERVER_RENDER,
   FD_DONE,
@@ -22,7 +23,24 @@ const createFetchDataCallback = (initialRoutes, store, cb) => {
 
   return (err, redirect, type, route, index) => {
     if (err) cb(err);
-    if (redirect) cb(null, redirect);
+    if (redirect) {
+      const { pathname, query, state } = redirect;
+      const history = createMemoryHistory();
+      let search;
+      if (query && !isEmpty(query)) {
+        search = reduce(query, (result, item, key) => {
+          let pair = `${key}=${item}`;
+          if (result.length > 1) pair = `&${pair}`;
+          return `${result}${pair}`;
+        }, '?');
+      }
+
+      cb(null, history.createLocation({
+        pathname,
+        search,
+        state,
+      }, 'REPLACE'));
+    }
 
     if (type === FD_DONE || type === FD_SERVER_RENDER) {
       initialRoutes[index].blockRender = false;
@@ -40,7 +58,7 @@ const stillActiveCallback = () => true;
 const useHydratedData = false;
 
 export default (props, store, baseReducers, cb) => {
-  const { routes, params } = props;
+  const { routes, location } = props;
 
   const initialRoutes = normalizeRoutes(routes);
   const fetchDataCallback = createFetchDataCallback(initialRoutes, store, cb);
@@ -55,7 +73,7 @@ export default (props, store, baseReducers, cb) => {
 
   loadAsyncState(
     initialRoutes,
-    params,
+    location.query,
     store,
     fetchDataCallback,
     stillActiveCallback,

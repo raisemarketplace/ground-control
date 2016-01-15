@@ -19,7 +19,6 @@ class AsyncNestedRedux extends React.Component {
     routes: React.PropTypes.array.isRequired,
     location: React.PropTypes.object.isRequired,
     router: React.PropTypes.object.isRequired,
-    params: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
     initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
@@ -55,9 +54,9 @@ class AsyncNestedRedux extends React.Component {
   }
 
   componentDidMount() {
-    const { params } = this.props;
+    const { location } = this.props;
     const { routes } = this.state;
-    this.loadAsyncState(routes, params, ROOT_DEPTH);
+    this.loadAsyncState(routes, location.query, ROOT_DEPTH);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,7 +66,7 @@ class AsyncNestedRedux extends React.Component {
     const routeChanged = nextProps.location !== prevLocation;
     if (!routeChanged) return;
 
-    const { params, routes } = nextProps;
+    const { location, routes } = nextProps;
     const routeDiff = diffRoutes(prevRoutes, routes);
     const sameRoutes = take(routes, routeDiff);
     const differentRoutes = normalizeRoutes(drop(routes, routeDiff), true);
@@ -75,7 +74,7 @@ class AsyncNestedRedux extends React.Component {
 
     const useInitialState = false;
     this.setState({ routes: nextRoutes, useInitialState }, () => {
-      this.loadAsyncState(nextRoutes, params, routeDiff);
+      this.loadAsyncState(nextRoutes, location.query, routeDiff);
     });
   }
 
@@ -112,7 +111,7 @@ class AsyncNestedRedux extends React.Component {
       const { routes } = this.state;
       if (routes[index] === route) {
         if (redirect) {
-          this.props.router.replace(redirect.pathname);
+          this.props.router.replace(redirect);
           return;
         }
 

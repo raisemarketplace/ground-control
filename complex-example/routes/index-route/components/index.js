@@ -6,7 +6,7 @@ import { combineReducers } from 'redux';
 import { Map } from 'immutable';
 
 import createActions from 'complex-example/utils/createActions';
-import { routeStyle } from 'complex-example/utils/style';
+import { routeStyle, flashStyle } from 'complex-example/utils/style';
 
 export const actions = createActions('IndexRoute', ['update']);
 
@@ -30,12 +30,18 @@ export const reducer = combineReducers({ // and for combinedReducers. whatever y
 });
 
 export default props => {
-  const { dispatch, data } = props;
+  const { dispatch, data, location } = props;
   const valueForwards = data.forwards.get('value');
   const valueBackwards = data.backwards;
 
+  let redirectedMessage;
+  if (location.query && location.query.redirected) {
+    redirectedMessage = <p style={flashStyle}>Redirected!</p>;
+  }
+
   return (
     <div style={routeStyle}>
+      {redirectedMessage}
       <p style={{marginTop: 0}}>{valueBackwards}</p>
       <input
         type="text"

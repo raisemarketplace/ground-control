@@ -21,6 +21,15 @@ export const linkStyle = {
   textDecoration: 'none',
 };
 
+export const inlineLinkStyle = merge({}, linkStyle, {
+  display: 'inline',
+  marginRight: 5,
+});
+
+export const errorLinkStyle = merge({}, inlineLinkStyle, {
+  color: '#ea5454',
+});
+
 export const activeLinkStyle = {
   fontWeight: 'bold',
 };
@@ -35,4 +44,13 @@ export const previewTemplateStyle = {
   height: 15,
   background: '#f4f6f6',
   marginBottom: 3,
+};
+
+export const flashStyle = {
+  background: '#ea5454',
+  color: '#fff',
+  display: 'block',
+  padding: 20,
+  textAlign: 'center',
+  border: '1px solid #7D3030',
 };

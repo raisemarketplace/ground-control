@@ -26,7 +26,9 @@ Scalable reducer management & powerful data fetching for React Router & Redux.
 - [x] Fix checksum bug for when JSX routes are used
 - [x] Remove redux-act from easy-example (not complex one)
 - [x] Handle error states in loadAsyncState / ssr
+- [x] Redirect / error examples
 - [ ] Upgrade to React Router rc5
+- [ ] Add parentData, childData helper
 - [ ] Tests...
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Convert server example to hapi?
