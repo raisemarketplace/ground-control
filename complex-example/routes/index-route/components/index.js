@@ -42,11 +42,12 @@ export default props => {
   return (
     <div style={routeStyle}>
       {redirectedMessage}
-      <p style={{marginTop: 0}}>{valueBackwards}</p>
+      <p style={{marginTop: 0}}>{valueBackwards}&nbsp;</p>
       <input
         type="text"
         style={{width: '100%', padding: 10, boxSizing: 'border-box'}}
         value={valueForwards}
+        placeholder={palindrome}
         onChange={(e) => {
           dispatch(actions.update(e.target.value));
         }}

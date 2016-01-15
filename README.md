@@ -1,6 +1,6 @@
 # AsyncNestedRedux
 
-Scalable reducer management & powerful data fetching for React Router & Redux.
+Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing stale state on route changes. Renders on server for universal (isomorphic) single page applications, with an API to control differences between server / client data fetching.
 
 ## TODO
 - [x] Route based reducer organization
@@ -27,17 +27,15 @@ Scalable reducer management & powerful data fetching for React Router & Redux.
 - [x] Remove redux-act from easy-example (not complex one)
 - [x] Handle error states in loadAsyncState / ssr
 - [x] Redirect / error examples
-- [ ] Upgrade to React Router rc5
+- [x] Upgrade to React Router rc5
 - [ ] Add parentData, childData helper
-- [ ] Tests...
+- [ ] Start writing tests...
+- [ ] Basic documentation for api.
 - [ ] Add gif showing this in action (like redux-devtools github...)
-- [ ] Convert server example to hapi?
-- [ ] Document api. Thoughts on full API / AsyncProps exports?
-- [ ] Re-read async-props to see if anything else interesting
-- [ ] More tests...
 - [ ] Add to microclient-reference-app
 - [ ] Improve readme.
 - [ ] Open source.
+- [ ] More tests...
 
 ### Problems...
 
@@ -117,6 +115,7 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - [x] React
 - [x] Redux
 - [x] React Router
+- [x] Universal rendering (isomorphic)
 - [x] Immutable.js
 - [x] Redux Simple Router
 - [x] React-Redux
