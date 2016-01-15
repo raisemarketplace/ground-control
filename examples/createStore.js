@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { syncHistory } from 'redux-simple-router';
-import DevTools from 'examples/full/devtools';
+import DevTools from 'examples/utils/devtools';
 import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
 import { ANR_ROOT } from 'modules/AsyncNestedRedux';

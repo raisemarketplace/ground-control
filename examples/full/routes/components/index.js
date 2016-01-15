@@ -4,8 +4,8 @@ import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
 import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 
-import createActions from 'examples/full/utils/createActions';
-import { routeStyle, navStyle, linkStyle, inlineLinkStyle, errorLinkStyle, activeLinkStyle } from 'examples/full/utils/style';
+import createActions from 'examples/utils/createActions';
+import { routeStyle, navStyle, linkStyle, inlineLinkStyle, errorLinkStyle, activeLinkStyle } from 'examples/utils/style';
 
 export const actions = createActions('Index', ['incr']);
 export const reducer = createReducer({

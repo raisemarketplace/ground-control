@@ -3,8 +3,8 @@ import { createReducer } from 'redux-act';
 import { merge, map } from 'lodash';
 
 import Book from 'examples/full/routes/child-routes/google-books/components/book';
-import createActions from 'examples/full/utils/createActions';
-import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'examples/full/utils/style';
+import createActions from 'examples/utils/createActions';
+import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'examples/utils/style';
 
 const FROWN_FACE = ':(';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { merge, map } from 'lodash';
-import { routeStyle, previewTemplateStyle } from 'examples/full/utils/style';
+import { routeStyle, previewTemplateStyle } from 'examples/utils/style';
 
 const initialState = { items: [] };
 

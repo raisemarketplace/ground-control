@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import { renderToString } from 'react-dom/server';
 import AsyncNestedRedux, { loadStateOnServer } from 'modules/AsyncNestedRedux';
-import createStore from 'examples/full/createStore';
+import createStore from 'examples/createStore';
 
 const webpackOptions = {
   publicPath: '/__build__/',

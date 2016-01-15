@@ -1,5 +1,5 @@
 import React from 'react';
-import { routeStyle } from 'examples/full/utils/style';
+import { routeStyle } from 'examples/utils/style';
 
 export default () => {
   return (

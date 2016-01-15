@@ -1,6 +1,6 @@
 import React from 'react';
 import { merge } from 'lodash';
-import { routeStyle } from 'examples/full/utils/style';
+import { routeStyle } from 'examples/utils/style';
 
 const initialState = { counter: 0 };
 
@@ -24,7 +24,7 @@ export default props => {
   return (
     <div style={routeStyle}>
       <span>Counter: {data.counter}</span>&nbsp;
-      <button onClick={() => { dispatch(actions.incr(2)); }}>+</button>
+      <button onClick={() => { dispatch(actions.incr(1)); }}>+</button>
     </div>
   );
 };

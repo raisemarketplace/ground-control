@@ -2,8 +2,8 @@ import React from 'react';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
 
-import createActions from 'examples/full/utils/createActions';
-import { routeStyle } from 'examples/full/utils/style';
+import createActions from 'examples/utils/createActions';
+import { routeStyle } from 'examples/utils/style';
 
 export const actions = createActions('SquareCounter', ['incr']);
 export const reducer = createReducer({

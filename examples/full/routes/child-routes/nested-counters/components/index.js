@@ -6,8 +6,8 @@ import { merge } from 'lodash';
 import { renderNestedRoute, applicationState } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
-import createActions from 'examples/full/utils/createActions';
-import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'examples/full/utils/style';
+import createActions from 'examples/utils/createActions';
+import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'examples/utils/style';
 
 export const actions = createActions('NestedCounters', ['incr']);
 export const reducer = createReducer({

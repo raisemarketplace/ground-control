@@ -143,18 +143,18 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 ### API
 
 ###### Top Level
-- [AsyncNestedRedux](examples/full/createClient.js#L43) - sits right underneath Router component / above routes on client and server (if universal).
-- [loadStateOnServer(renderProps, store, additionalReducers, cb)](examples/full/createServer.js#L67) - runs through route life cycle hooks and populates Redux store. Callback to render page, handle redirects, and errors on server. And to feed the apps initial data to the client.
-- [loadStateOnClient(routes, callback, deserializer)](examples/full/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
+- [AsyncNestedRedux](examples/createClient.js#L43) - sits right underneath Router component / above routes on client and server (if universal).
+- [loadStateOnServer(renderProps, store, additionalReducers, cb)](examples/createServer.js#L67) - runs through route life cycle hooks and populates Redux store. Callback to render page, handle redirects, and errors on server. And to feed the apps initial data to the client.
+- [loadStateOnClient(routes, callback, deserializer)](examples/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
 - [simpleConnect(connect, Component)](examples/full/routes/index.js) - helper pass data to top level component as props.
 - [renderNestedRoute(children, nestedData, dispatch)](examples/full/routes/components/index.js#L45) - helper to render children and pass data as props.
 - [applicationState(state, level)](examples/full/routes/child-routes/nested-counters/components/index.js#L59) - helper to access parent data in connect. To access parent data in reducers, it is recommended to use thunk actions.
 
 ###### AsyncNestedRedux Props
-- [initialData](examples/full/createClient.js) - for universal applications, pass initialData to hydrate client. You get initialData in the callback for loadStateOnClient & loadStateOnServer.
+- [initialData](examples/createClient.js) - for universal applications, pass initialData to hydrate client. You get initialData in the callback for loadStateOnClient & loadStateOnServer.
 - [reducers](examples/full/config.js) - if using combineReducers at top level, pass them in so we can properly recreate store on route transitions.
-- [store](examples/full/createClient.js) - pass in store. This is Redux!
-- [...router.props](examples/full/createClient.js) - pass in all props from Router.render callback.
+- [store](examples/createClient.js) - pass in store. This is Redux!
+- [...router.props](examples/createClient.js) - pass in all props from Router.render callback.
 
 ###### Route Props
 - [reducer](examples/simple/routes.js) - reducers are set in route definition
@@ -169,8 +169,8 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - ```clientRender()``` - stop blocking on the client, render preview template
 - ```serverRender()``` - stop blocking on the server, only use if server doesnt fetch all data & cant call done
 - ```done()``` - stop blocking sync requests & set loading to false for async requests
-- ```err({})``` - set client loadingError and [cb](examples/full/createServer.js#L74) to server for however you'd like to handle errors.
-- ```redirect({ pathname, query, state })``` - redirect on client & [cb](examples/full/createServer.js#L76) for server redirects.
+- ```err({})``` - set client loadingError and [cb](examples/createServer.js#L74) to server for however you'd like to handle errors.
+- ```redirect({ pathname, query, state })``` - redirect on client & [cb](examples/createServer.js#L76) for server redirects.
 - ```isMounted()``` - ensure we are still on the same route. most important if dispatching actions that impact parent route / application state
 - ```isHydrated()``` - universal app whether the client already has the data it needs, skip a fetch. only for first render, not subsequent transitions.
 - ```hydratedDataForRoute()``` - universal app get data that is hydrated. useful for client side caching, between route transitions.
@@ -184,12 +184,12 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - ```dispatch()``` - send new actions to your store
 - ```loader``` - sync transitions, a custom / generic loading template that blocks render.
 - ```loading``` - async transitions, render a 'preview template' until request resolves. non-blocking.
-- ```loadingError``` - set by err({}) callback. false by default.
+- ```loadingError``` - set by err({}) callback. null by default.
 - ```nestedData``` - data associated with children to pass further down the chain
 
 ---
 
 ### How to use...
-See [easy example](easy-example) for simplest setup or a [slightly more complex example](example) which covers most of the API.
+See [simple example](examples/simple) for simplest setup or a [slightly more complex example](examples/full) which covers most of the API.
 
 **Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props).**

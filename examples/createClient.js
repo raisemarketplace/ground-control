@@ -3,8 +3,8 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import AsyncNestedRedux, { loadStateOnClient } from 'modules/AsyncNestedRedux';
-import createStore from 'examples/full/createStore';
-import DevTools from 'examples/full/devtools';
+import createStore from 'examples/createStore';
+import DevTools from 'examples/utils/devtools';
 import domready from 'domready';
 
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)

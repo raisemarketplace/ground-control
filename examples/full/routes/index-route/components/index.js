@@ -5,8 +5,8 @@ import { createReducer } from 'redux-act';
 import { combineReducers } from 'redux';
 import { Map } from 'immutable';
 
-import createActions from 'examples/full/utils/createActions';
-import { routeStyle, flashStyle } from 'examples/full/utils/style';
+import createActions from 'examples/utils/createActions';
+import { routeStyle, flashStyle } from 'examples/utils/style';
 
 export const actions = createActions('IndexRoute', ['update']);
 

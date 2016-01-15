@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { renderNestedRoute } from 'modules/AsyncNestedRedux';
 
-import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'examples/full/utils/style';
+import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'examples/utils/style';
 
 const linkProps = () => ({
   style: linkStyle,

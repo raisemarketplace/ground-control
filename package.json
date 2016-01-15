@@ -11,7 +11,7 @@
   "scripts": {
     "build": "babel ./modules -d lib --ignore '__tests__'",
     "start": "nodemon examples/full/server_.js",
-    "easy-example": "nodemon examples/simple/server_.js",
+    "simple-example": "nodemon examples/simple/server_.js",
     "test": "babel-tape-runner modules/__tests__/*.js"
   },
   "authors": [
