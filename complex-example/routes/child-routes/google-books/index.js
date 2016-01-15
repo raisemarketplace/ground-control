@@ -59,10 +59,10 @@ const fetchBottomOfPageData = async () => new Promise(resolve => {
 
 // Complex example to show full power of API!
 const fetchData = async (done, {
-  params, dispatch, hydrated, clientRender, serverRender,
+  params, dispatch, isHydrated, clientRender, serverRender,
   isClient, isMounted, hydratedDataForRoute, err, redirect,
 }) => {
-  if (hydrated()) {
+  if (isHydrated()) {
     const hydratedData = hydratedDataForRoute();
     if (hydratedData && hydratedData.fiction) cache[FICTION_KEY] = hydratedData.fiction;
   } else {

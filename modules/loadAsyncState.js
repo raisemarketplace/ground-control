@@ -32,7 +32,7 @@ export default (
   const { dispatch, getState } = store;
 
   if (routes.length > 0) {
-    const hydrated = () => useInitialState;
+    const isHydrated = () => useInitialState;
     forEach(routes, (route, index) => {
       const isMounted = partial(_stillActive, stillActive, route, index);
       const done = partial(_done, fetchDataCallback, route, index);
@@ -49,7 +49,7 @@ export default (
         route.fetchData(done, {
           clientRender, serverRender, redirect, err,
           params, dispatch, getState, isMounted, isClient,
-          hydrated, hydratedDataForRoute, isServer,
+          isHydrated, hydratedDataForRoute, isServer,
         });
       } else {
         done();

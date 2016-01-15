@@ -19,6 +19,7 @@ const component = simpleConnect(connect, App);
 //   reducer (optional),
 //   fetchData (optional),
 //   loader (optional),
+//   deserializer (optional),
 // }
 
 // routes can be defined using jsx, or as an object (my preference, especially with larger app)

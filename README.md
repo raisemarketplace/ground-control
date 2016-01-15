@@ -1,6 +1,6 @@
 # AsyncNestedRedux
 
-Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing stale state on routing changes. Renders on server for universal (isomorphic) single page applications, with an API to control differences between server / client data fetching.
+Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing stale state on route transitions. Renders on server for universal (isomorphic) single page applications, and inverts route lifecycle hooks for detailed rendering control.
 
 ## TODO
 - [x] Route based reducer organization
@@ -29,39 +29,53 @@ Scalable reducer management & powerful data fetching for React Router & Redux. R
 - [x] Redirect / error examples
 - [x] Upgrade to React Router rc5
 - [x] Helper to connect to appliationState
+- [x] Basic documentation for api.
 - [ ] Start writing tests...
-- [ ] Basic documentation for api.
 - [ ] Add gif showing this in action (like redux-devtools github...)
 - [ ] Add to microclient-reference-app
-- [ ] Improve readme.
+- [ ] Setup build tools for npm etc
 - [ ] Open source.
 - [ ] More tests...
 
 ### Problems...
 
-- Using Redux with React-Router: React is easy. Redux is easy. React-Router is easy. All 3 combined is hard! The developer needs to keep React-Router and Redux in sync ([redux-simple-router](https://github.com/rackt/redux-simple-router), [redux-router](https://github.com/acdlite/redux-router)), as reducers are not route-based.
-- Data fetching best practices: Best practices for React-Router data fetching are [still being established](https://github.com/rackt/react-router/issues/2638). New versions of React-Router & libraries like [async-props](https://github.com/rackt/async-props) are starting to do nice things.
-- Reducer wild wild west: Using something like ```combineReducers``` in a complex single page app creates a flat reducer structure. And it is difficult to have a sense of overall application state when a route changes - what did the previous route, if any, do to application state? Global reducers can get messy.
+- Reducer wild wild west: ```combineReducers``` helps you keep reducers small & isolated, but creates a flat reducer structure. This makes it difficult to have an understanding of overall application state on any given route. What did the previous route do to state? Is this the initial page load? And if you navigate back to a route, does state need to be manually cleared to reset the page? Application state feels global & mutable.
+- Data fetching best practices & universal rendering: Best practices for React-Router data fetching are [still being established](https://github.com/rackt/react-router/issues/2638). Routing lifecycle hooks aren't built in to React-Router, unlike Ember or Angular. The new [async-props](https://github.com/rackt/async-props) library and React-Router folks are starting to do interesting things in that area & inspired this.
 
-### Solution: route based reducer organization
+### Solution: Route based reducer organization
 
-- Opinion: Organizing reducers in line with routing structure simplifies overall application state and helps React-Router & redux get along (without redux-simple-router, etc).
-- Automatic nested reducers - reducers are nested in line with routing structure. When a route changes, the corresponding state is cleared & replaced with the reducer for the new route, preserving state associated with the parent route reducer. This mimics a server side refresh, but lets developer store certain state a level higher to persist data.
+- Opinion: Organizing reducers in line with routing structure simplifies overall application state, and provides more structure for single page applications.
+- Automatic nested reducers - reducers are nested in line with nested routing structure. When a nested route changes, the corresponding level of state is cleared & replaced with the reducer for the new route.
+- State associated with the parent route reducer is preserved. This mimics a server side refresh, but lets developer store certain state a level higher to easily persist data (current user objects, etc).
+- Reducers are isolated / pure & easily testable on their own.
 
-### Solution: first class data fetching
+### Solution: First class data fetching & inverse lifecycle
 
-- Opinion: Co-located component data fetching only makes sense with a sophisticated, declarative data fetching service (graphql, falcor). Custom endpoints are better handled at router level.
-- Optimal loading control - API to specify exactly when to render route component on server / client. Ex - on server, fetch 'top of page' data, blocking render, and finish loading 'bottom of page' data on client; on client, render 'preview template' immediately & fetch async.
+- Opinion: Co-located component data fetching makes the most sense with a sophisticated, declarative data fetching service (graphql, falcor), where you can build a query through component hierarchy. Standard API endpoints are better handled at router level.
+- Optimal loading control - API to control exactly when to render a route's component on the server & client, for universal applications.
+- For example - On the server, blocking fetch to render 'top of page' data. On the client, render 'preview template' immediately & fetch async to finish loading 'bottom of page' data.
+- Universal API to handle data fetching redirects, errors and when to resolve requests on client & server.
+- Redux integration to interact with the reducer that is associated with new route. Methods provided to hydrate client with initial data.
 
 ---
 
 ###### Data fetching...
-*Inversed route lifecycle hooks - you tell the framework what to do.*
+*Inversed route lifecycle hooks - you tell the framework what to do...*
 ```javascript
-async function fetchData(done, { dispatch, hydrated, clientRender, serverRender, isClient }) => {
+async function fetchData(done, {
+  clientRender, serverRender, err, redirect,
+  dispatch, isHydrated, isClient,
+}) => {
   // don't repeat request if server hydrated client!
-  if (!hydrated()) {
-    const topOfPageData = await fetchTopOfPage();
+  if (!isHydrated()) {
+    try {
+      const topOfPageData = await fetchTopOfPage();
+    } catch (e) {
+      // redirect client; 302, etc. on server
+      if (e === UNAUTHORIZED) redirect({ pathname: '/' });
+      // props.error on client; 500, etc. on server
+      if (e === BAD_REQUEST) err({ message: 'failed' });
+    }
     dispatch(actions.loadTop(topOfPageData));
   }
 
@@ -80,15 +94,15 @@ async function fetchData(done, { dispatch, hydrated, clientRender, serverRender,
 ```
 
 ###### Nested reducers...
-*Reducers & state automatically mirror your nested routes...*
-```
+*Reducers & state correlate with nested routes...*
+```javascript
 {
   anr: {
-    self: { counter },
+    self: { counter }, // application state, persists
     child: {
-      self: { counter },
+      self: { counter }, // most common, 1st level route
       child: {
-        self: { counter },
+        self: { counter }, // infinite...
       },
     },
   },
@@ -123,9 +137,58 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 - [x] Thunk / middleware
 - [ ] Others?
 
-### How to use...
-See [easy example](easy-example) or [more complex example](example).
+---
+
+### API
+
+###### Top Level
+- [AsyncNestedRedux](complex-example/createClient.js#L43) - sits right underneath Router component / above routes on client and server (if universal).
+- [loadStateOnServer(renderProps, store, additionalReducers, cb)](complex-example/createServer.js#L67) - runs through route life cycle hooks and populates Redux store. Callback to render page, handle redirects, and errors on server. And to feed the apps initial data to the client.
+- [loadStateOnClient(routes, callback, deserializer)](complex-example/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
+- [simpleConnect(connect, Component)](complex-example/routes/index.js) - helper pass data to top level component as props.
+- [renderNestedRoute(children, nestedData, dispatch)](complex-example/routes/components/index.js#L45) - helper to render children and pass data as props.
+- [applicationState(state, level)][complex-example/routes/child-routes/nested-counters/components/index.js#L59] - helper to access parent data in connect. To access parent data in reducers, it is recommended to use thunk actions.
+
+###### AsyncNestedRedux Props
+- [initialData](complex-example/createClient.js) - for universal applications, pass initialData to hydrate client. You get initialData in the callback for loadStateOnClient & loadStateOnServer.
+- [reducers](complex-example/config.js) - if using combineReducers at top level, pass them in so we can properly recreate store on route transitions.
+- [store](complex-example/createClient.js) - pass in store. This is Redux!
+- [...router.props](complex-example/createClient.js) - pass in all props from Router.render callback.
+
+###### Route Props
+- [reducer](easy-example/routes.js) - reducers are set in route definition
+- fetchData - as is fetchData. detailed below.
+- deserializer(data) - for initial client hydration
+- ...customProps - set ```route.immutable = true``` and then look for that in application deserializer, etc.
+
+###### Data Fetching [Detailed Example](complex-example/routes/child-routes/google-books/index.js)
+- params{} - route params to tailor requests
+- dispatch(action) - dispatch actions with data to reducers
+- getState() - get current state of store, if needed
+- clientRender() - stop blocking on the client, render preview template
+- serverRender() - stop blocking on the server, only use if server doesnt fetch all data & cant call done
+- done() - stop blocking sync requests & set loading to false for async requests
+- err({}) - set client loadingError and [cb](complex-example/createServer.js#L74) to server for however you'd like to handle errors.
+- redirect({ pathname, query, state }) - redirect on client & [cb](complex-example/createServer.js#L76) for server redirects.
+- isMounted() - ensure we are still on the same route. most important if dispatching actions that impact parent route / application state
+- isHydrated() - universal app whether the client already has the data it needs, skip a fetch. only for first render, not subsequent transitions.
+- hydratedDataForRoute() - universal app get data that is hydrated. useful for client side caching, between route transitions.
+- isClient()
+- isServer()
+
+*All optional except ```done()```*
+
+###### Route Component Props
+- data{} - state associated with route reducers is fed to component under ```props.data```
+- dispatch() - send new actions to your store
+- loader - sync transitions, a custom / generic loading template that blocks render.
+- loading - async transitions, render a 'preview template' until request resolves. non-blocking.
+- loadingError - set by err({}) callback. false by default.
+- nestedData - data associated with children to pass further down the chain
 
 ---
 
-**Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props) but extended quite a bit!**
+### How to use...
+See [easy example](easy-example) for simplest setup or a [slightly more complex example](example) which covers most of the API.
+
+**Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props).**
