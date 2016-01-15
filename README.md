@@ -12,7 +12,6 @@ Sits beneath your router, and above your application, for application rendering 
       <AsyncNestedRedux
           {...props}
           store={store}
-          initialData={initialData}
           />
     )}/>
 ```
