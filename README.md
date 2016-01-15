@@ -2,41 +2,22 @@
 
 Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing reducers & removing stale state on route transitions. Renders on server for universal (isomorphic) single page applications. Reverse route lifecycle hooks - the application controls when to render.
 
-**To see demo...** Clone. ```npm i && npm start```. Port 8081.
+Sits beneath your router, and above your application, for application rendering control.
 
-## TODO
-- [x] Route based reducer organization
-- [x] Data fetching lifecycle
-- [x] Server side rendering
-- [x] Hydrate client on initial load
-- [x] Update fetchData to object
-- [x] Make the example app (code) prettier
-- [x] Extract into createClient / createServer for easy reuse
-- [x] Rename internally to AsyncNestedRedux
-- [x] Easy example showing jsx routes
-- [x] Add immutable to 1 reducer in example
-- [x] Add combineReducers to 1 reducer in example
-- [x] Rename renderChildren to renderNestedRoute
-- [x] Rename repo to async-nested-redux
-- [x] Deserializers...
-- [x] Ensure it plays nice w redux-devtools & various other redux friends
-- [x] Ensure it plays nice w redux-simple-router
-- [x] Add async / await to demo
-- [x] Add getState to data fetch api
-- [x] Get tape setup so we can start writing tests
-- [x] Refactor
-- [x] Fix checksum bug for when JSX routes are used
-- [x] Remove redux-act from easy-example (not complex one)
-- [x] Handle error states in loadAsyncState / ssr
-- [x] Redirect / error examples
-- [x] Upgrade to React Router rc5
-- [x] Start writing tests...
-- [x] Helper to connect to appliationState
-- [x] Basic documentation for api.
-- [ ] Add to microclient-reference-app
-- [ ] Setup build tools for npm etc
-- [ ] Open source.
-- [ ] More tests...
+```javascript
+<Router
+    routes={routes}
+    history={browserHistory}
+    render={(props) => (
+      <AsyncNestedRedux
+          {...props}
+          store={store}
+          initialData={initialData}
+          />
+    )}/>
+```
+
+**To see demo...** Clone. ```npm i && npm start```. Port 8081.
 
 ### Problems...
 
@@ -191,5 +172,39 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 
 ### How to use...
 See [simple example](examples/simple) for simplest setup or a [slightly more complex example](examples/full) which covers most of the API.
+
+## TODO
+- [x] Route based reducer organization
+- [x] Data fetching lifecycle
+- [x] Server side rendering
+- [x] Hydrate client on initial load
+- [x] Update fetchData to object
+- [x] Make the example app (code) prettier
+- [x] Extract into createClient / createServer for easy reuse
+- [x] Rename internally to AsyncNestedRedux
+- [x] Easy example showing jsx routes
+- [x] Add immutable to 1 reducer in example
+- [x] Add combineReducers to 1 reducer in example
+- [x] Rename renderChildren to renderNestedRoute
+- [x] Rename repo to async-nested-redux
+- [x] Deserializers...
+- [x] Ensure it plays nice w redux-devtools & various other redux friends
+- [x] Ensure it plays nice w redux-simple-router
+- [x] Add async / await to demo
+- [x] Add getState to data fetch api
+- [x] Get tape setup so we can start writing tests
+- [x] Refactor
+- [x] Fix checksum bug for when JSX routes are used
+- [x] Remove redux-act from easy-example (not complex one)
+- [x] Handle error states in loadAsyncState / ssr
+- [x] Redirect / error examples
+- [x] Upgrade to React Router rc5
+- [x] Start writing tests...
+- [x] Helper to connect to appliationState
+- [x] Basic documentation for api.
+- [ ] Add to microclient-reference-app
+- [ ] Setup build tools for npm etc
+- [ ] Open source.
+- [ ] More tests...
 
 **Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props).**
