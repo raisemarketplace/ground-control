@@ -157,34 +157,34 @@ const ChildRouteComponent = ({ data }) => <p>{data.counter}</p>;
 
 ###### Route Props
 - [reducer](easy-example/routes.js) - reducers are set in route definition
-- fetchData - as is fetchData. detailed below.
-- deserializer(data) - for initial client hydration
-- ...customProps - set ```route.immutable = true``` and then look for that in application deserializer, etc.
+- ```fetchData``` - as is fetchData. detailed below.
+- ```deserializer(data)``` - for initial client hydration
+- ```...customProps``` - set ```route.immutable = true``` and then look for that in application deserializer, etc.
 
-###### Data Fetching [Detailed Example](complex-example/routes/child-routes/google-books/index.js)
-- params{} - route params to tailor requests
-- dispatch(action) - dispatch actions with data to reducers
-- getState() - get current state of store, if needed
-- clientRender() - stop blocking on the client, render preview template
-- serverRender() - stop blocking on the server, only use if server doesnt fetch all data & cant call done
-- done() - stop blocking sync requests & set loading to false for async requests
-- err({}) - set client loadingError and [cb](complex-example/createServer.js#L74) to server for however you'd like to handle errors.
-- redirect({ pathname, query, state }) - redirect on client & [cb](complex-example/createServer.js#L76) for server redirects.
-- isMounted() - ensure we are still on the same route. most important if dispatching actions that impact parent route / application state
-- isHydrated() - universal app whether the client already has the data it needs, skip a fetch. only for first render, not subsequent transitions.
-- hydratedDataForRoute() - universal app get data that is hydrated. useful for client side caching, between route transitions.
-- isClient()
-- isServer()
+###### Data Fetching [Detailed Example](complex-example/routes/child-routes/google-books/index.js#L61)
+- ```params{}``` - route params to tailor requests
+- ```dispatch(action)``` - dispatch actions with data to reducers
+- ```getState()``` - get current state of store, if needed
+- ```clientRender()``` - stop blocking on the client, render preview template
+- ```serverRender()``` - stop blocking on the server, only use if server doesnt fetch all data & cant call done
+- ```done()``` - stop blocking sync requests & set loading to false for async requests
+- ```err({})``` - set client loadingError and [cb](complex-example/createServer.js#L74) to server for however you'd like to handle errors.
+- ```redirect({ pathname, query, state })``` - redirect on client & [cb](complex-example/createServer.js#L76) for server redirects.
+- ```isMounted()``` - ensure we are still on the same route. most important if dispatching actions that impact parent route / application state
+- ```isHydrated()``` - universal app whether the client already has the data it needs, skip a fetch. only for first render, not subsequent transitions.
+- ```hydratedDataForRoute()``` - universal app get data that is hydrated. useful for client side caching, between route transitions.
+- ```isClient()```
+- ```isServer()```
 
 *All optional except ```done()```*
 
 ###### Route Component Props
-- data{} - state associated with route reducers is fed to component under ```props.data```
-- dispatch() - send new actions to your store
-- loader - sync transitions, a custom / generic loading template that blocks render.
-- loading - async transitions, render a 'preview template' until request resolves. non-blocking.
-- loadingError - set by err({}) callback. false by default.
-- nestedData - data associated with children to pass further down the chain
+- ```data{}``` - state associated with route reducers is fed to component under ```props.data```
+- ```dispatch()``` - send new actions to your store
+- ```loader``` - sync transitions, a custom / generic loading template that blocks render.
+- ```loading``` - async transitions, render a 'preview template' until request resolves. non-blocking.
+- ```loadingError``` - set by err({}) callback. false by default.
+- ```nestedData``` - data associated with children to pass further down the chain
 
 ---
 
