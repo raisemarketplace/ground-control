@@ -37,7 +37,7 @@ export default ({
   );
 
   if (reduxSimpleRouterMiddleware) {
-    reduxSimpleRouterMiddleware.syncHistoryToStore(store);
+    reduxSimpleRouterMiddleware.listenForReplays(store);
   }
 
   return store;
