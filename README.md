@@ -2,6 +2,8 @@
 
 Scalable reducer management & powerful data fetching for React Router & Redux. Reducers & state follow nested route hierarchy, automatically replacing reducers & removing stale state on route transitions. Renders on server for universal (isomorphic) single page applications. Reverse route lifecycle hooks - the application controls when to render.
 
+**To see demo...** Clone. ```npm i && npm start```. Port 8081.
+
 ## TODO
 - [x] Route based reducer organization
 - [x] Data fetching lifecycle
