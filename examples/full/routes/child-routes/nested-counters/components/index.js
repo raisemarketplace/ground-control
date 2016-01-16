@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
-import { applicationState } from 'modules/AsyncNestedRedux';
+import { getNestedState } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
 import createActions from 'examples/utils/createActions';
@@ -29,7 +29,7 @@ const specialAction = count => (dispatch/* , getState */) => {
 
 export default props => {
   const { children, dispatch, data, getState } = props;
-  const applicationData = applicationState(getState());
+  const applicationData = getNestedState(getState());
 
   return (
     <div style={routeStyle}>

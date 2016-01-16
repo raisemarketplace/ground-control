@@ -1,6 +1,6 @@
 import { isObject } from 'lodash';
 import {
-  ANR_ROOT,
+  NAMESPACE,
   SELF,
   CHILD,
 } from './constants';
@@ -13,5 +13,5 @@ export const setShape = (self, child) => {
 };
 
 export const validateRootShape = state => {
-  return isObject(state) && state.hasOwnProperty(ANR_ROOT) && (state[ANR_ROOT].hasOwnProperty(SELF) || state[ANR_ROOT].hasOwnProperty(CHILD));
+  return isObject(state) && state.hasOwnProperty(NAMESPACE) && (state[NAMESPACE].hasOwnProperty(SELF) || state[NAMESPACE].hasOwnProperty(CHILD));
 };

@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { syncHistory, routeReducer } from 'redux-simple-router';
-import { ANR_ROOT } from 'modules/constants';
+import { NAMESPACE } from 'modules/constants';
 import DevTools from 'examples/utils/devtools';
 import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
@@ -34,7 +34,7 @@ export default ({
 
   const defaultReducer = (state = {}) => state;
   const reducer = isEmpty(reducers) ? defaultReducer : combineReducers({
-    [ANR_ROOT]: defaultReducer, // need to set if using combineReducers top level...
+    [NAMESPACE]: defaultReducer, // need to set if using combineReducers top level...
     ...reducers,
   });
 

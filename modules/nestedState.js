@@ -1,41 +1,48 @@
 
-import { CHILD, SELF, ANR_ROOT } from './constants';
+import { CHILD, SELF, NAMESPACE, ROOT_DEPTH } from './constants';
 import { setShape } from './nestedShape';
 import { partial, reduce, get, set } from 'lodash';
-const ROOT = '@@ROOT';
+const NORMALIZED_ROOT = '@@NORMALIZED_ROOT';
 
 const keyForDepth = depth => {
   if (depth < 0) return null;
   return reduce(Array(depth), result => {
     return result + `[${CHILD}]`;
-  }, `[${ROOT}]`);
+  }, `[${NORMALIZED_ROOT}]`);
 };
 
-const normalizeStateShape = state => ({ [ROOT]: state });
+const normalizeStateShape = state => {
+  return {
+    [NORMALIZED_ROOT]: state,
+  };
+};
 
-export const atDepth = (state, depth, key = SELF) => {
-  const nestedState = get(normalizeStateShape(state), keyForDepth(depth));
+const scopedState = (state, fromNamespace = true) => {
+  return fromNamespace ? state[NAMESPACE] : state;
+};
+
+export const getNestedState = (state, depth = ROOT_DEPTH, fromNamespace = true, key = SELF) => {
+  const normalizedState = normalizeStateShape(scopedState(state, fromNamespace));
+  const nestedState = get(normalizedState, keyForDepth(depth));
   return nestedState ? get(nestedState, key) : nestedState;
 };
 
-export const applicationState = (state, depth = 0) => atDepth(state[ANR_ROOT], depth);
-
-export const setAtDepth = (state, data, depth) => {
+export const setNestedState = (state, data, depth, fromNamespace = true) => {
   const key = keyForDepth(depth);
-  const normalizedState = normalizeStateShape(state);
+  const normalizedState = normalizeStateShape(scopedState(state, fromNamespace));
   const currentStateAtDepth = get(normalizedState, key);
   const updatedStateAtDepth = set(currentStateAtDepth, SELF, data);
-  return set(normalizedState, key, updatedStateAtDepth)[ROOT];
+  return set(normalizedState, key, updatedStateAtDepth)[NORMALIZED_ROOT];
 };
 
-export const rootValidAtDepth = (state, depth) => {
+export const nestedStateValid = (state, depth, fromNamespace = true) => {
   if (!state) return false;
-  const valid = partial(atDepth, state[ANR_ROOT], depth);
+  const valid = partial(getNestedState, state, depth, fromNamespace);
   return !!valid(SELF) || !!valid(CHILD);
 };
 
-export const rootOmitAtDepth = (state, depth) => {
+export const omitNestedState = (state, depth, fromNamespace = true) => {
   const key = keyForDepth(depth);
-  const normalizedState = normalizeStateShape(state[ANR_ROOT]);
-  return set(normalizedState, key, setShape())[ROOT];
+  const normalizedState = normalizeStateShape(scopedState(state, fromNamespace));
+  return set(normalizedState, key, setShape())[NORMALIZED_ROOT];
 };

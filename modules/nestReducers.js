@@ -1,5 +1,5 @@
-import { ANR_ROOT, REHYDRATE_REDUCERS } from './constants';
-import { atDepth, rootOmitAtDepth } from './nestedState';
+import { NAMESPACE, REHYDRATE_REDUCERS } from './constants';
+import { getNestedState, omitNestedState } from './nestedState';
 import { setShape } from './nestedShape';
 import { combineReducers } from 'redux';
 import { reduceRight, omit } from 'lodash';
@@ -12,7 +12,7 @@ const nestReducers = (...routeReducers) => {
     }
 
     return reduceRight(routeReducers, (result, reducer, depth) => {
-      const previousState = atDepth(currentState, depth);
+      const previousState = getNestedState(currentState, depth, false);
       const nextState = reducer(previousState, action);
       if (result) return setShape(nextState, result);
       return setShape(nextState);
@@ -21,15 +21,15 @@ const nestReducers = (...routeReducers) => {
 };
 
 export const nestAndReplaceReducers = (store, baseReducers, ...routeReducers) => {
-  const otherReducers = omit(baseReducers, ANR_ROOT);
+  const otherReducers = omit(baseReducers, NAMESPACE);
   const nestedReducer = nestReducers(...routeReducers);
-  const reducers = { ...otherReducers, [ANR_ROOT]: nestedReducer };
+  const reducers = { ...otherReducers, [NAMESPACE]: nestedReducer };
   const reducer = combineReducers(reducers);
   store.replaceReducer(reducer);
 };
 
 export const nestAndReplaceReducersAndState = (store, depth, baseReducers, ...routeReducers) => {
-  const adjustedState = rootOmitAtDepth(store.getState(), depth);
+  const adjustedState = omitNestedState(store.getState(), depth);
   nestAndReplaceReducers(store, baseReducers, ...routeReducers);
   store.dispatch({ type: REHYDRATE_REDUCERS, state: adjustedState });
 };

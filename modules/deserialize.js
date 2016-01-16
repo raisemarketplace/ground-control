@@ -1,19 +1,19 @@
-import { setAtDepth, applicationState } from './nestedState';
-import { forEach, merge } from 'lodash';
+import { setNestedState, getNestedState } from './nestedState';
 import { validateRootShape, setShape } from './nestedShape';
-import { ANR_ROOT } from './constants';
+import { forEach, merge } from 'lodash';
+import { NAMESPACE } from './constants';
 
 export default (state, routes, deserializer) => {
   const updatedState = merge({}, state);
   if (!validateRootShape(updatedState)) {
     return {
       ...updatedState,
-      [ANR_ROOT]: setShape(),
+      [NAMESPACE]: setShape(),
     };
   }
 
   forEach(routes, (route, index) => {
-    const dataAtDepth = applicationState(updatedState, index);
+    const dataAtDepth = getNestedState(updatedState, index);
 
     let deserializedData;
     if (route.deserializer) {
@@ -22,7 +22,7 @@ export default (state, routes, deserializer) => {
       deserializedData = deserializer(route, dataAtDepth);
     }
 
-    updatedState[ANR_ROOT] = setAtDepth(state[ANR_ROOT], deserializedData, index);
+    updatedState[NAMESPACE] = setNestedState(state, deserializedData, index);
   });
 
   return updatedState;

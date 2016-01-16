@@ -1,5 +1,5 @@
 import { forEach, partial } from 'lodash';
-import { applicationState } from './nestedState';
+import { getNestedState } from './nestedState';
 import {
   FD_SERVER_RENDER,
   FD_CLIENT_RENDER,
@@ -41,7 +41,7 @@ export default (
       const err = partial(_err, fetchDataCallback, route, index);
       const redirect = partial(_redirect, fetchDataCallback);
       const hydratedDataForRoute = () => {
-        if (useInitialState) return applicationState(initialState, index);
+        if (useInitialState) return getNestedState(initialState, index);
         return null;
       };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { forEach } from 'lodash';
-import { applicationState } from './nestedState';
+import { getNestedState } from './nestedState';
 
 export default (store, Component, props) => {
   const { routes, route } = props;
@@ -18,7 +18,7 @@ export default (store, Component, props) => {
 
   const state = store.getState();
   const dispatch = store.dispatch;
-  const data = applicationState(state, depth);
+  const data = getNestedState(state, depth);
 
   return (
     <Component

@@ -1,7 +1,7 @@
 export const IS_CLIENT = typeof window !== 'undefined';
 export const IS_SERVER = !IS_CLIENT;
 export const REHYDRATE_REDUCERS = '@@anr/REHYDRATE_REDUCERS';
-export const ANR_ROOT = 'anr';
+export const NAMESPACE = 'anr';
 export const CHILD = 'child';
 export const SELF = 'self';
 export const FD_DONE = 'done';

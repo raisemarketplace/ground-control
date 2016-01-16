@@ -4,11 +4,11 @@ import diffRoutes from './diffRoutes';
 import loadAsyncState from './loadAsyncState';
 import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
-import { applicationState, rootValidAtDepth } from './nestedState';
+import { getNestedState, nestedStateValid } from './nestedState';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import loadStateOnClient from './loadStateOnClient';
-import { FD_DONE, ANR_ROOT, ROOT_DEPTH } from './constants';
+import { FD_DONE, NAMESPACE, ROOT_DEPTH } from './constants';
 import { map, take, drop, partial } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
@@ -41,7 +41,7 @@ class AsyncNestedRedux extends React.Component {
 
     const storeState = store.getState();
     const routes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
-    const useInitialState = rootValidAtDepth(initialState, ROOT_DEPTH) && rootValidAtDepth(storeState, ROOT_DEPTH);
+    const useInitialState = nestedStateValid(initialState, ROOT_DEPTH) && nestedStateValid(storeState, ROOT_DEPTH);
     const reducers = this.normalizeReducers();
 
     this.state = {
@@ -93,7 +93,7 @@ class AsyncNestedRedux extends React.Component {
 
   normalizeReducers() {
     const reducers = this.props.reducers || {};
-    reducers[ANR_ROOT] = (state = {}) => state;
+    reducers[NAMESPACE] = (state = {}) => state;
     return reducers;
   }
 
@@ -162,5 +162,5 @@ export default AsyncNestedRedux;
 export {
   loadStateOnServer,
   loadStateOnClient,
-  applicationState,
+  getNestedState,
 };
