@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import AsyncNestedRedux, { loadStateOnClient } from 'modules/AsyncNestedRedux';
 import createStore from 'examples/createStore';
@@ -35,19 +34,17 @@ export default ({
       });
 
       render((
-        <Provider store={store}>
-          <Router
-              routes={routes}
-              history={browserHistory}
-              render={(props) => (
-                <AsyncNestedRedux
-                    {...props}
-                    store={store}
-                    initialData={initialData}
-                    reducers={reducers}
-                    />
-              )}/>
-        </Provider>
+        <Router
+            routes={routes}
+            history={browserHistory}
+            render={(props) => (
+              <AsyncNestedRedux
+                  {...props}
+                  store={store}
+                  initialData={initialData}
+                  reducers={reducers}
+                  />
+            )}/>
       ), document.getElementById('app'));
 
       if (enableDevTools) {

@@ -16,7 +16,7 @@ const createFetchDataCallback = (initialRoutes, store, cb) => {
       const initialState = store.getState();
       const initialData = { initialState, initialRoutes };
       const json = JSON.stringify(initialData);
-      const scriptString = `<script>window.__INITIAL_DATA__=${json}</script>`;
+      const scriptString = `<script>window.__INITIAL_DATA__=${json};</script>`;
       cb(null, null, initialData, scriptString);
     }
   };

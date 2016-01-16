@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { syncHistory, routeReducer } from 'redux-simple-router';
+import { ANR_ROOT } from 'modules/constants';
 import DevTools from 'examples/utils/devtools';
 import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
-import { ANR_ROOT } from 'modules/AsyncNestedRedux';
 
 export default ({
   additionalReducers,
@@ -27,18 +27,18 @@ export default ({
     ...storeEnhancers
   )(createStore);
 
-  const adjustedAdditionalReducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
+  const reducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
   if (enableReduxSimpleRouter) {
-    adjustedAdditionalReducers.routing = routeReducer;
+    reducers.routing = routeReducer;
   }
 
   const defaultReducer = (state = {}) => state;
-  const finalReducers = {
-    ...adjustedAdditionalReducers,
-    [ANR_ROOT]: defaultReducer,
-  };
+  const reducer = isEmpty(reducers) ? defaultReducer : combineReducers({
+    [ANR_ROOT]: defaultReducer, // need to set if using combineReducers top level...
+    ...reducers,
+  });
 
-  const store = finalCreateStore(combineReducers(finalReducers), initialState);
+  const store = finalCreateStore(reducer, initialState);
 
   if (reduxSimpleRouterMiddleware) {
     reduxSimpleRouterMiddleware.listenForReplays(store);
@@ -46,6 +46,6 @@ export default ({
 
   return {
     store,
-    reducers: finalReducers,
+    reducers,
   };
 };

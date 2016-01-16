@@ -1,7 +1,5 @@
 import React from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
-import simpleConnect from './simpleConnect';
-import renderNestedRoute from './renderNestedRoute';
 import diffRoutes from './diffRoutes';
 import loadAsyncState from './loadAsyncState';
 import createElement from './createElement';
@@ -11,7 +9,7 @@ import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestRe
 import loadStateOnServer from './loadStateOnServer';
 import loadStateOnClient from './loadStateOnClient';
 import { FD_DONE, ANR_ROOT, ROOT_DEPTH } from './constants';
-import { map, take, drop } from 'lodash';
+import { map, take, drop, partial } from 'lodash';
 
 class AsyncNestedRedux extends React.Component {
   static propTypes = {
@@ -29,8 +27,9 @@ class AsyncNestedRedux extends React.Component {
     reducers: {},
 
     render(props, routes) {
+      const finalCreateElement = partial(createElement, props.store);
       return (
-        <RouterContext {...props} routes={routes} createElement={createElement} />
+        <RouterContext {...props} routes={routes} createElement={finalCreateElement} />
       );
     },
   };
@@ -40,22 +39,31 @@ class AsyncNestedRedux extends React.Component {
     const { initialData, store, routes: baseRoutes } = props;
     const { initialState, initialRoutes } = initialData;
 
+    const storeState = store.getState();
     const routes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
-    const useInitialState = rootValidAtDepth(initialState, ROOT_DEPTH) && rootValidAtDepth(store.getState(), ROOT_DEPTH);
+    const useInitialState = rootValidAtDepth(initialState, ROOT_DEPTH) && rootValidAtDepth(storeState, ROOT_DEPTH);
     const reducers = this.normalizeReducers();
 
     this.state = {
       routes,
       reducers,
       useInitialState,
+      storeState,
     };
 
+    this.unsubscribe = () => null;
     this.nestReducers(useInitialState, routes, ROOT_DEPTH);
   }
 
   componentDidMount() {
-    const { location } = this.props;
+    const { location, store } = this.props;
     const { routes } = this.state;
+
+    this.unsubscribe = store.subscribe(() => {
+      const storeState = store.getState();
+      this.setState({ storeState });
+    });
+
     this.loadAsyncState(routes, location.query, ROOT_DEPTH);
   }
 
@@ -79,6 +87,7 @@ class AsyncNestedRedux extends React.Component {
   }
 
   componentWillUnmount() {
+    this.unsubscribe();
     this._unmounted = true;
   }
 
@@ -151,9 +160,6 @@ class AsyncNestedRedux extends React.Component {
 
 export default AsyncNestedRedux;
 export {
-  ANR_ROOT,
-  simpleConnect,
-  renderNestedRoute,
   loadStateOnServer,
   loadStateOnClient,
   applicationState,

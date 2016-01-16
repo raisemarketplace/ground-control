@@ -52,7 +52,6 @@
     "isomorphic-fetch": "^2.2.0",
     "nodemon": "^1.8.1",
     "react-dom": "^0.14.3",
-    "react-redux": "^4.0.6",
     "redux-act": "^0.3.0",
     "redux-devtools": "^3.0.1",
     "redux-devtools-dock-monitor": "^1.0.1",

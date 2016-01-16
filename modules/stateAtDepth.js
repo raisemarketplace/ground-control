@@ -5,6 +5,7 @@ import { partial, reduce, get, set } from 'lodash';
 const ROOT = '@@ROOT';
 
 const keyForDepth = depth => {
+  if (depth < 0) return null;
   return reduce(Array(depth), result => {
     return result + `[${CHILD}]`;
   }, `[${ROOT}]`);

@@ -1,9 +1,8 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
-import { connect } from 'react-redux';
 import { merge } from 'lodash';
-import { renderNestedRoute, applicationState } from 'modules/AsyncNestedRedux';
+import { applicationState } from 'modules/AsyncNestedRedux';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
 import createActions from 'examples/utils/createActions';
@@ -20,10 +19,7 @@ export const reducer = createReducer({
   counter: 0,
 });
 
-const linkProps = () => ({
-  style: linkStyle,
-  activeStyle: activeLinkStyle,
-});
+const linkProps = () => ({ style: linkStyle, activeStyle: activeLinkStyle });
 
 // if you need parent data to adjust current reducer, use thunk actions
 const specialAction = count => (dispatch/* , getState */) => {
@@ -31,8 +27,10 @@ const specialAction = count => (dispatch/* , getState */) => {
   dispatch(actions.incr(count));
 };
 
-const Component = props => {
-  const { children, dispatch, data, appData, nestedData } = props;
+export default props => {
+  const { children, dispatch, data, getState } = props;
+  const applicationData = applicationState(getState());
+
   return (
     <div style={routeStyle}>
       <div style={navStyle}>
@@ -42,20 +40,14 @@ const Component = props => {
       </div>
       <div>
         <p>
-          <span>App Counter: {appData.counter || 0}</span>&nbsp;
+          <span>App Counter: {applicationData.counter || 0}</span>&nbsp;
           <span>Counter: {data.counter}</span>&nbsp;
           <button onClick={() => { dispatch(specialAction(1)); }}>+</button>
         </p>
         <div>
-          {renderNestedRoute(children, nestedData, dispatch)}
+          {children}
         </div>
       </div>
     </div>
   );
 };
-
-// if you want access in view to higher level app state, just connect
-export default connect(state => {
-  const appData = applicationState(state) || {};
-  return { appData };
-})(Component);

@@ -5,7 +5,6 @@ import express from 'express';
 import webpack from 'webpack';
 import { match } from 'react-router';
 import { partial } from 'lodash';
-import { Provider } from 'react-redux';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import { renderToString } from 'react-dom/server';
 import AsyncNestedRedux, { loadStateOnServer } from 'modules/AsyncNestedRedux';
@@ -30,16 +29,16 @@ const getHtml = (enableClientRender, html = '', scriptString = '') => {
   );
 };
 
-const getAppHtml = (renderProps, store, initialData, reducers) => renderToString(
-  <Provider store={store}>
+const getAppHtml = (renderProps, store, initialData, reducers) => {
+  return renderToString(
     <AsyncNestedRedux
         {...renderProps}
         store={store}
         initialData={initialData}
         reducers={reducers}
         />
-  </Provider>
-);
+  );
+};
 
 const render = ({
   routes,
