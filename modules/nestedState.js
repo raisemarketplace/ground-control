@@ -1,6 +1,6 @@
 
 import { CHILD, SELF, ANR_ROOT } from './constants';
-import { setShape } from './stateShape';
+import { setShape } from './nestedShape';
 import { partial, reduce, get, set } from 'lodash';
 const ROOT = '@@ROOT';
 

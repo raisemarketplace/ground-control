@@ -1,6 +1,6 @@
 import { setAtDepth, applicationState } from './nestedState';
 import { forEach, merge } from 'lodash';
-import { validateRootShape, setShape } from './stateShape';
+import { validateRootShape, setShape } from './nestedShape';
 import { ANR_ROOT } from './constants';
 
 export default (state, routes, deserializer) => {
