@@ -1,4 +1,4 @@
-import { setAtDepth, applicationState } from './stateAtDepth';
+import { setAtDepth, applicationState } from './nestedState';
 import { forEach, merge } from 'lodash';
 import { validateRootShape, setShape } from './stateShape';
 import { ANR_ROOT } from './constants';

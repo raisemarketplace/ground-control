@@ -1,6 +1,6 @@
 import React from 'react';
 import { forEach } from 'lodash';
-import { applicationState } from './stateAtDepth';
+import { applicationState } from './nestedState';
 
 export default (store, Component, props) => {
   const { routes, route } = props;

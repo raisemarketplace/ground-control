@@ -1,5 +1,5 @@
 import { ANR_ROOT, REHYDRATE_REDUCERS } from './constants';
-import { atDepth, rootOmitAtDepth } from './stateAtDepth';
+import { atDepth, rootOmitAtDepth } from './nestedState';
 import { setShape } from './stateShape';
 import { combineReducers } from 'redux';
 import { reduceRight, omit } from 'lodash';

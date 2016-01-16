@@ -1,5 +1,5 @@
 import { forEach, partial } from 'lodash';
-import { applicationState } from './stateAtDepth';
+import { applicationState } from './nestedState';
 import {
   FD_SERVER_RENDER,
   FD_CLIENT_RENDER,
