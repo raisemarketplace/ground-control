@@ -1,4 +1,3 @@
-
 import { CHILD, SELF, NAMESPACE, ROOT_DEPTH } from './constants';
 import { setShape } from './nestedShape';
 import { partial, reduce, get, set } from 'lodash';
