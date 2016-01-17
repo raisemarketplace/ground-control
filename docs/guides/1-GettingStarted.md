@@ -390,3 +390,5 @@ render((
 - Passed data into your components without worrying about actual nested structure (didn't have to access via anr.self.child.self)
 - Transitioned routes without having to reset state manually.
 - Controls how data loads with sync/async route transitions.
+
+The [next tutorial](docs/guides/2-GettingStartedMore.md) builds off of this, shows you a bit more of the API, and shows some reducer flexibility.
