@@ -23,7 +23,7 @@ class AsyncNestedRedux extends React.Component {
   };
 
   static defaultProps = {
-    initialState: {},
+    initialData: {},
     reducers: {},
 
     render(props, routes) {
@@ -71,7 +71,9 @@ class AsyncNestedRedux extends React.Component {
     const { routes: prevRoutes } = this.state;
     const { location: prevLocation } = this.props;
 
-    const routeChanged = nextProps.location !== prevLocation;
+    const pathChanged = nextProps.location.pathname !== prevLocation.pathname;
+    const searchChanged = nextProps.location.search !== prevLocation.search;
+    const routeChanged = pathChanged || searchChanged;
     if (!routeChanged) return;
 
     const { location, routes } = nextProps;
