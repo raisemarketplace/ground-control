@@ -353,17 +353,6 @@ const AsyncComponent = React.createClass({
 
 ###### Add an index route, components and reducers.
 
-```javascript
-// ...
-
-<Route path="/async-route" component={AsyncComponent} reducer={asyncReducer} fetchData={asyncFetchData}>
-  <IndexRoute component={AsyncComponent2} reducer={asyncReducer2}/>
-  <Route path="/async-route/async-nested" component={AsyncComponent3} reducer={asyncReducer3} />
-</Route>
-
-// ...
-```
-
 ``` javascript
 // ...
 
