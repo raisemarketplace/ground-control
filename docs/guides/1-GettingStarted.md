@@ -364,8 +364,6 @@ const AsyncComponent = React.createClass({
 // ...
 ```
 
-###### Add reducers / components
-
 ``` javascript
 // ...
 
@@ -382,15 +380,24 @@ const asyncReducer3 = (state = 'nested-route-2') => state;
 const AsyncComponent3 = ({ data }) => <p>{data}</p>;
 
 render((
+
+// ...
+
+<Route path="/async-route" component={AsyncComponent} reducer={asyncReducer} fetchData={asyncFetchData}>
+  <IndexRoute component={AsyncComponent2} reducer={asyncReducer2}/>
+  <Route path="/async-route/async-nested" component={AsyncComponent3} reducer={asyncReducer3} />
+</Route>
+
 // ...
 ```
 ---
 
 #Done! Result...
 
-- You have one file you have React, Redux, React-Router, and now AsyncNestedRedux.
+- You have one file with React, Redux, React-Router, and now AsyncNestedRedux.
 - You can organize your actual application code however you like (wouldn't recommend one file...).
 - No thought required for initial reducer structure. Just follow your routes.
 - Easy to get started with new routes - 1 file for actions, reducer, component.
 - Passed data into your components without worrying about actual nested structure (didn't have to access via anr.self.child.self)
 - Transitioned routes without having to reset state manually.
+- Controls how data loads with sync/async route transitions.
