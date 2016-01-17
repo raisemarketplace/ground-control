@@ -1,8 +1,9 @@
 import React from 'react';
-import { forEach, isNumber } from 'lodash';
+import { partial, forEach, isNumber } from 'lodash';
 import { getNestedState } from './nestedState';
+import { ROOT_DEPTH } from './constants';
 
-export default (store, Component, props) => {
+export default (store, serializer, Component, props) => {
   const { routes, route } = props;
 
   if (route.blockRender) {
@@ -18,11 +19,26 @@ export default (store, Component, props) => {
 
   const state = store.getState();
   const dispatch = store.dispatch;
-  const data = getNestedState(state, depth);
-  const parentData = getNestedState(state, depth - 1);
-  const getParentData = (requestedDepth = 1) => {
-    if (!isNumber(requestedDepth) || requestedDepth === 0) return null;
-    return getNestedState(Math.abs(requestedDepth));
+  const finalGetNestedState = partial(getNestedState, state);
+  const getStateAndSerialize = requestedDepth => {
+    const nestedState = finalGetNestedState(requestedDepth);
+    const routeForRequested = !!routes[requestedDepth] ? routes[requestedDepth] : null;
+    if (routeForRequested) {
+      if (routeForRequested.serializer) {
+        return routeForRequested.serializer(nestedState);
+      }
+      return serializer(routeForRequested, nestedState);
+    }
+
+    return nestedState;
+  };
+
+  const data = getStateAndSerialize(depth);
+  const rootData = getStateAndSerialize(ROOT_DEPTH);
+
+  const getRelativeParentData = (requestedDepth = 1) => {
+    if (!isNumber(requestedDepth)) return null;
+    return getStateAndSerialize(depth - Math.abs(requestedDepth));
   };
 
   return (
@@ -30,10 +46,9 @@ export default (store, Component, props) => {
         {...props}
         loading={route.loading}
         loadingError={route.loadingError}
-        getParentData={getParentData}
-        parentData={parentData}
+        getRelativeParentData={getRelativeParentData}
         dispatch={dispatch}
-        depth={depth}
+        rootData={rootData}
         data={data}
         />
   );

@@ -20,14 +20,16 @@ class AsyncNestedRedux extends React.Component {
     store: React.PropTypes.object.isRequired,
     initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
+    serializer: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     initialData: {},
     reducers: {},
+    serializer: (route, state) => state,
 
     render(props, routes) {
-      const finalCreateElement = partial(createElement, props.store);
+      const finalCreateElement = partial(createElement, props.store, props.serializer);
       return (
         <RouterContext {...props} routes={routes} createElement={finalCreateElement} />
       );

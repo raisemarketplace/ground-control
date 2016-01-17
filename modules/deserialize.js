@@ -3,7 +3,7 @@ import { validateRootShape, setShape } from './nestedShape';
 import { forEach, merge } from 'lodash';
 import { NAMESPACE } from './constants';
 
-export default (state, routes, deserializer) => {
+export default (state, routes, deserializer = null) => {
   const updatedState = merge({}, state);
   if (!validateRootShape(updatedState)) {
     return {
@@ -18,7 +18,7 @@ export default (state, routes, deserializer) => {
     let deserializedData;
     if (route.deserializer) {
       deserializedData = route.deserializer(dataAtDepth);
-    } else {
+    } else if (deserializer) {
       deserializedData = deserializer(route, dataAtDepth);
     }
 

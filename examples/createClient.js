@@ -9,8 +9,14 @@ import domready from 'domready';
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
 // ...if you need to do something crazy like use combineReducers & immutable you can specify
 // that on the route itself (see examples/full/index-route/index.js)
-const deserializer = (clientRoute, data) => {
-  // if (clientRoute.deserializeImmutable) return fromJS(data);
+
+const deserializer = (route, data) => {
+  // if (route.deserializeImmutable) return fromJS(data);
+  return data;
+};
+
+const serializer = (route, data) => {
+  // if (route.serializeImmutable) return data.toJS();
   return data;
 };
 
@@ -42,6 +48,7 @@ export default ({
                   {...props}
                   store={store}
                   initialData={initialData}
+                  serializer={serializer}
                   reducers={reducers}
                   />
             )}/>

@@ -335,7 +335,7 @@ const AsyncComponent = React.createClass({
 // ...
 
 <div>
-  <p>Async Component ({this.props.loading ? 'Loading...': 'Loaded!'})</p>
+  <p>Async Component ({this.props.loading ? 'Loading...' : 'Loaded!'})</p>
   <Link to="/async-route">AsyncHome</Link>&nbsp;
   <Link to="/async-route/async-nested">Async nested</Link>
   <div>
@@ -391,4 +391,4 @@ render((
 - Transitioned routes without having to reset state manually.
 - Controls how data loads with sync/async route transitions.
 
-The [next tutorial](docs/guides/2-GettingStartedMore.md) builds off of this, shows you a bit more of the API, and shows some reducer flexibility.
+One file is getting out of hand. [Organize...](docs/guides/2-GettingStartedOrganize.md).

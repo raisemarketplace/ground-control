@@ -31,7 +31,7 @@ export const reducer = combineReducers({ // and for combinedReducers. whatever y
 
 export default props => {
   const { dispatch, data, location } = props;
-  const valueForwards = data.forwards.get('value');
+  const valueForwards = data.forwards.value;
   const valueBackwards = data.backwards;
 
   let redirectedMessage;
