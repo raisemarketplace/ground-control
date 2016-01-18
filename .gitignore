@@ -1,3 +1,4 @@
 node_modules
 npm-debug.log
-lib
+# lib
+# ^ TODO: Remove when deploying to NPM!
