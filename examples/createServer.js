@@ -63,7 +63,7 @@ const render = ({
         initialState: {},
       });
 
-      loadStateOnServer(renderProps, store, reducers, (
+      loadStateOnServer({ props: renderProps, store, reducers }, (
         loadDataErr,
         loadDataRedirectLocation,
         initialData,

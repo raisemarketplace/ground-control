@@ -3,7 +3,7 @@
 ###### Top Level
 - [AsyncNestedRedux](examples/createClient.js#L43) - sits right underneath Router component / above routes on client and server (if universal).
 - [loadStateOnServer(renderProps, store, additionalReducers, cb)](examples/createServer.js#L67) - runs through route life cycle hooks and populates Redux store. Callback to render page, handle redirects, and errors on server. And to feed the apps initial data to the client.
-- [loadStateOnClient(routes, callback, deserializer)](examples/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
+- [loadStateOnClient({ routes, deserializer }, callback)](examples/createClient.js#L26) - hydrates client with initial data from server. Runs data through deserializer & also provides routes information about what was loaded on server. Deserializer can be defined at application layer here, or on routes for specific control, if using immutable.js, etc.
 - [getNestedState(state, level)](examples/full/routes/child-routes/nested-counters/components/index.js#L59) - helper to access parent data. To access parent data in reducers, it is recommended to use thunk actions.
 
 ###### AsyncNestedRedux Props

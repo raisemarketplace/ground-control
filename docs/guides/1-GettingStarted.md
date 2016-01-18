@@ -8,34 +8,20 @@ Simple tutorial to get up and running with AsyncNestedRedux. ~5 minutes. Reload 
 mkdir example && cd example && npm init
 
 # build deps
-npm i --save-dev webpack webpack-dev-middleware babel@5.8.34 babel-loader@5.4.0 express
+npm i --save-dev nodemon webpack webpack-dev-middleware babel@5.8.34 babel-loader@5.4.0 express
 
 # project deps
 npm i --save-dev react react-dom redux react-router@2.0.0-rc5 async-nested-redux
 
-touch index.html webpack.config.js server.js app.js
+touch webpack.config.js server.js client.js
 ```
 
 *add start script to package.json*
 ```javascript
 // ...
-
 "scripts": {
-  "start": "babel-node server.js",
-
+  "start": "nodemon --exec babel-node server.js",
 // ...
-```
-
-*index.html*
-```html
-<!DOCTYPE html>
-<html>
-  <head></head>
-  <body>
-    <div id="app"></div>
-    <script src="/__build__/bundle.js" async></script>
-  </body>
-</html>
 ```
 
 *webpack.config.js*
@@ -43,7 +29,7 @@ touch index.html webpack.config.js server.js app.js
 const path = require('path');
 module.exports = {
   devtool: 'source-map',
-  entry: path.join(__dirname, 'app.js'),
+  entry: path.join(__dirname, 'client.js'),
   output: {
     path: path.join(__dirname, '__build__'),
     filename: 'bundle.js',
@@ -61,12 +47,27 @@ import express from 'express';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackConfig from './webpack.config';
-import path from 'path';
+
+const html = () => {
+  return (`
+    <!DOCTYPE html>
+    <html>
+      <head></head>
+      <body>
+        <div id="app"></div>
+        <script src="/__build__/bundle.js" async></script>
+      </body>
+    </html>
+  `);
+};
+
+const render = (req, res) => {
+  res.send(html());
+};
 
 const app = express();
 app.use(webpackDevMiddleware(webpack(WebpackConfig), { publicPath: '/__build__/', stats: { colors: true }}));
-app.use(express.static(__dirname));
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
+app.get('*', render);
 app.listen(8080, () => { console.log('Server listening on http://localhost:8080.'); });
 ```
 
@@ -76,7 +77,7 @@ npm start
 open http://localhost:8080
 ```
 
-###### Get a route working, edit app.js
+###### Get a route working, edit client.js
 
 ```javascript
 import React from 'react';
@@ -311,7 +312,7 @@ const AsyncComponent = React.createClass({
     const items = this.props.loading ? ['x', 'y', 'z'] : this.props.data.items;
     return (
       <div>
-        <p>Async Component ({this.props.loading ? 'Loading...': 'Loaded!'})</p>
+        <p>Async Component ({this.props.loading ? 'Loading...' : 'Loaded!'})</p>
         <div>
           {items.map((item, index) => (
             <p key={index}>{item}</p>

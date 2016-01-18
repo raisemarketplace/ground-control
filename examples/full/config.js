@@ -1,10 +1,10 @@
 import routes from 'examples/full/routes';
 import webpackConfig from 'examples/full/webpack.config';
 
-const enableServerRender = false;
+const enableServerRender = true;
 const enableClientRender = true;
-const enableReduxSimpleRouter = false;
-const enableDevTools = false;
+const enableReduxSimpleRouter = true;
+const enableDevTools = true;
 const enableThunk = true;
 const runWebpack = enableClientRender;
 

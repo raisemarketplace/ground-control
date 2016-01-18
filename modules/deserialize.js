@@ -20,6 +20,8 @@ export default (state, routes, deserializer = null) => {
       deserializedData = route.deserializer(dataAtDepth);
     } else if (deserializer) {
       deserializedData = deserializer(route, dataAtDepth);
+    } else {
+      deserializedData = dataAtDepth;
     }
 
     updatedState[NAMESPACE] = setNestedState(state, deserializedData, index);

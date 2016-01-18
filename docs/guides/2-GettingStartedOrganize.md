@@ -150,13 +150,13 @@ export default (
 );
 ```
 
-*app.js*
+*client.js*
 ```javascript
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
 import AsyncNestedRedux from 'async-nested-redux';
-import routes from 'routes';
+import routes from './routes';
 
 import { createStore } from 'redux';
 const store = createStore((state = {}) => state);

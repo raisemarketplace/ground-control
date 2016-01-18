@@ -57,18 +57,22 @@ const createFetchDataCallback = (initialRoutes, store, cb) => {
 const stillActiveCallback = () => true;
 const useHydratedData = false;
 
-export default (props, store, baseReducers, cb) => {
+export default ({
+  props,
+  store,
+  reducers,
+}, cb) => {
   const { routes, location } = props;
 
   const initialRoutes = normalizeRoutes(routes);
   const fetchDataCallback = createFetchDataCallback(initialRoutes, store, cb);
-  const reducers = map(initialRoutes, route => route.reducer);
+  const routeReducers = map(initialRoutes, route => route.reducer);
 
   nestAndReplaceReducersAndState(
     store,
     ROOT_DEPTH,
-    baseReducers,
-    ...reducers
+    reducers,
+    ...routeReducers
   );
 
   loadAsyncState(

@@ -28,7 +28,7 @@ export default ({
   routes,
 }) => {
   domready(() => {
-    loadStateOnClient(routes, initialData => {
+    loadStateOnClient({ routes, deserializer }, initialData => {
       const { initialState } = initialData;
       const { store, reducers} = createStore({
         additionalReducers,
@@ -59,6 +59,6 @@ export default ({
           <DevTools store={store} />
         ), document.getElementById('dev'));
       }
-    }, deserializer);
+    });
   });
 };

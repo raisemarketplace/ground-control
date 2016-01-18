@@ -125,13 +125,12 @@ class AsyncNestedRedux extends React.Component {
       if (routes[index] === route) {
         if (redirect) {
           this.props.router.replace(redirect);
-          return;
+        } else {
+          routes[index].blockRender = false;
+          if (err) routes[index].loadingError = err;
+          if (type === FD_DONE) routes[index].loading = false;
+          this.setState({ routes });
         }
-
-        if (err) routes[index].loadingError = err;
-        if (!!type) routes[index].blockRender = false;
-        if (type === FD_DONE) routes[index].loading = false;
-        this.setState({ routes });
       }
     }
   }

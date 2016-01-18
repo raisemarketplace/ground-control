@@ -40,6 +40,7 @@ export default (
 
 We'd like to be able to see currentUser in a childRoute as well. Since this is common, ```parentData``` is provided as a prop to route component. ```getParentData``` is also provided as a function to get parent-parentData, or parent-parent-parentData (if very deep).
 
+*components/AsyncComponent.js*
 ```javascript
 // ...
 const items = this.props.loading ? ['x', 'y', 'z'] : this.props.data.items;
@@ -152,7 +153,7 @@ export default (
 // ...
 ```
 
-Use immutable a lot? Let's add an app-level serializer, to make things a bit faster.
+Use immutable a lot? Let's add an app-level serializer, to make things a bit smoother.
 
 *components/AsyncComponent3.js*
 ```javascript
@@ -169,7 +170,7 @@ export const component = ({ data }) => <p>{data.content}</p>;
 // ...
 ```
 
-*app.js*
+*client.js*
 ```javascript
 // ...
 const serializer = (route, data) => {
@@ -216,7 +217,7 @@ import { component as AsyncComponent3, reducer as asyncReducer3, fetchData as as
 // ...
 ```
 
-But rather than an error, let's redirect to root.
+Great! But now, rather than an error, let's redirect to root.
 
 *components/AsyncComponent3.js*
 ```javascript

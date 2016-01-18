@@ -40,6 +40,7 @@ export default (
       const serverRender = partial(_serverRender, fetchDataCallback, route, index);
       const err = partial(_err, fetchDataCallback, route, index);
       const redirect = partial(_redirect, fetchDataCallback);
+
       const hydratedDataForRoute = () => {
         if (useInitialState) return getNestedState(initialState, index);
         return null;

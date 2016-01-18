@@ -22,7 +22,7 @@ const deserializeRoutes = (routes, hydratedRoutes) => {
   });
 };
 
-export default (routes, cb, deserializer = null) => {
+export default ({ routes, deserializer }, cb) => {
   if (cachedData) {
     cb(cachedData);
     return;
