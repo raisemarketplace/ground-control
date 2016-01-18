@@ -1,6 +1,6 @@
-# Result from [tutorial 1](docs/guides/1-GettingStarted.md), but organized to make next tutorials clearer.
+# Getting Started (Organize)
 
-###### Organization
+Same result from [tutorial 1](docs/guides/1-GettingStarted.md). Organized to make next tutorials clearer. ~5 minutes.
 
 ```bash
 touch routes.js && mkdir components && touch components/AppComponent.js components/IndexComponent.js components/AsyncComponent.js components/AsyncComponent2.js components/AsyncComponent3.js

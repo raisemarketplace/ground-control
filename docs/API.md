@@ -1,4 +1,4 @@
-### API
+### API Reference
 
 ###### Top Level
 - [AsyncNestedRedux](examples/createClient.js#L43) - sits right underneath Router component / above routes on client and server (if universal).
