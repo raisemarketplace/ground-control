@@ -91,9 +91,9 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 ---
 
 ### How to use
-- [Rationale](docs/rationale)
-- [Tutorial](docs/guides)
-- [API Reference](/docs/guides/API.md)
+- [Rationale](https://github.com/raisemarketplace/ground-control/wiki/Rationale)
+- [Tutorial](https://github.com/raisemarketplace/ground-control/wiki/Tutorial)
+- [API Reference](https://github.com/raisemarketplace/ground-control/wiki/API-Reference)
 - [Example 1 (Simple)](examples/simple)
 - [Example 2 (Full)](examples/full)
 
