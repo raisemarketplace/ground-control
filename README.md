@@ -2,7 +2,7 @@
 
 **IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)!
 
-A library that aims to reduce the complexity of React-Router/Redux applications:
+A library that helps reduce the complexity of React-Router/Redux applications:
 
 - Automatically organize application state / reducers based on routing structure.
 - Universal data fetching API that helps you manage client / server differences.
@@ -83,10 +83,10 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 
 ---
 
-### How to use...
+### How to use
 - [Example](examples/simple)
 - [Full example](examples/full)
-- [Follow the tutorial](docs/guides) for help getting started.
+- [Tutorial](docs/guides) for help getting started.
 - [API Reference](/docs/guides/API.md)
 
 ### Contribute
