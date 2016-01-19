@@ -19,7 +19,7 @@ A library that helps reduce the complexity of React-Router/Redux applications:
 ---
 
 ###### Nested application state
-*Declare a reducer as a property on your routes. Global application state will automatically build. When a nested route changes, that level of state will clear, and reducers replaced.*
+*Declare a reducer as a property on your routes. Global application state will automatically build. When a nested route changes, that level of state will clear, and reducers replaced...*
 ```javascript
 {
   anr: {
@@ -34,7 +34,7 @@ A library that helps reduce the complexity of React-Router/Redux applications:
 }
 ```
 
-*...and the data is fed in to your components.*
+*...and the data is automatically fed in to your route components.*
 ```javascript
 // { self: { currentUser: 'Nick' }, child: { self: { items: ['a', 'b'] }, child: { self: { quantity: 100 }}}}
 const LayoutComponent = ({ children, data, dispatch }) => (
@@ -84,8 +84,8 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 ---
 
 ### How to use
-- [Example 1](examples/simple)
-- [Example 2](examples/full)
+- [Example 1 (Simple)](examples/simple)
+- [Example 2 (Full)](examples/full)
 - [Tutorial](docs/guides) 
 - [API Reference](/docs/guides/API.md)
 
