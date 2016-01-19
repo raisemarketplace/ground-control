@@ -101,7 +101,7 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 - [ ] Better documentation
 - [ ] Unit tests
 
-### Why GroundControl?
+### Why 'GroundControl' name?
 - [Tribute to one of best artists ever](https://www.youtube.com/watch?v=D67kmFzSh_o)
 - Layer above your application to help you control data.
   - API to fetch data for your routes.
