@@ -43,7 +43,7 @@ GroundControl simplifies React-Router/Redux applications:
 
 *...and the data is automatically fed in to your route components.*
 ```javascript
-// { self: { currentUser: 'Nick' }, child: { self: { items: ['a', 'b'] }, child: { self: { quantity: 100 }}}}
+// { self: { currentUser: 'Nick' }, child: { self: { items: ['a', 'b'] }, child: { self: { item: { quantity: 100 }}}}}
 const LayoutComponent = ({ children, data, dispatch }) => (
   <div>
     <p>{data.currentUser}</p>
@@ -51,11 +51,11 @@ const LayoutComponent = ({ children, data, dispatch }) => (
   </div>
 );
 
-// { self: { items: ['a', 'b'] }, child: { self: { quantity: 100 }}}
-const ItemsComponent = ({ data }) => <p>{data.items.length}</p>;
+// { self: { items: ['a', 'b'] }, child: { self: { item: { quantity: 100 }}}}
+const ItemsRouteComponent = ({ data }) => <p>{data.items.length}</p>;
 
-// { self: { quantity: 100 }}
-const ItemComponent = ({ data }) => <p>{data.quantity}</p>;
+// { self: { item: { quantity: 100 }}}
+const ItemRouteComponent = ({ data }) => <p>{data.item.quantity}</p>;
 ```
 
 ###### Universal data fetching API
