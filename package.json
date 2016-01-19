@@ -3,16 +3,24 @@
   "version": "0.1.0",
   "description": "Opinionated data fetching for React Router & Redux",
   "main": "lib/GroundControl.js",
+  "jsnext:main": "modules/GroundControl.js",
+  "files": [
+    "*.md",
+    "lib",
+    "modules"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/CouponTrade/async-redux.git"
   },
   "bugs": "https://github.com/CouponTrade/async-redux/issues",
   "scripts": {
+    "clean": "rimraf lib",
     "build": "babel ./modules -d lib --ignore '__tests__'",
     "start": "nodemon examples/full/server_.js",
     "simple-example": "nodemon examples/simple/server_.js",
-    "test": "babel-tape-runner modules/__tests__/*.js"
+    "test": "babel-tape-runner modules/__tests__/*.js",
+    "prepublish": "npm run clean && npm run build"
   },
   "authors": [
     "Nick Dreckshage"
@@ -62,6 +70,7 @@
     "redux-simple-router": "^2.0.2",
     "redux-thunk": "^1.0.3",
     "require-alias": "^1.0.5",
+    "rimraf": "^2.5.0",
     "tape": "^4.4.0",
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.4.0"
