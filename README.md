@@ -91,10 +91,11 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 ---
 
 ### How to use
-- [Example 1 (Simple)](examples/simple)
-- [Example 2 (Full)](examples/full)
+- [Rationale](docs/rationale)
 - [Tutorial](docs/guides)
 - [API Reference](/docs/guides/API.md)
+- [Example 1 (Simple)](examples/simple)
+- [Example 2 (Full)](examples/full)
 
 ### Contribute
 - [ ] API improvements
