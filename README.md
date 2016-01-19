@@ -2,7 +2,7 @@
 
 **IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)! Tests coming...
 
-GroundControl simplifies React-Router/Redux applications:
+GroundControl simplifies React-Router/Redux single page applications:
 
 - Organize your reducers based on routing structure, and GroundControl builds your application state & replaces reducers on transition.
 - Data fetching API that helps you control when to render components & manage client / server differences (Universal API).
