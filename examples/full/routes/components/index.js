@@ -30,7 +30,7 @@ export default props => {
   const { children, dispatch } = props;
   return (
     <div style={routeStyle}>
-      <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Example</h4>
+      <h4 style={{ margin: '0 0 20px' }}>GroundControl - Example</h4>
       <div style={navStyle}>
         <IndexLink to="/" {...linkProps()}>Palindrome (Combined / Immutable Reducers Demo)</IndexLink>
         <div style={{ marginBottom: 10 }}>

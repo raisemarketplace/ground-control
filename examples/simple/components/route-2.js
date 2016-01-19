@@ -21,7 +21,7 @@ export const reducer = (state = initialState, action) => {
 
 const getData = async () => new Promise((resolve) => {
   setTimeout(() => {
-    const data = map(Array(10), () => 'AsyncNestedRedux!');
+    const data = map(Array(10), () => 'GroundControl!');
     resolve(data);
   }, 1000);
 });

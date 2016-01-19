@@ -180,7 +180,7 @@ const serializer = (route, data) => {
 
 render((
   <Router routes={routes} history={browserHistory} render={(props) => (
-    <AsyncNestedRedux {...props} store={store} serializer={serializer} />
+    <GroundControl {...props} store={store} serializer={serializer} />
 // ...
 ```
 

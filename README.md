@@ -1,4 +1,4 @@
-# AsyncNestedRedux
+# GroundControl
 
 **IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)!
 
@@ -9,12 +9,12 @@ A library that helps reduce the complexity of React-Router/Redux applications:
 
 ```javascript
 <Router routes={routes} history={browserHistory} render={(props) => (
-  <AsyncNestedRedux {...props} store={store} />
+  <GroundControl {...props} store={store} />
 )}/>
 ```
 
-- **Demo**: Clone & ```npm i && npm start```.
-- **Install**: ```npm install async-nested-redux --save-dev```
+**Demo** Clone & ```npm i && npm start```.
+**Install** ```npm install ground-control --save-dev```
 
 ---
 
@@ -62,7 +62,7 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
   if (isClient()) {
     const bottomOfPageData = await fetchBottomOfPage();
     dispatch(actions.loadBottom(bottomOfPageData));
-    done(); 
+    done();
   }
 };
 ```
@@ -86,7 +86,7 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 ### How to use
 - [Example 1 (Simple)](examples/simple)
 - [Example 2 (Full)](examples/full)
-- [Tutorial](docs/guides) 
+- [Tutorial](docs/guides)
 - [API Reference](/docs/guides/API.md)
 
 ### Contribute

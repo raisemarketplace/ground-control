@@ -11,7 +11,7 @@ export default props => {
   const { children } = props;
   return (
     <div style={routeStyle}>
-      <h4 style={{ margin: '0 0 20px' }}>AsyncNestedRedux - Easy Example</h4>
+      <h4 style={{ margin: '0 0 20px' }}>GroundControl - Easy Example</h4>
       <div style={navStyle}>
         <IndexLink to="/" {...linkProps()}>Home</IndexLink>
         <Link to="/route-2" {...linkProps()}>Route 2</Link>

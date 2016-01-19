@@ -1,6 +1,6 @@
 # Getting Started (Universal)
 
-React, Redux and React-Router all work great on the server. AsyncNestedRedux does as well. And the fetchData API works on both client & server.
+React, Redux and React-Router all work great on the server. GroundControl does as well. And the fetchData API works on both client & server.
 
 ###### Server setup
 
@@ -38,12 +38,12 @@ res.send(html);
 
 ###### loadStateOnServer
 
-AsyncNestedRedux provides loadStateOnServer as top level API export. Include it.
+GroundControl provides loadStateOnServer as top level API export. Include it.
 
 *server.js*
 ```javascript
 // ...
-import { loadStateOnServer } from 'async-nested-redux';
+import { loadStateOnServer } from 'ground-control';
 
 // ...
 
@@ -110,7 +110,7 @@ import serializer from './serializer';
 const store = createStore();
 render((
   <Router routes={routes} history={browserHistory} render={(props) => (
-    <AsyncNestedRedux {...props} store={store} serializer={serializer} />
+    <GroundControl {...props} store={store} serializer={serializer} />
   )} />
 ), document.getElementById('app'));
 ```
@@ -167,13 +167,13 @@ Now that we have everything we need in the html function, lets update imports an
 
 ```javascript
 import { renderToString } from 'react-dom/server';
-import AsyncNestedRedux, { loadStateOnServer } from 'async-nested-redux';
+import GroundControl, { loadStateOnServer } from 'ground-control';
 
 // ...
 
 const html = (renderProps, store, initialData, scriptString) => {
   const appString = renderToString(
-    <AsyncNestedRedux {...renderProps} store={store} initialData={initialData} />
+    <GroundControl {...renderProps} store={store} initialData={initialData} />
   );
 
   return `
@@ -212,14 +212,14 @@ Lets adjust our imports and then wrap ```render``` in a callback to feed in our 
 
 *client.js*
 ```javascript
-import AsyncNestedRedux, { loadStateOnClient } from 'async-nested-redux';
+import GroundControl, { loadStateOnClient } from 'ground-control';
 // ...
 
 loadStateOnClient({ routes }, initialData => {
   const store = createStore(initialData.initialState);
   render((
     <Router routes={routes} history={browserHistory} render={(props) => (
-      <AsyncNestedRedux {...props} store={store} serializer={serializer} initialData={initialData} />
+      <GroundControl {...props} store={store} serializer={serializer} initialData={initialData} />
     )} />
   ), document.getElementById('app'));
 });
@@ -287,7 +287,7 @@ loadStateOnClient({ routes, deserializer }, initialData => {
 // ...
 import serializer from './serializer';
 // ...
-<AsyncNestedRedux {...renderProps} store={store} initialData={initialData} serializer={serializer} />
+<GroundControl {...renderProps} store={store} initialData={initialData} serializer={serializer} />
 // ...
 ```
 

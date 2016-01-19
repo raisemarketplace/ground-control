@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
-import AsyncNestedRedux, { loadStateOnClient } from 'modules/AsyncNestedRedux';
+import GroundControl, { loadStateOnClient } from 'modules/GroundControl';
 import createStore from 'examples/createStore';
 import DevTools from 'examples/utils/devtools';
 import domready from 'domready';
@@ -44,7 +44,7 @@ export default ({
             routes={routes}
             history={browserHistory}
             render={(props) => (
-              <AsyncNestedRedux
+              <GroundControl
                   {...props}
                   store={store}
                   initialData={initialData}

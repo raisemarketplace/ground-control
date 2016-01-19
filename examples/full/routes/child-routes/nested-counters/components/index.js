@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
-import { getNestedState } from 'modules/AsyncNestedRedux';
+import { getNestedState } from 'modules/GroundControl';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
 import createActions from 'examples/utils/createActions';

@@ -1,6 +1,6 @@
 # Getting Started
 
-Simple tutorial to get up and running with AsyncNestedRedux. ~5 minutes. Reload after each section to see changes.
+Simple tutorial to get up and running with GroundControl. ~5 minutes. Reload after each section to see changes.
 
 ###### Bootstrap
 
@@ -11,7 +11,7 @@ mkdir example && cd example && npm init
 npm i --save-dev nodemon webpack webpack-dev-middleware babel@5.8.34 babel-loader@5.4.0 express
 
 # project deps
-npm i --save-dev react react-dom redux react-router@2.0.0-rc5 async-nested-redux
+npm i --save-dev react react-dom redux react-router@2.0.0-rc5 ground-control
 
 touch webpack.config.js server.js client.js
 ```
@@ -131,13 +131,13 @@ logCurrentState();
 // ...
 ```
 
-###### Add AsyncNestedRedux
+###### Add GroundControl
 
 ```javascript
 // ...
 
 import { Router, Route, IndexRoute, IndexLink, Link, browserHistory } from 'react-router';
-import AsyncNestedRedux from 'async-nested-redux';
+import GroundControl from 'ground-control';
 
 // ...
 ```
@@ -147,7 +147,7 @@ import AsyncNestedRedux from 'async-nested-redux';
 
 render((
   <Router history={browserHistory} render={(props) => (
-    <AsyncNestedRedux {...props} store={store} />
+    <GroundControl {...props} store={store} />
   )}>
     <Route path="/" component={AppComponent}>
 
@@ -384,7 +384,7 @@ render((
 
 #Done! Result...
 
-- You have one file with React, Redux, React-Router, and now AsyncNestedRedux.
+- You have one file with React, Redux, React-Router, and now GroundControl.
 - You can organize your actual application code however you like (wouldn't recommend one file...).
 - No thought required for initial reducer structure. Just follow your routes.
 - Easy to get started with new routes - 1 file for actions, reducer, component.

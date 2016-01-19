@@ -155,7 +155,7 @@ export default (
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory } from 'react-router';
-import AsyncNestedRedux from 'async-nested-redux';
+import GroundControl from 'ground-control';
 import routes from './routes';
 
 import { createStore } from 'redux';
@@ -168,7 +168,7 @@ logCurrentState();
 
 render((
   <Router routes={routes} history={browserHistory} render={(props) => (
-    <AsyncNestedRedux {...props} store={store} />
+    <GroundControl {...props} store={store} />
   )} />
 ), document.getElementById('app'));
 ```

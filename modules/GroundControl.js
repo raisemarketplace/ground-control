@@ -11,7 +11,7 @@ import loadStateOnClient from './loadStateOnClient';
 import { FD_DONE, NAMESPACE, ROOT_DEPTH } from './constants';
 import { map, take, drop, partial } from 'lodash';
 
-class AsyncNestedRedux extends React.Component {
+class GroundControl extends React.Component {
   static propTypes = {
     render: React.PropTypes.func.isRequired,
     routes: React.PropTypes.array.isRequired,
@@ -161,7 +161,7 @@ class AsyncNestedRedux extends React.Component {
   }
 }
 
-export default AsyncNestedRedux;
+export default GroundControl;
 export {
   loadStateOnServer,
   loadStateOnClient,
