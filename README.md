@@ -1,16 +1,23 @@
 # GroundControl
 
-**IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)!
+**IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)! Tests coming...
 
-A library that helps reduce the complexity of React-Router/Redux applications:
+GroundControl simplifies React-Router/Redux applications:
 
-- Automatically organize application state / reducers based on routing structure.
-- Universal data fetching API that lets you control when to render components & manage client / server differences.
+- Organize your reducers based on routing structure, and GroundControl builds your application state & replaces reducers on transition.
+- Data fetching API that helps you control when to render components & manage client / server differences (Universal API).
 
 ```javascript
-<Router routes={routes} history={browserHistory} render={(props) => (
-  <GroundControl {...props} store={store} />
-)}/>
+<Router
+    history={browserHistory}
+    render={(props) => (
+      <GroundControl {...props} store={store} />
+    )}>
+  <Route path="/" reducer={rootReducer}>
+    <IndexRoute reducer={indexReducer} />
+    <Route path="/route-1" reducer={route1Reducer} />
+  </Route>
+</Router>
 ```
 
 **Demo** Clone & ```npm i && npm start```.
@@ -93,5 +100,12 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 - [ ] API improvements
 - [ ] Better documentation
 - [ ] Unit tests
+
+### Why GroundControl?
+- [Tribute to one of best artists ever](https://www.youtube.com/watch?v=D67kmFzSh_o)
+- Layer above your application to help you control data.
+  - API to fetch data for your routes.
+  - Clean up state from previous routes.
+  - Updates store with new reducers.
 
 **Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props).**
