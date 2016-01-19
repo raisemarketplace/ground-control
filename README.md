@@ -5,7 +5,7 @@
 A library that helps reduce the complexity of React-Router/Redux applications:
 
 - Automatically organize application state / reducers based on routing structure.
-- Universal data fetching API that helps you manage client / server differences.
+- Universal data fetching API that lets you control when to render components & helps you manage client / server differences.
 
 ```javascript
 <Router routes={routes} history={browserHistory} render={(props) => (
