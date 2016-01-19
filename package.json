@@ -1,6 +1,6 @@
 {
   "name": "ground-control",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Scalable reducer management & powerful data fetching for React Router & Redux.",
   "main": "lib/GroundControl.js",
   "jsnext:main": "modules/GroundControl.js",
@@ -78,11 +78,21 @@
   "tags": [
     "react",
     "react router",
-    "data"
+    "data",
+    "redux",
+    "redux-simple-router",
+    "flux",
+    "universal",
+    "isomorphic"
   ],
   "keywords": [
     "react",
     "react router",
-    "data"
+    "data",
+    "redux",
+    "redux-simple-router",
+    "flux",
+    "universal",
+    "isomorphic"
   ]
 }
