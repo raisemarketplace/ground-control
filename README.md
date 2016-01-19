@@ -21,6 +21,7 @@ GroundControl simplifies React-Router/Redux single page applications:
 ```
 
 **Demo** Clone & ```npm i && npm start```.
+
 **Install** ```npm install ground-control --save-dev```
 
 ---
