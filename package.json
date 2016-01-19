@@ -1,7 +1,7 @@
 {
   "name": "ground-control",
-  "version": "0.1.1",
-  "description": "Opinionated data fetching for React Router & Redux",
+  "version": "0.1.2",
+  "description": "Scalable reducer management & powerful data fetching for React Router & Redux.",
   "main": "lib/GroundControl.js",
   "jsnext:main": "modules/GroundControl.js",
   "files": [
