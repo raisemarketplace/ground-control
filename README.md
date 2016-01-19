@@ -84,9 +84,9 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
 ---
 
 ### How to use
-- [Example](examples/simple)
-- [Full example](examples/full)
-- [Tutorial](docs/guides) for help getting started.
+- [Example 1](examples/simple)
+- [Example 2](examples/full)
+- [Tutorial](docs/guides) 
 - [API Reference](/docs/guides/API.md)
 
 ### Contribute
