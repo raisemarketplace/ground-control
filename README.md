@@ -4,7 +4,7 @@
 
 GroundControl simplifies React-Router/Redux single page applications:
 
-- Organize reducers based on route structure, and builds application state & replaces reducers on transition.
+- Organizes reducers based on route structure, and builds application state & replaces reducers on transition.
 - Data fetching API to control when to render components & manage client / server differences (Universal API).
 
 ```javascript
