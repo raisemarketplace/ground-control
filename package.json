@@ -11,9 +11,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/CouponTrade/async-redux.git"
+    "url": "https://github.com/RaiseMarketplace/ground-control.git"
   },
-  "bugs": "https://github.com/CouponTrade/async-redux/issues",
+  "bugs": "https://github.com/RaiseMarketplace/ground-control/issues",
   "scripts": {
     "clean": "rimraf lib",
     "build": "babel ./modules -d lib --ignore '__tests__'",
