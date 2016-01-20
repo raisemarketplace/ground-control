@@ -111,4 +111,4 @@ async function fetchData(done, { clientRender, serverRender, dispatch, isClient 
   - Clean up state from previous routes.
   - Updates store with new reducers.
 
-**Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [aync-props](https://github.com/rackt/async-props).**
+**Special thanks to [ryan florence](https://github.com/ryanflorence)! Initially based on [async-props](https://github.com/rackt/async-props).**
