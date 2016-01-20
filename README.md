@@ -30,7 +30,7 @@ GroundControl simplifies React-Router/Redux single page applications:
 *Declare a reducer as a property on your routes. Global application state will automatically build. When a nested route changes, that level of state will clear, and reducers replaced...*
 ```javascript
 {
-  anr: {
+  groundcontrol: {
     self: { currentUser }, // path: "/" -- root component / layout.
     child: {
       self: { items }, // path: "/items" -- 1st level route.
