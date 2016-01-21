@@ -1,7 +1,6 @@
 import React from 'react';
-import { partial, forEach, isNumber } from 'lodash';
+import { partial, forEach } from 'lodash';
 import { getNestedState } from './nestedState';
-import { ROOT_DEPTH } from './constants';
 
 export default (store, serializer, Component, props) => {
   const { routes, route } = props;
@@ -34,21 +33,13 @@ export default (store, serializer, Component, props) => {
   };
 
   const data = getStateAndSerialize(depth);
-  const rootData = getStateAndSerialize(ROOT_DEPTH);
-
-  const getRelativeParentData = (requestedDepth = 1) => {
-    if (!isNumber(requestedDepth)) return null;
-    return getStateAndSerialize(depth - Math.abs(requestedDepth));
-  };
 
   return (
     <Component
         {...props}
         loading={route.loading}
         loadingError={route.loadingError}
-        getRelativeParentData={getRelativeParentData}
         dispatch={dispatch}
-        rootData={rootData}
         data={data}
         />
   );

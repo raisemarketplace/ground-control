@@ -2,7 +2,6 @@ import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
 import { merge } from 'lodash';
-import { getNestedState } from 'modules/GroundControl';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
 import createActions from 'examples/utils/createActions';
@@ -27,8 +26,8 @@ const specialAction = count => (dispatch/* , getState */) => {
   dispatch(actions.incr(count));
 };
 
-export default props => {
-  const { children, dispatch, data, rootData } = props;
+const component = (props, context) => {
+  const { children, dispatch, data } = props;
   return (
     <div style={routeStyle}>
       <div style={navStyle}>
@@ -38,7 +37,7 @@ export default props => {
       </div>
       <div>
         <p>
-          <span>App Counter: {rootData.counter || 0}</span>&nbsp;
+          <span>App Counter: {context.appCounter}</span>&nbsp;
           <span>Counter: {data.counter}</span>&nbsp;
           <button onClick={() => { dispatch(specialAction(1)); }}>+</button>
         </p>
@@ -49,3 +48,9 @@ export default props => {
     </div>
   );
 };
+
+component.contextTypes = {
+  appCounter: React.PropTypes.number,
+};
+
+export default component;
