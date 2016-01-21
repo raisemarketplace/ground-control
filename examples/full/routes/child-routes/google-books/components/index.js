@@ -8,21 +8,21 @@ import { routeStyle, booksSectionStyle, previewTemplateStyle } from 'examples/ut
 
 const FROWN_FACE = ':(';
 
-export const actions = createActions('GoogleBooks', ['loadFiction', 'loadJavascript']);
+export const actions = createActions('GoogleBooks', ['loadTop', 'loadBottom']);
 export const reducer = createReducer({
-  [actions.loadFiction]: (state, payload) => {
+  [actions.loadTop]: (state, payload) => {
     const updatedState = merge({}, state);
-    updatedState.fiction = payload;
+    updatedState.topBooks = payload;
     return updatedState;
   },
-  [actions.loadJavascript]: (state, payload) => {
+  [actions.loadBottom]: (state, payload) => {
     const updatedState = merge({}, state);
-    updatedState.javascript = payload;
+    updatedState.bottomBooks = payload;
     return updatedState;
   },
 }, {
-  fiction: [],
-  javascript: [],
+  topBooks: [],
+  bottomBooks: [],
 });
 
 export default props => {
@@ -34,7 +34,7 @@ export default props => {
       <div>{FROWN_FACE}</div>
     );
   } else {
-    topBooks = map(data.fiction, (book, index) => (
+    topBooks = map(data.topBooks, (book, index) => (
       <Book key={index} {...book} />
     ));
   }
@@ -45,7 +45,7 @@ export default props => {
       <div key={index} style={previewTemplateStyle} />
     ));
   } else {
-    bottomBooks = map(data.javascript, (book, index) => (
+    bottomBooks = map(data.bottomBooks, (book, index) => (
       <Book key={index} {...book} />
     ));
   }
@@ -53,11 +53,11 @@ export default props => {
   return (
     <div style={routeStyle}>
       <div style={merge({}, booksSectionStyle, { marginBottom: 20 })}>
-        <p style={{ marginTop: 0 }}>Top of page: fiction</p>
+        <p style={{ marginTop: 0 }}>Top of page</p>
         <div>{topBooks}</div>
       </div>
       <div style={booksSectionStyle}>
-        <p style={{ marginTop: 0 }}>Bottom of page: javascript</p>
+        <p style={{ marginTop: 0 }}>Bottom of page</p>
         <div>{bottomBooks}</div>
       </div>
     </div>
