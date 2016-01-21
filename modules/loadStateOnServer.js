@@ -62,7 +62,7 @@ export default ({
   store,
   reducers,
 }, cb) => {
-  const { routes, location } = props;
+  const { routes, location, params: routeParams } = props;
 
   const initialRoutes = normalizeRoutes(routes);
   const fetchDataCallback = createFetchDataCallback(initialRoutes, store, cb);
@@ -78,6 +78,7 @@ export default ({
   loadAsyncState(
     initialRoutes,
     location.query,
+    routeParams,
     store,
     fetchDataCallback,
     stillActiveCallback,

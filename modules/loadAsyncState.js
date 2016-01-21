@@ -22,7 +22,8 @@ const _serverRender = (cb, route, index) => {
 
 export default (
   routes,
-  params,
+  queryParams,
+  routeParams,
   store,
   fetchDataCallback,
   stillActive,
@@ -48,8 +49,8 @@ export default (
 
       if (route.fetchData) {
         route.fetchData(done, {
-          clientRender, serverRender, redirect, err,
-          params, dispatch, getState, isMounted, isClient,
+          clientRender, serverRender, redirect, err, routeParams,
+          queryParams, dispatch, getState, isMounted, isClient,
           isHydrated, hydratedDataForRoute, isServer,
         });
       } else {

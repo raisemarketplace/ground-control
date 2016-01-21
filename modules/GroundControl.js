@@ -58,7 +58,7 @@ class GroundControl extends React.Component {
   }
 
   componentDidMount() {
-    const { location, store } = this.props;
+    const { location, store, params: routeParams } = this.props;
     const { routes } = this.state;
 
     this.unsubscribe = store.subscribe(() => {
@@ -66,7 +66,7 @@ class GroundControl extends React.Component {
       this.setState({ storeState });
     });
 
-    this.loadAsyncState(routes, location.query, ROOT_DEPTH);
+    this.loadAsyncState(routes, location.query, routeParams, ROOT_DEPTH);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,7 +78,7 @@ class GroundControl extends React.Component {
     const routeChanged = pathChanged || searchChanged;
     if (!routeChanged) return;
 
-    const { location, routes } = nextProps;
+    const { location, routes, params: routeParams } = nextProps;
     const routeDiff = diffRoutes(prevRoutes, routes);
     const sameRoutes = take(routes, routeDiff);
     const differentRoutes = normalizeRoutes(drop(routes, routeDiff), true);
@@ -86,7 +86,7 @@ class GroundControl extends React.Component {
 
     const useInitialState = false;
     this.setState({ routes: nextRoutes, useInitialState }, () => {
-      this.loadAsyncState(nextRoutes, location.query, routeDiff);
+      this.loadAsyncState(nextRoutes, location.query, routeParams, routeDiff);
     });
   }
 
@@ -139,7 +139,7 @@ class GroundControl extends React.Component {
     return this.state.routes[index] === route;
   }
 
-  loadAsyncState(routes, params, replaceAtDepth) {
+  loadAsyncState(routes, queryParams, routeParams, replaceAtDepth) {
     const { store, initialData } = this.props;
     const { useInitialState } = this.state;
     const { initialState } = initialData;
@@ -147,7 +147,8 @@ class GroundControl extends React.Component {
     this.nestReducers(useInitialState, routes, replaceAtDepth);
     loadAsyncState(
       routes,
-      params,
+      queryParams,
+      routeParams,
       store,
       this.fetchDataCallback.bind(this),
       this.stillActiveCallback.bind(this),
