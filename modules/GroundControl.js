@@ -90,7 +90,7 @@ export default class extends React.Component {
     const routeChanged = pathChanged || searchChanged;
     if (!routeChanged) return;
 
-    const routeDiff = diffRoutes(prevRoutes, routes);
+    const routeDiff = diffRoutes(prevRoutes, routes, prevRouteParams, routeParams);
     const routesToKeep = take(routes, routeDiff);
     const routesToDrop = drop(prevRoutes, routeDiff);
     const routesToAdd = normalizeRoutes(drop(routes, routeDiff), true);
