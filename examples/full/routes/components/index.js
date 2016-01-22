@@ -23,23 +23,42 @@ const inlineLinkProps = error => ({
   activeStyle: activeLinkStyle,
 });
 
-export default props => {
-  const { children } = props;
-  return (
-    <div style={routeStyle}>
-      <h4 style={{ margin: '0 0 20px' }}>GroundControl - Example</h4>
-      <div style={navStyle}>
-        <IndexLink to="/" {...linkProps()}>Palindrome (Combined / Immutable Reducers Demo)</IndexLink>
-        <div style={{ marginBottom: 10 }}>
-          <Link to={{ pathname: '/google-books/fiction/javascript' }} {...inlineLinkProps()}>Google Books (Data Fetching Demo)</Link>
-          <Link to={{ pathname: '/google-books/fiction/javascript', query: { error: true }}} {...inlineLinkProps(true)}>(Demo ?error=true)</Link>
-          <Link to={{ pathname: '/google-books/fiction/javascript', query: { redirect: true }}} {...inlineLinkProps(true)}>(Demo ?redirect=true)</Link>
+class component extends React.Component {
+  static propTypes = {
+    children: React.PropTypes.object.isRequired,
+    data: React.PropTypes.object.isRequired,
+  };
+
+  static childContextTypes = {
+    appCounter: React.PropTypes.number,
+  };
+
+  getChildContext() {
+    return {
+      appCounter: this.props.data.counter || 0,
+    };
+  }
+
+  render() {
+    const { children } = this.props;
+    return (
+      <div style={routeStyle}>
+        <h4 style={{ margin: '0 0 20px' }}>GroundControl - Example</h4>
+        <div style={navStyle}>
+          <IndexLink to="/" {...linkProps()}>Palindrome (Combined / Immutable Reducers Demo)</IndexLink>
+          <div style={{ marginBottom: 10 }}>
+            <Link to={{ pathname: '/google-books/fiction/javascript' }} {...inlineLinkProps()}>Google Books (Data Fetching Demo)</Link>
+            <Link to={{ pathname: '/google-books/fiction/javascript', query: { error: true }}} {...inlineLinkProps(true)}>(Demo ?error=true)</Link>
+            <Link to={{ pathname: '/google-books/fiction/javascript', query: { redirect: true }}} {...inlineLinkProps(true)}>(Demo ?redirect=true)</Link>
+          </div>
+          <Link to="/nested-counters" {...linkProps()}>Nested Counters (Nested Reducers Demo)</Link>
         </div>
-        <Link to="/nested-counters" {...linkProps()}>Nested Counters (Nested Reducers Demo)</Link>
+        <div>
+          {children}
+        </div>
       </div>
-      <div>
-        {children}
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
+
+export default component;
