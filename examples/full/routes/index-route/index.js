@@ -23,15 +23,15 @@ const serializer = data => {
 
 const asyncEnter = (done, { dispatch }) => {
   const cachedState = CACHE[KEY];
-  if (cachedState) {
+  if (cachedState) { // need 2 because using nested reducers...
     dispatch(actions.hydrateForwards(cachedState.forwards));
     dispatch(actions.hydrateBackwards(cachedState.backwards));
   }
   done();
 };
 
-const asyncLeave = ({ endReducerState /* routeParams, queryParams */ }) => {
-  CACHE[KEY] = endReducerState;
+const asyncLeave = ({ reducerState /* routeParams, queryParams */ }) => {
+  CACHE[KEY] = reducerState;
 };
 
 export default {

@@ -52,8 +52,7 @@ export default class extends React.Component {
     const reducers = this.normalizeReducers();
 
     this.state = {
-      routes,
-      reducers,
+      routes, reducers,
       useInitialState,
       storeState,
     };
@@ -163,9 +162,8 @@ export default class extends React.Component {
   }
 
   nestThenAsyncEnter(routes, routeParams, queryParams, replaceAtDepth) {
-    const { store, initialData } = this.props;
+    const { store } = this.props;
     const { useInitialState } = this.state;
-    const { initialState } = initialData;
 
     this.nestReducers(
       useInitialState, routes, replaceAtDepth
@@ -175,22 +173,20 @@ export default class extends React.Component {
       routes, routeParams, queryParams, store,
       this.asyncEnterCallback.bind(this),
       this.stillActiveCallback.bind(this),
-      useInitialState, initialState, replaceAtDepth
+      useInitialState, replaceAtDepth
     );
   }
 
   asyncLeave(routesToDrop, routeParams, queryParams, routeDepth) {
     forEach(routesToDrop, route => {
       if (route.asyncLeave) {
-        const endReducerState = getNestedState(
-          this.state.storeState,
+        const reducerState = getNestedState(
+          this.props.store.getState(),
           routeDepth
         );
 
         route.asyncLeave({
-          endReducerState,
-          routeParams,
-          queryParams,
+          reducerState, routeParams, queryParams,
         });
       }
     });

@@ -18,34 +18,30 @@ const _serverRender = (cb, route, index) => {
 };
 
 export default (
-  routes, routeParams, queryParams, store,
-  asyncEnterCallback, stillActive, useInitialState,
-  initialState = {}, replaceAtDepth = 0
+  routes, routeParams, queryParams,
+  store, asyncEnterCallback, stillActive,
+  useInitialState, replaceAtDepth = 0
 ) => {
-  const {
-    dispatch, getState,
-  } = store;
+  const { dispatch, getState } = store;
+  const currentState = store.getState();
 
   if (routes.length > 0) {
     forEach(routes, (route, index) => {
       const done = partial(_done, asyncEnterCallback, route, index);
 
       if (route.asyncEnter && index >= replaceAtDepth) {
-        const isHydrated = () => useInitialState;
+        const isInitialLoad = () => useInitialState;
         const isMounted = partial(_stillActive, stillActive, route, index);
         const clientRender = partial(_clientRender, asyncEnterCallback, route, index);
         const serverRender = partial(_serverRender, asyncEnterCallback, route, index);
         const err = partial(_err, asyncEnterCallback, route, index);
         const redirect = partial(_redirect, asyncEnterCallback);
-        const hydratedDataForRoute = () => {
-          if (useInitialState) return getNestedState(initialState, index);
-          return null;
-        };
+        const reducerData = () => getNestedState(currentState, index);
 
         route.asyncEnter(done, {
           clientRender, serverRender, redirect, err, routeParams,
           queryParams, dispatch, getState, isMounted, isClient,
-          isHydrated, hydratedDataForRoute, isServer,
+          isInitialLoad, reducerData, isServer,
         });
       } else {
         done();
