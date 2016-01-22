@@ -1,10 +1,10 @@
 import { setNestedState, getNestedState } from './nestedState';
 import { validateRootShape, setShape } from './nestedShape';
-import { forEach, merge } from 'lodash';
+import { forEach } from 'lodash';
 import { NAMESPACE } from './constants';
 
 export default (state, routes, deserializer = null) => {
-  const updatedState = merge({}, state);
+  const updatedState = { ...state };
   if (!validateRootShape(updatedState)) {
     return {
       ...updatedState,

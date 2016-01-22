@@ -1,6 +1,5 @@
 import React from 'react';
 import { createReducer } from 'redux-act';
-import { merge } from 'lodash';
 
 import createActions from 'examples/utils/createActions';
 import { routeStyle } from 'examples/utils/style';
@@ -8,9 +7,7 @@ import { routeStyle } from 'examples/utils/style';
 export const actions = createActions('MultiplyCounters', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state) => {
-    const updatedState = merge({}, state);
-    updatedState.counter *= 2;
-    return updatedState;
+    return { ...state, counter: state.counter * 2 };
   },
 }, {
   counter: 3,

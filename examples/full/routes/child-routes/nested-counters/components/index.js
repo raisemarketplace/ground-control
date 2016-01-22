@@ -1,7 +1,6 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
-import { merge } from 'lodash';
 
 import { actions as appActions } from 'examples/full/routes/components/index';
 import createActions from 'examples/utils/createActions';
@@ -10,9 +9,7 @@ import { routeStyle, navStyle, linkStyle, activeLinkStyle } from 'examples/utils
 export const actions = createActions('NestedCounters', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
-    const updatedState = merge({}, state);
-    updatedState.counter += payload;
-    return updatedState;
+    return { ...state, counter: state.counter + payload };
   },
 }, {
   counter: 0,
