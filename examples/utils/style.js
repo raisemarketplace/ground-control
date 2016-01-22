@@ -1,18 +1,17 @@
 // Recommend using cssmodules, but this is fine for demo...
 
-import { merge } from 'lodash';
-
 export const routeStyle = {
   padding: 20,
   border: '1px solid #31c1c9',
 };
 
-export const navStyle = merge({}, routeStyle, {
+export const navStyle = {
+  ...routeStyle,
   borderColor: '#b0babf',
   backgroundColor: '#f4f6f6',
   marginBottom: 20,
   paddingBottom: 10,
-});
+};
 
 export const linkStyle = {
   display: 'block',
@@ -21,14 +20,16 @@ export const linkStyle = {
   textDecoration: 'none',
 };
 
-export const inlineLinkStyle = merge({}, linkStyle, {
+export const inlineLinkStyle = {
+  ...linkStyle,
   display: 'inline',
   marginRight: 5,
-});
+};
 
-export const errorLinkStyle = merge({}, inlineLinkStyle, {
+export const errorLinkStyle = {
+  ...inlineLinkStyle,
   color: '#ea5454',
-});
+};
 
 export const activeLinkStyle = {
   fontWeight: 'bold',

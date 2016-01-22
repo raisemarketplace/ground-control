@@ -1,6 +1,6 @@
 import React from 'react';
 import { createReducer } from 'redux-act';
-import { merge, map } from 'lodash';
+import { map } from 'lodash';
 
 import Book from 'examples/full/routes/child-routes/google-books/components/book';
 import createActions from 'examples/utils/createActions';
@@ -11,14 +11,10 @@ const FROWN_FACE = ':(';
 export const actions = createActions('GoogleBooks', ['loadTop', 'loadBottom']);
 export const reducer = createReducer({
   [actions.loadTop]: (state, payload) => {
-    const updatedState = merge({}, state);
-    updatedState.topBooks = payload;
-    return updatedState;
+    return { ...state, topBooks: payload };
   },
   [actions.loadBottom]: (state, payload) => {
-    const updatedState = merge({}, state);
-    updatedState.bottomBooks = payload;
-    return updatedState;
+    return { ...state, bottomBooks: payload };
   },
 }, {
   topBooks: [],
@@ -52,7 +48,7 @@ export default props => {
 
   return (
     <div style={routeStyle}>
-      <div style={merge({}, booksSectionStyle, { marginBottom: 20 })}>
+      <div style={{ ...booksSectionStyle, marginBottom: 20 }}>
         <p style={{ marginTop: 0 }}>Top of page</p>
         <div>{topBooks}</div>
       </div>

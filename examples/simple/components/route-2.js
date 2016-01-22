@@ -1,5 +1,5 @@
 import React from 'react';
-import { merge, map } from 'lodash';
+import { map } from 'lodash';
 import { routeStyle, previewTemplateStyle } from 'examples/utils/style';
 
 const initialState = { items: [] };
@@ -11,9 +11,7 @@ export const actions = {
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
   case 'Route2Load':
-    const updatedState = merge({}, state);
-    updatedState.items = action.payload;
-    return updatedState;
+    return { ...state, items: action.payload };
   default:
     return state;
   }

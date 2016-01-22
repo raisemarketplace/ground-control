@@ -1,7 +1,6 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import { createReducer } from 'redux-act';
-import { merge } from 'lodash';
 
 import createActions from 'examples/utils/createActions';
 import { routeStyle, navStyle, linkStyle, inlineLinkStyle, errorLinkStyle, activeLinkStyle } from 'examples/utils/style';
@@ -9,10 +8,8 @@ import { routeStyle, navStyle, linkStyle, inlineLinkStyle, errorLinkStyle, activ
 export const actions = createActions('Index', ['incr']);
 export const reducer = createReducer({
   [actions.incr]: (state, payload) => {
-    if (!state.counter) state.counter = 0;
-    const updatedState = merge({}, state);
-    updatedState.counter += payload;
-    return updatedState;
+    const counter = (state.counter || 0) + payload;
+    return { ...state, counter };
   },
 }, {});
 

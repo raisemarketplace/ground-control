@@ -9,11 +9,9 @@ const SERVER_ERROR = 'ServerError';
 const API = 'https://www.googleapis.com/books/v1/volumes?q=subject:';
 
 // handle errors however youd like...
-const handleErrors = params => response => {
-  const TEST_SERVER_ERROR = !!params.error;
-  const TEST_REDIRECT = !!params.redirect;
-  if (TEST_SERVER_ERROR || response.status === 500) throw new Error(SERVER_ERROR);
-  if (TEST_REDIRECT || response.status === 401) throw new Error(UNAUTHORIZED);
+const handleErrors = (forceError, forceRedirect) => response => {
+  if (forceError || response.status === 500) throw new Error(SERVER_ERROR);
+  if (forceRedirect || response.status === 401) throw new Error(UNAUTHORIZED);
   return response;
 };
 
@@ -24,15 +22,15 @@ const adjustResponse = data => map(data.items, item => {
   return adjustedItem;
 });
 
-const fetchTopOfPageData = async (key, queryParams, isClient) => new Promise((resolve, reject) => {
+const fetchTopOfPageData = async (key, { forceError, forceRedirect, isClient }) => new Promise((resolve, reject) => {
   if (cache[key]) {
-    if (queryParams.error) reject(SERVER_ERROR); // for sake of demo
-    if (queryParams.redirect) reject(UNAUTHORIZED);
+    if (forceError) reject(SERVER_ERROR); // for sake of demo
+    if (forceRedirect) reject(UNAUTHORIZED);
     resolve(cache[key]);
   } else {
     setTimeout(() => {
       fetch(`${API}${key}`)
-          .then(handleErrors(queryParams))
+          .then(handleErrors(forceError, forceRedirect))
           .then(response => response.json())
           .then(adjustResponse)
           .then(books => {
@@ -67,7 +65,9 @@ const fetchData = async (done, {
     if (hydratedData && hydratedData.top) cache[topKey] = hydratedData.top;
   } else {
     try {
-      const books = await fetchTopOfPageData(routeParams, queryParams, isClient());
+      const forceError = queryParams.error;
+      const forceRedirect = queryParams.redirect;
+      const books = await fetchTopOfPageData(topKey, { forceError, forceRedirect, isClient: isClient() });
       if (isMounted()) dispatch(actions.loadTop(books));
     } catch (e) {
       if (e === SERVER_ERROR) {
