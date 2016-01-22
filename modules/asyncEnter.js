@@ -1,11 +1,8 @@
 import { forEach, partial } from 'lodash';
 import { getNestedState } from './nestedState';
 import {
-  FD_SERVER_RENDER,
-  FD_CLIENT_RENDER,
-  FD_DONE,
-  IS_CLIENT,
-  IS_SERVER,
+  FD_SERVER_RENDER, FD_CLIENT_RENDER,
+  FD_DONE, IS_CLIENT, IS_SERVER,
 } from './constants';
 
 const isClient = () => IS_CLIENT;
@@ -21,34 +18,31 @@ const _serverRender = (cb, route, index) => {
 };
 
 export default (
-  routes,
-  queryParams,
-  routeParams,
-  store,
-  fetchDataCallback,
-  stillActive,
-  useInitialState,
-  initialState = {}
+  routes, routeParams, queryParams, store,
+  asyncEnterCallback, stillActive, useInitialState,
+  initialState = {}, replaceAtDepth = 0
 ) => {
-  const { dispatch, getState } = store;
+  const {
+    dispatch, getState,
+  } = store;
 
   if (routes.length > 0) {
-    const isHydrated = () => useInitialState;
     forEach(routes, (route, index) => {
-      const isMounted = partial(_stillActive, stillActive, route, index);
-      const done = partial(_done, fetchDataCallback, route, index);
-      const clientRender = partial(_clientRender, fetchDataCallback, route, index);
-      const serverRender = partial(_serverRender, fetchDataCallback, route, index);
-      const err = partial(_err, fetchDataCallback, route, index);
-      const redirect = partial(_redirect, fetchDataCallback);
+      const done = partial(_done, asyncEnterCallback, route, index);
 
-      const hydratedDataForRoute = () => {
-        if (useInitialState) return getNestedState(initialState, index);
-        return null;
-      };
+      if (route.asyncEnter && index >= replaceAtDepth) {
+        const isHydrated = () => useInitialState;
+        const isMounted = partial(_stillActive, stillActive, route, index);
+        const clientRender = partial(_clientRender, asyncEnterCallback, route, index);
+        const serverRender = partial(_serverRender, asyncEnterCallback, route, index);
+        const err = partial(_err, asyncEnterCallback, route, index);
+        const redirect = partial(_redirect, asyncEnterCallback);
+        const hydratedDataForRoute = () => {
+          if (useInitialState) return getNestedState(initialState, index);
+          return null;
+        };
 
-      if (route.fetchData) {
-        route.fetchData(done, {
+        route.asyncEnter(done, {
           clientRender, serverRender, redirect, err, routeParams,
           queryParams, dispatch, getState, isMounted, isClient,
           isHydrated, hydratedDataForRoute, isServer,

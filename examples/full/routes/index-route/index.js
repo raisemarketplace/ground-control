@@ -1,5 +1,8 @@
-import component, { reducer } from 'examples/full/routes/index-route/components';
+import component, { reducer, actions } from 'examples/full/routes/index-route/components';
 import { fromJS } from 'immutable';
+
+const CACHE = {}; // you can use cache to optionally persist state upon re-nav
+const KEY = 'ABC';
 
 // set property for app level deserializer
 // const deserializeImmutable = true;
@@ -18,9 +21,24 @@ const serializer = data => {
   };
 };
 
+const asyncEnter = (done, { dispatch }) => {
+  const cachedState = CACHE[KEY];
+  if (cachedState) {
+    dispatch(actions.hydrateForwards(cachedState.forwards));
+    dispatch(actions.hydrateBackwards(cachedState.backwards));
+  }
+  done();
+};
+
+const asyncLeave = ({ endReducerState /* routeParams, queryParams */ }) => {
+  CACHE[KEY] = endReducerState;
+};
+
 export default {
   component,
   reducer,
+  asyncEnter,
+  asyncLeave,
   // deserializeImmutable,
   deserializer,
   // serializeImmutable,

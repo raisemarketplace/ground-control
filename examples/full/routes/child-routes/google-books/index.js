@@ -53,7 +53,7 @@ const fetchBottomOfPageData = async (key) => new Promise(resolve => {
 });
 
 // Complex example to show full power of API!
-const fetchData = async (done, {
+const asyncEnter = async (done, {
   routeParams, queryParams, dispatch, isHydrated, clientRender, serverRender,
   isClient, isMounted, hydratedDataForRoute, err, redirect,
 }) => {
@@ -91,7 +91,7 @@ const fetchData = async (done, {
 export default {
   path: '/google-books/:top/:bottom',
   component,
+  asyncEnter,
   reducer,
-  fetchData,
   loader,
 };

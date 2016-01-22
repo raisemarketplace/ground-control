@@ -1,7 +1,7 @@
 import React from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
 import diffRoutes from './diffRoutes';
-import loadAsyncState from './loadAsyncState';
+import asyncEnter from './asyncEnter';
 import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import { getNestedState, nestedStateValid } from './nestedState';
@@ -9,15 +9,16 @@ import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestRe
 import loadStateOnServer from './loadStateOnServer';
 import loadStateOnClient from './loadStateOnClient';
 import { FD_DONE, NAMESPACE, ROOT_DEPTH } from './constants';
-import { map, take, drop, partial } from 'lodash';
+import { map, take, drop, partial, forEach } from 'lodash';
 
-class GroundControl extends React.Component {
+export default class extends React.Component {
   static propTypes = {
     render: React.PropTypes.func.isRequired,
     routes: React.PropTypes.array.isRequired,
     location: React.PropTypes.object.isRequired,
     router: React.PropTypes.object.isRequired,
     store: React.PropTypes.object.isRequired,
+    params: React.PropTypes.object.isRequired,
     initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
     serializer: React.PropTypes.func.isRequired,
@@ -29,9 +30,13 @@ class GroundControl extends React.Component {
     serializer: (route, state) => state,
 
     render(props, routes) {
-      const finalCreateElement = partial(createElement, props.store, props.serializer);
+      const finalCreateElement = partial(
+        createElement, props.store, props.serializer
+      );
+
       return (
-        <RouterContext {...props} routes={routes} createElement={finalCreateElement} />
+        <RouterContext {...props} routes={routes}
+            createElement={finalCreateElement} />
       );
     },
   };
@@ -54,7 +59,11 @@ class GroundControl extends React.Component {
     };
 
     this.unsubscribe = () => null;
-    this.nestReducers(useInitialState, routes, ROOT_DEPTH);
+
+    this.nestReducers(
+      useInitialState,
+      routes, ROOT_DEPTH
+    );
   }
 
   componentDidMount() {
@@ -66,27 +75,41 @@ class GroundControl extends React.Component {
       this.setState({ storeState });
     });
 
-    this.loadAsyncState(routes, location.query, routeParams, ROOT_DEPTH);
+    this.nestThenAsyncEnter(
+      routes, routeParams,
+      location.query, ROOT_DEPTH
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     const { routes: prevRoutes } = this.state;
-    const { location: prevLocation } = this.props;
+    const { location: prevLocation, params: prevRouteParams } = this.props;
+    const { location, routes, params: routeParams } = nextProps;
 
     const pathChanged = nextProps.location.pathname !== prevLocation.pathname;
     const searchChanged = nextProps.location.search !== prevLocation.search;
     const routeChanged = pathChanged || searchChanged;
     if (!routeChanged) return;
 
-    const { location, routes, params: routeParams } = nextProps;
     const routeDiff = diffRoutes(prevRoutes, routes);
-    const sameRoutes = take(routes, routeDiff);
-    const differentRoutes = normalizeRoutes(drop(routes, routeDiff), true);
-    const nextRoutes = sameRoutes.concat(differentRoutes);
+    const routesToKeep = take(routes, routeDiff);
+    const routesToDrop = drop(prevRoutes, routeDiff);
+    const routesToAdd = normalizeRoutes(drop(routes, routeDiff), true);
+    const nextRoutes = routesToKeep.concat(routesToAdd);
 
-    const useInitialState = false;
-    this.setState({ routes: nextRoutes, useInitialState }, () => {
-      this.loadAsyncState(nextRoutes, location.query, routeParams, routeDiff);
+    this.asyncLeave(
+      routesToDrop, prevRouteParams,
+      prevLocation.query, routeDiff
+    );
+
+    this.setState({
+      routes: nextRoutes,
+      useInitialState: false,
+    }, () => {
+      this.nestThenAsyncEnter(
+        nextRoutes, routeParams,
+        location.query, routeDiff
+      );
     });
   }
 
@@ -119,7 +142,7 @@ class GroundControl extends React.Component {
     }
   }
 
-  fetchDataCallback(err, redirect, type, route, index) {
+  asyncEnterCallback(err, redirect, type, route, index) {
     if (!this._unmounted) {
       const { routes } = this.state;
       if (routes[index] === route) {
@@ -139,30 +162,47 @@ class GroundControl extends React.Component {
     return this.state.routes[index] === route;
   }
 
-  loadAsyncState(routes, queryParams, routeParams, replaceAtDepth) {
+  nestThenAsyncEnter(routes, routeParams, queryParams, replaceAtDepth) {
     const { store, initialData } = this.props;
     const { useInitialState } = this.state;
     const { initialState } = initialData;
 
-    this.nestReducers(useInitialState, routes, replaceAtDepth);
-    loadAsyncState(
-      routes,
-      queryParams,
-      routeParams,
-      store,
-      this.fetchDataCallback.bind(this),
+    this.nestReducers(
+      useInitialState, routes, replaceAtDepth
+    );
+
+    asyncEnter(
+      routes, routeParams, queryParams, store,
+      this.asyncEnterCallback.bind(this),
       this.stillActiveCallback.bind(this),
-      useInitialState,
-      initialState
+      useInitialState, initialState, replaceAtDepth
     );
   }
 
+  asyncLeave(routesToDrop, routeParams, queryParams, routeDepth) {
+    forEach(routesToDrop, route => {
+      if (route.asyncLeave) {
+        const endReducerState = getNestedState(
+          this.state.storeState,
+          routeDepth
+        );
+
+        route.asyncLeave({
+          endReducerState,
+          routeParams,
+          queryParams,
+        });
+      }
+    });
+  }
+
   render() {
-    return this.props.render(this.props, this.state.routes);
+    return this.props.render(
+      this.props, this.state.routes
+    );
   }
 }
 
-export default GroundControl;
 export {
   loadStateOnServer,
   loadStateOnClient,

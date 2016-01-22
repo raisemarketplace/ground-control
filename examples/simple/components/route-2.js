@@ -24,7 +24,7 @@ const getData = async () => new Promise((resolve) => {
   }, 1000);
 });
 
-export const fetchData = async (done, { dispatch, clientRender, isHydrated }) => {
+export const asyncEnter = async (done, { dispatch, clientRender, isHydrated }) => {
   if (isHydrated()) {
     done();
   } else {

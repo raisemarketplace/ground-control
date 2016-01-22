@@ -62,7 +62,7 @@ const ItemRouteComponent = ({ data }) => <p>{data.item.quantity}</p>;
 ###### Universal data fetching API
 *Inverse route lifecycle hooks - you tell the framework what to do...*
 ```javascript
-async function fetchData(done, { clientRender, serverRender, dispatch, isClient }) => {
+async function asyncEnter(done, { clientRender, serverRender, dispatch, isClient }) => {
   clientRender();
   const topOfPageData = await fetchTopOfPage();
   dispatch(actions.loadTop(topOfPageData));

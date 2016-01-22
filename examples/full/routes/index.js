@@ -11,7 +11,7 @@ import nestedCountersRoute from 'examples/full/routes/child-routes/nested-counte
 //   getChildRoutes,
 //   ...
 //   reducer (optional),
-//   fetchData (optional),
+//   asyncEnter (optional),
 //   loader (optional),
 //   deserializer (optional),
 // }
