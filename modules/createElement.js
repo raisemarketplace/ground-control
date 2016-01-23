@@ -1,5 +1,5 @@
 import React from 'react';
-import { partial, forEach } from 'lodash';
+import { partial, forEach, omit } from 'lodash';
 import { getNestedState } from './nestedState';
 
 export default (store, serializer, Component, props) => {
@@ -31,9 +31,10 @@ export default (store, serializer, Component, props) => {
     return nestedState;
   };
 
+  // @TODO why routeParams in here?...should be params only from react router (which are routeParams...)
   return (
     <Component
-        {...props}
+        {...omit(props, ['routeParams'])}
         loading={route.loading}
         loadingError={route.loadingError}
         data={getStateAndSerialize(depth)}
