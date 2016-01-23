@@ -62,7 +62,7 @@ const asyncEnter = async (done, {
 
   if (isInitialLoad()) {
     const hydratedData = reducerData();
-    if (hydratedData && hydratedData.top) cache[topKey] = hydratedData.top;
+    if (hydratedData && hydratedData.topBooks) cache[topKey] = hydratedData.topBooks;
   } else {
     try {
       const forceError = queryParams.error;
