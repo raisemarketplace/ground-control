@@ -1,4 +1,4 @@
-import loadAsyncState from './loadAsyncState';
+import asyncEnter from './asyncEnter';
 import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
 import createMemoryHistory from 'react-router/lib/createMemoryHistory';
@@ -9,7 +9,7 @@ import {
   ROOT_DEPTH,
 } from './constants';
 
-const createFetchDataCallback = (initialRoutes, store, cb) => {
+const createAsyncEnterCallback = (initialRoutes, store, cb) => {
   let needToLoadCounter = initialRoutes.length;
   const maybeFinish = () => {
     if (needToLoadCounter === 0) {
@@ -65,23 +65,17 @@ export default ({
   const { routes, location, params: routeParams } = props;
 
   const initialRoutes = normalizeRoutes(routes);
-  const fetchDataCallback = createFetchDataCallback(initialRoutes, store, cb);
+  const asyncEnterCallback = createAsyncEnterCallback(initialRoutes, store, cb);
   const routeReducers = map(initialRoutes, route => route.reducer);
 
   nestAndReplaceReducersAndState(
-    store,
-    ROOT_DEPTH,
-    reducers,
+    store, ROOT_DEPTH, reducers,
     ...routeReducers
   );
 
-  loadAsyncState(
-    initialRoutes,
-    location.query,
-    routeParams,
-    store,
-    fetchDataCallback,
-    stillActiveCallback,
-    useHydratedData
+  asyncEnter(
+    initialRoutes, routeParams,
+    location.query, store, asyncEnterCallback,
+    stillActiveCallback, useHydratedData
   );
 };

@@ -8,20 +8,18 @@ import { Map } from 'immutable';
 import createActions from 'examples/utils/createActions';
 import { routeStyle, flashStyle } from 'examples/utils/style';
 
-export const actions = createActions('IndexRoute', ['update']);
+export const actions = createActions('IndexRoute', ['update', 'hydrateForwards', 'hydrateBackwards']);
 
 const palindrome = 'tacocat';
 
 const forwards = createReducer({
-  [actions.update]: (state, payload) => {
-    return state.set('value', payload);
-  },
+  [actions.hydrateForwards]: (state, payload) => payload,
+  [actions.update]: (state, payload) => state.set('value', payload),
 }, Map({ value: palindrome })); // support for immutable.js/etc w/ deserializer
 
 const backwards = createReducer({
-  [actions.update]: (state, payload) => {
-    return payload.split('').reverse().join('');
-  },
+  [actions.hydrateBackwards]: (state, payload) => payload,
+  [actions.update]: (state, payload) => payload.split('').reverse().join(''),
 }, palindrome);
 
 export const reducer = combineReducers({ // and for combinedReducers. whatever you want

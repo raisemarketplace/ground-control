@@ -1,5 +1,4 @@
 import { test } from 'tape';
-// import diffRoutes from '../diffRoutes';
 
 test('stub', t => {
   t.plan(1);

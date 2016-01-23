@@ -1,10 +1,9 @@
 import React from 'react';
-import { partial, forEach } from 'lodash';
+import { partial, forEach, omit } from 'lodash';
 import { getNestedState } from './nestedState';
 
 export default (store, serializer, Component, props) => {
   const { routes, route } = props;
-
   if (route.blockRender) {
     return route.loader(props);
   }
@@ -19,28 +18,27 @@ export default (store, serializer, Component, props) => {
   const state = store.getState();
   const dispatch = store.dispatch;
   const finalGetNestedState = partial(getNestedState, state);
+
   const getStateAndSerialize = requestedDepth => {
     const nestedState = finalGetNestedState(requestedDepth);
     const routeForRequested = !!routes[requestedDepth] ? routes[requestedDepth] : null;
+
     if (routeForRequested) {
-      if (routeForRequested.serializer) {
-        return routeForRequested.serializer(nestedState);
-      }
+      if (routeForRequested.serializer) return routeForRequested.serializer(nestedState);
       return serializer(routeForRequested, nestedState);
     }
 
     return nestedState;
   };
 
-  const data = getStateAndSerialize(depth);
-
+  // @TODO why routeParams in here?...should be params only from react router (which are routeParams...)
   return (
     <Component
-        {...props}
+        {...omit(props, ['routeParams'])}
         loading={route.loading}
         loadingError={route.loadingError}
+        data={getStateAndSerialize(depth)}
         dispatch={dispatch}
-        data={data}
         />
   );
 };
