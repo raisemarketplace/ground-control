@@ -10,15 +10,8 @@ const keyForDepth = depth => {
   }, `[${NORMALIZED_ROOT}]`);
 };
 
-const normalizeStateShape = state => {
-  return {
-    [NORMALIZED_ROOT]: state,
-  };
-};
-
-const scopedState = (state, fromNamespace = true) => {
-  return fromNamespace ? state[NAMESPACE] : state;
-};
+const normalizeStateShape = state => ({ [NORMALIZED_ROOT]: state });
+const scopedState = (state, fromNamespace = true) => fromNamespace ? state[NAMESPACE] : state;
 
 export const getNestedState = (state, depth = ROOT_DEPTH, fromNamespace = true, key = SELF) => {
   const normalizedState = normalizeStateShape(scopedState(state, fromNamespace));
@@ -34,7 +27,7 @@ export const setNestedState = (state, data, depth, fromNamespace = true) => {
   return set(normalizedState, key, updatedStateAtDepth)[NORMALIZED_ROOT];
 };
 
-export const nestedStateValid = (state, depth, fromNamespace = true) => {
+export const nestedStateValid = (state, depth = ROOT_DEPTH, fromNamespace = true) => {
   if (!state) return false;
   const valid = partial(getNestedState, state, depth, fromNamespace);
   return !!valid(SELF) || !!valid(CHILD);

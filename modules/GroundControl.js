@@ -5,11 +5,11 @@ import asyncEnter from './asyncEnter';
 import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import { getNestedState, nestedStateValid } from './nestedState';
-import { nestAndReplaceReducersAndState, nestAndReplaceReducers } from './nestReducers';
+import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateThenNestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import loadStateOnClient from './loadStateOnClient';
 import { FD_DONE, NAMESPACE, ROOT_DEPTH } from './constants';
-import { map, partial, forEach, dropRight } from 'lodash';
+import { partial, forEach, dropRight } from 'lodash';
 
 export default class extends React.Component {
   static propTypes = {
@@ -46,38 +46,38 @@ export default class extends React.Component {
     const { initialData, store, routes: baseRoutes } = props;
     const { initialState, initialRoutes } = initialData;
 
-    const storeState = store.getState();
     const routes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
-    const useInitialState = nestedStateValid(initialState, ROOT_DEPTH) && nestedStateValid(storeState, ROOT_DEPTH);
     const reducers = this.normalizeReducers();
+
+    const useInitialState = nestedStateValid(initialState);
+    const useInitialStoreState = nestedStateValid(store.getState());
+    if (useInitialState && !useInitialStoreState) {
+      hydrateThenNestAndReplaceReducers(initialState, store, routes, reducers);
+    } else {
+      this.nestReducers(store, routes, reducers, useInitialState);
+    }
 
     this.state = {
       routes, reducers,
       useInitialState,
-      storeState,
+      storeState: store.getState(),
     };
-
-    this.unsubscribe = () => null;
-    this.nestReducers(
-      useInitialState,
-      routes, ROOT_DEPTH
-    );
   }
 
   componentDidMount() {
-    const { params, location: { query }} = this.props;
-    const { useInitialState, routes } = this.state;
+    const { store, params, location: { query }} = this.props;
+    const { routes, reducers, useInitialState } = this.state;
 
-    this.nestReducers(useInitialState, routes, ROOT_DEPTH);
-    this.callAsyncEnter(routes, params, query, ROOT_DEPTH);
+    this.nestReducers(store, routes, reducers, useInitialState);
+    this.callAsyncEnter(routes, params, query);
   }
 
   componentWillReceiveProps(nextProps) {
     const { location: prevLocation, params: prevRouteParams, store } = this.props;
     const { location: nextLocation, params: nextRouteParams } = nextProps;
+    const { routes: prevRoutes, reducers } = this.state;
     const { query: nextRouteQuery } = nextLocation;
     const { query: prevRouteQuery } = prevLocation;
-    const { routes: prevRoutes } = this.state;
 
     const pathChanged = nextLocation.pathname !== prevLocation.pathname;
     const searchChanged = nextLocation.search !== prevLocation.search;
@@ -99,8 +99,8 @@ export default class extends React.Component {
     );
 
     this.nestReducers(
-      false, nextRoutes,
-      keepRoutes.length
+      store, nextRoutes, reducers,
+      false, keepRoutes.length
     );
 
     this.setState({
@@ -122,6 +122,10 @@ export default class extends React.Component {
     this._unmounted = true;
   }
 
+  unsubscribe() {
+    return null;
+  }
+
   resubscribe() {
     const { store } = this.props;
     return store.subscribe(() => {
@@ -137,22 +141,12 @@ export default class extends React.Component {
     return reducers;
   }
 
-  nestReducers(useInitialState, routes, replaceAtDepth) {
-    const { store } = this.props;
-    const { reducers } = this.state;
+  nestReducers(store, routes, reducers, useInitialState = false, replaceAtDepth = ROOT_DEPTH) {
     this.unsubscribe();
-
-    const routeReducers = map(routes, route => route.reducer);
     if (useInitialState) {
-      nestAndReplaceReducers(
-        store, reducers,
-        ...routeReducers
-      );
+      nestAndReplaceReducers(store, routes, reducers);
     } else {
-      nestAndReplaceReducersAndState(
-        store, replaceAtDepth, reducers,
-        ...routeReducers
-      );
+      nestAndReplaceReducersAndState(store, routes, reducers, replaceAtDepth);
     }
   }
 
@@ -176,7 +170,7 @@ export default class extends React.Component {
     return this.state.routes[index] === route;
   }
 
-  callAsyncEnter(routes, routeParams, queryParams, replaceAtDepth) {
+  callAsyncEnter(routes, routeParams, queryParams, replaceAtDepth = ROOT_DEPTH) {
     const { store } = this.props;
     const { useInitialState } = this.state;
     this.unsubscribe = this.resubscribe();

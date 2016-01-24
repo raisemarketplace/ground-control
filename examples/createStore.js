@@ -10,7 +10,6 @@ export default ({
   enableReduxSimpleRouter,
   enableDevTools,
   enableThunk,
-  initialState,
   history,
 }) => {
   let middleware = [];
@@ -38,7 +37,7 @@ export default ({
     ...reducers,
   });
 
-  const store = finalCreateStore(reducer, initialState);
+  const store = finalCreateStore(reducer, {});
 
   if (reduxSimpleRouterMiddleware) {
     reduxSimpleRouterMiddleware.listenForReplays(store);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, browserHistory } from 'react-router';
+import { Router, browserHistory as history } from 'react-router';
 import GroundControl, { loadStateOnClient } from 'modules/GroundControl';
 import createStore from 'examples/createStore';
 import DevTools from 'examples/utils/devtools';
@@ -29,20 +29,18 @@ export default ({
 }) => {
   domready(() => {
     loadStateOnClient({ routes, deserializer }, initialData => {
-      const { initialState } = initialData;
       const { store, reducers} = createStore({
         additionalReducers,
         enableReduxSimpleRouter,
         enableDevTools,
         enableThunk,
-        initialState,
-        history: browserHistory,
+        history,
       });
 
       render((
         <Router
             routes={routes}
-            history={browserHistory}
+            history={history}
             render={(props) => (
               <GroundControl
                   {...props}

@@ -29,10 +29,10 @@ const getHtml = (enableClientRender, html = '', scriptString = '') => {
   );
 };
 
-const getAppHtml = (renderProps, store, initialData, reducers) => {
+const getAppHtml = (props, store, initialData, reducers) => {
   return renderToString(
     <GroundControl
-        {...renderProps}
+        {...props}
         store={store}
         initialData={initialData}
         reducers={reducers}
@@ -44,26 +44,24 @@ const render = ({
   routes,
   additionalReducers,
   enableThunk,
-  initialState,
   enableClientRender,
 }, req, res) => {
   match({ routes, location: req.url }, (
     routingErr,
     routingRedirectLocation,
-    renderProps
+    props
   ) => {
     if (routingErr) {
       res.status(500).send(routingErr.message);
     } else if (routingRedirectLocation) {
       res.redirect(302, `${routingRedirectLocation.pathname}${routingRedirectLocation.search}`);
-    } else if (renderProps) {
+    } else if (props) {
       const { store, reducers } = createStore({
         additionalReducers,
         enableThunk,
-        initialState: {},
       });
 
-      loadStateOnServer({ props: renderProps, store, reducers }, (
+      loadStateOnServer({ props, store, reducers }, (
         loadDataErr,
         loadDataRedirectLocation,
         initialData,
@@ -74,7 +72,7 @@ const render = ({
         } else if (loadDataRedirectLocation) {
           res.redirect(302, `${loadDataRedirectLocation.pathname}${loadDataRedirectLocation.search}`);
         } else {
-          const appHtml = getAppHtml(renderProps, store, initialData, reducers);
+          const appHtml = getAppHtml(props, store, initialData, reducers);
           const html = getHtml(enableClientRender, appHtml, scriptString);
           res.status(200).send(html);
         }
@@ -92,7 +90,6 @@ export default ({
   enableServerRender,
   enableClientRender,
   enableThunk,
-  initialState,
   routes,
 }) => {
   let finalRender = (req, res) => res.status(200).send(getHtml(enableClientRender));
@@ -101,7 +98,6 @@ export default ({
       routes,
       additionalReducers,
       enableThunk,
-      initialState,
       enableClientRender,
     });
   }
