@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, browserHistory as history } from 'react-router';
-import GroundControl, { loadStateOnClient } from 'modules/GroundControl';
+import GroundControl from 'modules/GroundControl';
 import createStore from 'examples/createStore';
 import DevTools from 'examples/utils/devtools';
 import domready from 'domready';
@@ -21,42 +21,34 @@ const serializer = (route, data) => {
 };
 
 export default ({
-  additionalReducers,
-  enableReduxSimpleRouter,
-  enableDevTools,
-  enableThunk,
-  routes,
+  additionalReducers, enableReduxSimpleRouter,
+  enableDevTools, enableThunk, routes,
 }) => {
   domready(() => {
-    loadStateOnClient({ routes, deserializer }, initialData => {
-      const { store, reducers} = createStore({
-        additionalReducers,
-        enableReduxSimpleRouter,
-        enableDevTools,
-        enableThunk,
-        history,
-      });
-
-      render((
-        <Router
-            routes={routes}
-            history={history}
-            render={(props) => (
-              <GroundControl
-                  {...props}
-                  store={store}
-                  initialData={initialData}
-                  serializer={serializer}
-                  reducers={reducers}
-                  />
-            )}/>
-      ), document.getElementById('app'));
-
-      if (enableDevTools) {
-        render((
-          <DevTools store={store} />
-        ), document.getElementById('dev'));
-      }
+    const { store, reducers} = createStore({
+      additionalReducers, enableReduxSimpleRouter,
+      enableDevTools, enableThunk, history,
     });
+
+    render((
+      <Router
+          routes={routes}
+          history={history}
+          render={(props) => (
+            <GroundControl
+                {...props}
+                store={store}
+                serializer={serializer}
+                deserializer={deserializer}
+                reducers={reducers}
+                />
+          )}/>
+    ), document.getElementById('app'));
+
+    if (enableDevTools) {
+      render((
+        <DevTools store={store} />
+      ), document.getElementById('dev'));
+    }
   });
 };

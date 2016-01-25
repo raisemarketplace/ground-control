@@ -7,8 +7,8 @@ import normalizeRoutes from './normalizeRoutes';
 import { getNestedState, nestedStateValid } from './nestedState';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateThenNestAndReplaceReducers } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
-import loadStateOnClient from './loadStateOnClient';
-import { FD_DONE, NAMESPACE, ROOT_DEPTH } from './constants';
+import hydrateClient from './hydrateClient';
+import { FD_DONE, NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
 import { partial, forEach, dropRight } from 'lodash';
 
 export default class extends React.Component {
@@ -22,12 +22,14 @@ export default class extends React.Component {
     initialData: React.PropTypes.object.isRequired,
     reducers: React.PropTypes.object.isRequired,
     serializer: React.PropTypes.func.isRequired,
+    deserializer: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     initialData: {},
     reducers: {},
     serializer: (route, state) => state,
+    deserializer: (route, state) => state,
 
     render(props, routes) {
       const finalCreateElement = partial(
@@ -43,23 +45,33 @@ export default class extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    const { initialData, store, routes: baseRoutes } = props;
-    const { initialState, initialRoutes } = initialData;
 
-    const routes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
+    const { initialData, store, routes: baseRoutes, deserializer } = props;
     const reducers = this.normalizeReducers();
+
+    let { initialState, initialRoutes } = initialData;
+    initialRoutes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
+
+    if (IS_CLIENT) {
+      const { hydratedState, hydratedRoutes } = hydrateClient(initialRoutes, deserializer);
+      if (hydratedState && hydratedRoutes) {
+        initialRoutes = hydratedRoutes;
+        initialState = hydratedState;
+      }
+    }
 
     const useInitialState = nestedStateValid(initialState);
     const useInitialStoreState = nestedStateValid(store.getState());
+
     if (useInitialState && !useInitialStoreState) {
-      hydrateThenNestAndReplaceReducers(initialState, store, routes, reducers);
+      hydrateThenNestAndReplaceReducers(initialState, store, initialRoutes, reducers);
     } else {
-      this.nestReducers(store, routes, reducers, useInitialState);
+      this.nestReducers(store, initialRoutes, reducers, useInitialState);
     }
 
     this.state = {
-      routes, reducers,
-      useInitialState,
+      routes: initialRoutes,
+      reducers, useInitialState,
       storeState: store.getState(),
     };
   }
@@ -207,6 +219,5 @@ export default class extends React.Component {
 
 export {
   loadStateOnServer,
-  loadStateOnClient,
   getNestedState,
 };

@@ -22,31 +22,27 @@ const deserializeRoutes = (routes, hydratedRoutes) => {
   });
 };
 
-export default ({ routes, deserializer }, cb) => {
-  if (cachedData) {
-    cb(cachedData);
-    return;
-  }
+export default (routes, deserializer) => {
+  if (cachedData) return cachedData;
 
   if (initialData) {
     const {
-      initialState: hydratedState,
-      initialRoutes: hydratedRoutes,
+      initialState,
+      initialRoutes,
     } = initialData;
 
     const unlisten = browserHistory.listen(location => {
       matchRoutes(createRoutes(routes), location, (err, matchedRoutes) => {
-        if (err) cb(defaultData);
-        const initialRoutes = deserializeRoutes(matchedRoutes.routes, hydratedRoutes);
-        const initialState = deserialize(hydratedState, initialRoutes, deserializer);
-
-        cachedData = { initialRoutes, initialState };
-        cb(cachedData);
+        if (err) return;
+        const hydratedRoutes = deserializeRoutes(matchedRoutes.routes, initialRoutes);
+        const hydratedState = deserialize(initialState, hydratedRoutes, deserializer);
+        cachedData = { hydratedRoutes, hydratedState };
       });
     });
 
     unlisten();
-  } else {
-    cb(defaultData);
+    return cachedData;
   }
+
+  return defaultData;
 };
