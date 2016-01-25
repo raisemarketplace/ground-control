@@ -1,3 +1,11 @@
+## [HEAD]
+
+- [x] Handle deserialize in constructor not loadStateOnClient.
+- [x] Rename reducerData to getReducerState
+- [ ] Change asyncLeave to onLeave & call with extra params.
+- [ ] Use state for injected params.
+- [ ] Route->Route+queryParams trigger asyncEnter (error / redirect).
+
 ## [0.3.0]
 
 - Fix - only call asyncEnter for changed routes.

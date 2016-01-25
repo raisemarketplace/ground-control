@@ -36,12 +36,12 @@ export default (
         const serverRender = partial(_serverRender, asyncEnterCallback, route, index);
         const err = partial(_err, asyncEnterCallback, route, index);
         const redirect = partial(_redirect, asyncEnterCallback);
-        const reducerData = () => getNestedState(currentState, index);
+        const getReducerState = () => getNestedState(currentState, index);
 
         route.asyncEnter(done, {
           clientRender, serverRender, redirect, err, routeParams,
           queryParams, dispatch, getState, isMounted, isClient,
-          isInitialLoad, reducerData, isServer,
+          isInitialLoad, getReducerState, isServer,
         });
       } else {
         done();

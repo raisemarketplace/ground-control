@@ -55,13 +55,13 @@ const fetchBottomOfPageData = async (key) => new Promise(resolve => {
 // Complex example to show full power of API!
 const asyncEnter = async (done, {
   routeParams, queryParams, dispatch, clientRender, serverRender,
-  isInitialLoad, isClient, isMounted, reducerData, err, redirect,
+  isInitialLoad, isClient, isMounted, getReducerState, err, redirect,
 }) => {
   const topKey = routeParams.top;
   const bottomKey = routeParams.bottom;
 
   if (isInitialLoad()) {
-    const hydratedData = reducerData();
+    const hydratedData = getReducerState();
     if (hydratedData && hydratedData.topBooks) cache[topKey] = hydratedData.topBooks;
   } else {
     try {
