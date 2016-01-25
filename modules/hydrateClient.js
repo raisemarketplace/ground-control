@@ -12,8 +12,8 @@ const initialData = IS_CLIENT && typeof __INITIAL_DATA__ !== 'undefined' ? __INI
 const defaultData = {};
 let cachedData = null;
 
-const deserializeRoutes = (routes, hydratedRoutes) => {
-  return map(normalizeRoutes(routes), (route, index) => {
+const deserializeRoutes = (props, routes, hydratedRoutes) => {
+  return map(normalizeRoutes(routes, props), (route, index) => {
     const hydratedRoute = hydratedRoutes[index];
     route.blockRender = hydratedRoute.blockRender;
     route.loadingError = hydratedRoute.loadingError;
@@ -22,7 +22,7 @@ const deserializeRoutes = (routes, hydratedRoutes) => {
   });
 };
 
-export default (routes, deserializer) => {
+export default (props, routes, deserializer) => {
   if (cachedData) return cachedData;
 
   if (initialData) {
@@ -34,7 +34,7 @@ export default (routes, deserializer) => {
     const unlisten = browserHistory.listen(location => {
       matchRoutes(createRoutes(routes), location, (err, matchedRoutes) => {
         if (err) return;
-        const hydratedRoutes = deserializeRoutes(matchedRoutes.routes, initialRoutes);
+        const hydratedRoutes = deserializeRoutes(props, matchedRoutes.routes, initialRoutes);
         const hydratedState = deserialize(initialState, hydratedRoutes, deserializer);
         cachedData = { hydratedRoutes, hydratedState };
       });

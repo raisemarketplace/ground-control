@@ -9,7 +9,7 @@ import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateThenNest
 import loadStateOnServer from './loadStateOnServer';
 import hydrateClient from './hydrateClient';
 import { FD_DONE, NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
-import { partial, forEach, dropRight } from 'lodash';
+import { partial, dropRight } from 'lodash';
 
 export default class extends React.Component {
   static propTypes = {
@@ -50,10 +50,10 @@ export default class extends React.Component {
     const reducers = this.normalizeReducers();
 
     let { initialState, initialRoutes } = initialData;
-    initialRoutes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes);
+    initialRoutes = initialRoutes ? initialRoutes : normalizeRoutes(baseRoutes, props);
 
     if (IS_CLIENT) {
-      const { hydratedState, hydratedRoutes } = hydrateClient(initialRoutes, deserializer);
+      const { hydratedState, hydratedRoutes } = hydrateClient(props, initialRoutes, deserializer);
       if (hydratedState && hydratedRoutes) {
         initialRoutes = hydratedRoutes;
         initialState = hydratedState;
@@ -85,11 +85,10 @@ export default class extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location: prevLocation, params: prevRouteParams, store } = this.props;
+    const { location: prevLocation, store } = this.props;
     const { location: nextLocation, params: nextRouteParams } = nextProps;
     const { routes: prevRoutes, reducers } = this.state;
     const { query: nextRouteQuery } = nextLocation;
-    const { query: prevRouteQuery } = prevLocation;
 
     const pathChanged = nextLocation.pathname !== prevLocation.pathname;
     const searchChanged = nextLocation.search !== prevLocation.search;
@@ -102,13 +101,8 @@ export default class extends React.Component {
     }, nextProps);
 
     const keepRoutes = dropRight(prevRoutes, leaveRoutes.length);
-    const enterRoutes = normalizeRoutes(rawEnterRoutes, true);
+    const enterRoutes = normalizeRoutes(rawEnterRoutes, nextProps, keepRoutes.length, true);
     const nextRoutes = keepRoutes.concat(enterRoutes);
-
-    this.asyncLeave(
-      leaveRoutes, prevRouteParams,
-      prevRouteQuery, keepRoutes.length
-    );
 
     this.nestReducers(
       store, nextRoutes, reducers,
@@ -193,21 +187,6 @@ export default class extends React.Component {
       this.stillActiveCallback.bind(this),
       useInitialState, replaceAtDepth
     );
-  }
-
-  asyncLeave(routesToDrop, routeParams, queryParams, routeDepth) {
-    forEach(routesToDrop, route => {
-      if (route.asyncLeave) {
-        const reducerState = getNestedState(
-          this.props.store.getState(),
-          routeDepth
-        );
-
-        route.asyncLeave({
-          reducerState, routeParams, queryParams,
-        });
-      }
-    });
   }
 
   render() {

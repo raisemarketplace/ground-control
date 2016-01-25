@@ -30,15 +30,15 @@ const asyncEnter = (done, { dispatch }) => {
   done();
 };
 
-const asyncLeave = ({ reducerState /* routeParams, queryParams */ }) => {
-  CACHE[KEY] = reducerState;
+const onLeave = ({ getReducerState }) => {
+  CACHE[KEY] = getReducerState();
 };
 
 export default {
   component,
   reducer,
   asyncEnter,
-  asyncLeave,
+  onLeave,
   // deserializeImmutable,
   deserializer,
   // serializeImmutable,
