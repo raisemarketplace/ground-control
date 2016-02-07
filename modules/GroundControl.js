@@ -5,37 +5,29 @@ import asyncEnter from './asyncEnter';
 import createElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import { getNestedState, nestedStateValid } from './nestedState';
-import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateThenNestAndReplaceReducers } from './nestReducers';
+import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateStore } from './nestReducers';
 import loadStateOnServer from './loadStateOnServer';
 import hydrateClient from './hydrateClient';
-import { FD_DONE, NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
+import updateRouteState from './updateRouteState';
+import { NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
 import { partial, dropRight } from 'lodash';
 
 export default class extends React.Component {
   static propTypes = {
-    render: React.PropTypes.func.isRequired,
-    routes: React.PropTypes.array.isRequired,
-    location: React.PropTypes.object.isRequired,
-    router: React.PropTypes.object.isRequired,
-    store: React.PropTypes.object.isRequired,
-    params: React.PropTypes.object.isRequired,
-    initialData: React.PropTypes.object.isRequired,
-    reducers: React.PropTypes.object.isRequired,
-    serializer: React.PropTypes.func.isRequired,
-    deserializer: React.PropTypes.func.isRequired,
+    render: React.PropTypes.func.isRequired, routes: React.PropTypes.array.isRequired,
+    location: React.PropTypes.object.isRequired, router: React.PropTypes.object.isRequired,
+    store: React.PropTypes.object.isRequired, params: React.PropTypes.object.isRequired,
+    initialData: React.PropTypes.object.isRequired, reducers: React.PropTypes.object.isRequired,
+    serializer: React.PropTypes.func.isRequired, deserializer: React.PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    initialData: {},
-    reducers: {},
+    initialData: {}, reducers: {},
     serializer: (route, state) => state,
     deserializer: (route, state) => state,
 
     render(props, routes) {
-      const finalCreateElement = partial(
-        createElement, props.store, props.serializer
-      );
-
+      const finalCreateElement = partial(createElement, props.store, props.serializer);
       return (
         <RouterContext {...props} routes={routes}
             createElement={finalCreateElement} />
@@ -64,7 +56,8 @@ export default class extends React.Component {
     const useInitialStoreState = nestedStateValid(store.getState());
 
     if (useInitialState && !useInitialStoreState) {
-      hydrateThenNestAndReplaceReducers(initialState, store, initialRoutes, reducers);
+      nestAndReplaceReducers(store, initialRoutes, reducers);
+      hydrateStore(initialState, store);
     } else {
       this.nestReducers(store, initialRoutes, reducers, useInitialState);
     }
@@ -77,11 +70,7 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    const { store, params, location: { query }} = this.props;
-    const { routes, reducers, useInitialState } = this.state;
-
-    this.nestReducers(store, routes, reducers, useInitialState);
-    this.callAsyncEnter(routes, params, query);
+    this.callAsyncEnter(this.state.routes, this.props.params, this.props.location.query);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -96,8 +85,7 @@ export default class extends React.Component {
     if (!routeChanged) return;
 
     const { enterRoutes: rawEnterRoutes, leaveRoutes } = computeChangedRoutes({
-      ...this.props,
-      routes: prevRoutes,
+      ...this.props, routes: prevRoutes,
     }, nextProps);
 
     const keepRoutes = dropRight(prevRoutes, leaveRoutes.length);
@@ -115,10 +103,8 @@ export default class extends React.Component {
       useInitialState: false,
     }, () => {
       this.callAsyncEnter(
-        nextRoutes,
-        nextRouteParams,
-        nextRouteQuery,
-        keepRoutes.length
+        nextRoutes, nextRouteParams,
+        nextRouteQuery, keepRoutes.length
       );
     });
   }
@@ -156,17 +142,14 @@ export default class extends React.Component {
     }
   }
 
-  asyncEnterCallback(err, redirect, type, route, index) {
+  asyncEnterCallback(loadingError, redirect, type, route, depth) {
     if (!this._unmounted) {
       const { routes } = this.state;
-      if (routes[index] === route) {
+      if (routes[depth] === route) {
         if (redirect) {
           this.props.router.replace(redirect);
         } else {
-          routes[index].blockRender = false;
-          if (err) routes[index].loadingError = err;
-          if (type === FD_DONE) routes[index].loading = false;
-          this.setState({ routes });
+          updateRouteState(this.props.store, depth, type, loadingError);
         }
       }
     }

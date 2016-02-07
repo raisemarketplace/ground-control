@@ -26,17 +26,16 @@ export default (
   const currentState = store.getState();
 
   if (routes.length > 0) {
-    forEach(routes, (route, index) => {
-      const done = partial(_done, asyncEnterCallback, route, index);
-
-      if (route.asyncEnter && index >= replaceAtDepth) {
+    forEach(routes, (route, depth) => {
+      const done = partial(_done, asyncEnterCallback, route, depth);
+      if (route.asyncEnter && depth >= replaceAtDepth) {
         const isInitialLoad = () => useInitialState;
-        const isMounted = partial(_stillActive, stillActive, route, index);
-        const clientRender = partial(_clientRender, asyncEnterCallback, route, index);
-        const serverRender = partial(_serverRender, asyncEnterCallback, route, index);
-        const err = partial(_err, asyncEnterCallback, route, index);
+        const isMounted = partial(_stillActive, stillActive, route, depth);
+        const clientRender = partial(_clientRender, asyncEnterCallback, route, depth);
+        const serverRender = partial(_serverRender, asyncEnterCallback, route, depth);
+        const err = partial(_err, asyncEnterCallback, route, depth);
         const redirect = partial(_redirect, asyncEnterCallback);
-        const getReducerState = () => getNestedState(currentState, index);
+        const getReducerState = () => getNestedState(currentState, depth);
 
         route.asyncEnter(done, {
           clientRender, serverRender, redirect, err, routeParams,

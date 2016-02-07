@@ -1,5 +1,5 @@
-import { CHILD, SELF, NAMESPACE, ROOT_DEPTH } from './constants';
-import { setShape } from './nestedShape';
+import { CHILD, SELF, META, NAMESPACE, ROOT_DEPTH } from './constants';
+import { setShape, validateShape } from './nestedShape';
 import { partial, reduce, get, set } from 'lodash';
 const NORMALIZED_ROOT = '@@NORMALIZED_ROOT';
 
@@ -10,13 +10,27 @@ const keyForDepth = depth => {
   }, `[${NORMALIZED_ROOT}]`);
 };
 
-const normalizeStateShape = state => ({ [NORMALIZED_ROOT]: state });
 const scopedState = (state, fromNamespace = true) => fromNamespace ? state[NAMESPACE] : state;
+
+const normalizeStateShape = state => {
+  if (!validateShape(state)) state = setShape(); // eslint-disable-line
+  return {
+    [NORMALIZED_ROOT]: state,
+  };
+};
 
 export const getNestedState = (state, depth = ROOT_DEPTH, fromNamespace = true, key = SELF) => {
   const normalizedState = normalizeStateShape(scopedState(state, fromNamespace));
   const nestedState = get(normalizedState, keyForDepth(depth));
   return nestedState ? get(nestedState, key) : nestedState;
+};
+
+export const getNestedStateAndMeta = (baseState, depth = ROOT_DEPTH, fromNamespace = true) => {
+  const normalizedState = normalizeStateShape(scopedState(baseState, fromNamespace));
+  const nestedState = get(normalizedState, keyForDepth(depth));
+  const state = get(nestedState, SELF);
+  const meta = get(nestedState, META);
+  return { state, meta };
 };
 
 export const setNestedState = (state, data, depth, fromNamespace = true) => {

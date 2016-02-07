@@ -3,7 +3,8 @@ import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
 import createMemoryHistory from 'react-router/lib/createMemoryHistory';
 import { reduce, isEmpty } from 'lodash';
-import { FD_SERVER_RENDER, FD_DONE } from './constants';
+import { FD_SERVER_RENDER, FD_DONE, UPDATE_ROUTE_STATE } from './constants';
+import updateRouteState from './updateRouteState';
 
 const createAsyncEnterCallback = (initialRoutes, store, cb) => {
   let needToLoadCounter = initialRoutes.length;
@@ -17,7 +18,7 @@ const createAsyncEnterCallback = (initialRoutes, store, cb) => {
     }
   };
 
-  return (err, redirect, type, route, index) => {
+  return (err, redirect, type, route, depth) => {
     if (err) cb(err);
     if (redirect) {
       const { pathname, query, state } = redirect;
@@ -39,11 +40,7 @@ const createAsyncEnterCallback = (initialRoutes, store, cb) => {
     }
 
     if (type === FD_DONE || type === FD_SERVER_RENDER) {
-      initialRoutes[index].blockRender = false;
-      if (type === FD_DONE) {
-        initialRoutes[index].loading = false;
-      }
-
+      updateRouteState(store, depth, type);
       --needToLoadCounter;
       maybeFinish();
     }

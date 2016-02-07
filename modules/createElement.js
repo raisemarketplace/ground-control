@@ -1,44 +1,42 @@
 import React from 'react';
-import { partial, forEach, omit } from 'lodash';
-import { getNestedState } from './nestedState';
+import { partial } from 'lodash';
+import { getNestedStateAndMeta } from './nestedState';
+
+const getStateAndMetaAndSerialize = (depth, finalGetNestedState, routes, serializer) => {
+  const nestedStateAndMeta = finalGetNestedState(depth);
+  const { state, meta } = nestedStateAndMeta;
+
+  const routeForRequested = !!routes[depth] ? routes[depth] : null;
+  if (routeForRequested) {
+    if (routeForRequested.serializer) return { state: routeForRequested.serializer(state), meta };
+    return { state: serializer(routeForRequested, state), meta };
+  }
+
+  return { state, meta };
+};
 
 export default (store, serializer, Component, props) => {
   const { routes, route } = props;
-  if (route.blockRender) {
-    return route.loader(props);
-  }
 
-  let depth;
-  forEach(routes, (_, index) => {
-    if (routes[index] === route) {
-      depth = index;
-    }
-  });
+  const storeState = store.getState();
+  const depth = routes.indexOf(route);
 
-  const state = store.getState();
-  const dispatch = store.dispatch;
-  const finalGetNestedState = partial(getNestedState, state);
+  const finalGetNestedState = partial(getNestedStateAndMeta, storeState);
+  const { state: routeState, meta: routeMeta } = getStateAndMetaAndSerialize(depth, finalGetNestedState, routes, serializer);
 
-  const getStateAndSerialize = requestedDepth => {
-    const nestedState = finalGetNestedState(requestedDepth);
-    const routeForRequested = !!routes[requestedDepth] ? routes[requestedDepth] : null;
+  const blockRender = routeMeta.blockRender;
+  if (blockRender) return route.loader(props);
 
-    if (routeForRequested) {
-      if (routeForRequested.serializer) return routeForRequested.serializer(nestedState);
-      return serializer(routeForRequested, nestedState);
-    }
+  const loading = routeMeta.loading;
+  const loadingError = routeMeta.loadingError;
 
-    return nestedState;
-  };
-
-  // @TODO why routeParams in here?...should be params only from react router (which are routeParams...)
   return (
     <Component
-        {...omit(props, ['routeParams'])}
-        loading={route.loading}
-        loadingError={route.loadingError}
-        data={getStateAndSerialize(depth)}
-        dispatch={dispatch}
+        {...props}
+        dispatch={store.dispatch}
+        loadingError={loadingError}
+        loading={loading}
+        data={routeState}
         />
   );
 };

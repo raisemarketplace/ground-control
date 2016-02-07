@@ -1,17 +1,13 @@
 import { isObject } from 'lodash';
-import {
-  NAMESPACE,
-  SELF,
-  CHILD,
-} from './constants';
+import { NAMESPACE, SELF, CHILD, META } from './constants';
 
-export const setShape = (self, child) => {
+export const setShape = (self, child, meta) => {
   return {
     [SELF]: self,
     [CHILD]: child,
+    [META]: meta,
   };
 };
 
-export const validateRootShape = state => {
-  return isObject(state) && state.hasOwnProperty(NAMESPACE) && (state[NAMESPACE].hasOwnProperty(SELF) || state[NAMESPACE].hasOwnProperty(CHILD));
-};
+export const validateShape = state => isObject(state) && (state.hasOwnProperty(SELF) || state.hasOwnProperty(CHILD));
+export const validateRootShape = state => isObject(state) && state.hasOwnProperty(NAMESPACE) && validateShape(state[NAMESPACE]);

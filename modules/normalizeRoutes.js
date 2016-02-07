@@ -3,7 +3,7 @@ import { map, partial } from 'lodash';
 import { getNestedState } from './nestedState';
 import { ROOT_DEPTH } from './constants';
 
-const defaultLoader = () => <div/>;
+const defaultLoader = () => <div children=":)" />;
 
 export default (routes, props, startIndex = ROOT_DEPTH, force = false) => {
   return map(routes, (route, index) => {
@@ -18,12 +18,8 @@ export default (routes, props, startIndex = ROOT_DEPTH, force = false) => {
         });
       }
 
-      if (!route.reducer) route.reducer = state => state;
+      if (!route.reducer) route.reducer = s => s;
       if (!route.loader) route.loader = defaultLoader;
-
-      route.loading = true;
-      route.loadingError = null;
-      route.blockRender = true;
       route.normalized = true;
     }
 

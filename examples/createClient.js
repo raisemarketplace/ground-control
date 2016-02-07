@@ -29,19 +29,19 @@ export default ({
       enableDevTools, enableThunk, history,
     });
 
-    render((
-      <Router
-          routes={routes}
-          history={history}
-          render={(props) => (
-            <GroundControl
-                {...props}
-                store={store}
-                serializer={serializer}
-                deserializer={deserializer}
-                reducers={reducers}
-                />
-          )}/>
-    ), document.getElementById('app'));
+    const groundControlProps = props => ({
+      ...props, store, serializer,
+      deserializer, reducers,
+    });
+
+    const routerProps = () => ({
+      routes, history,
+      render: props => {
+        return <GroundControl {...groundControlProps(props)} />;
+      },
+    });
+
+    const router = <Router {...routerProps()} />;
+    render(router, document.getElementById('app'));
   });
 };

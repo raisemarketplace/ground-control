@@ -1,8 +1,22 @@
-import { NAMESPACE, REHYDRATE_REDUCERS, HYDRATE_STORE, ROOT_DEPTH } from './constants';
-import { getNestedState, omitNestedState } from './nestedState';
+import { NAMESPACE, REHYDRATE_REDUCERS, HYDRATE_STORE, ROOT_DEPTH, UPDATE_ROUTE_STATE } from './constants';
+import { getNestedStateAndMeta, omitNestedState } from './nestedState';
 import { setShape } from './nestedShape';
 import { combineReducers } from 'redux';
 import { reduceRight, omit, map } from 'lodash';
+
+export const META_INITIAL_STATE = {
+  blockRender: true,
+  loading: true,
+  loadingError: null,
+};
+
+const metaReducer = (state = META_INITIAL_STATE, action, depth) => {
+  if (action.type === UPDATE_ROUTE_STATE && action.depth === depth) {
+    return { ...state, ...action.meta };
+  }
+
+  return state;
+};
 
 const nestReducers = (...routeReducers) => {
   return (state, action) => {
@@ -13,11 +27,11 @@ const nestReducers = (...routeReducers) => {
       currentState = action.state;
     }
 
-    return reduceRight(routeReducers, (result, reducer, depth) => {
-      const previousState = getNestedState(currentState, depth, false);
+    return reduceRight(routeReducers, (nextChild, reducer, depth) => {
+      const { state: previousState, meta: previousMeta } = getNestedStateAndMeta(currentState, depth, false);
       const nextState = reducer(previousState, action);
-      if (result) return setShape(nextState, result);
-      return setShape(nextState);
+      const nextMeta = metaReducer(previousMeta, action, depth);
+      return setShape(nextState, nextChild, nextMeta);
     }, null);
   };
 };
@@ -39,7 +53,6 @@ export const nestAndReplaceReducersAndState = (store, routes, reducers, depth = 
   store.dispatch({ type: REHYDRATE_REDUCERS, state: adjustedState });
 };
 
-export const hydrateThenNestAndReplaceReducers = (state, store, routes, reducers) => {
-  nestAndReplaceReducers(store, routes, reducers);
+export const hydrateStore = (state, store) => {
   store.dispatch({ type: HYDRATE_STORE, state: state[NAMESPACE] });
 };
