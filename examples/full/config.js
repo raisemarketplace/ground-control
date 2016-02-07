@@ -3,7 +3,7 @@ import webpackConfig from 'examples/full/webpack.config';
 
 const enableServerRender = true;
 const enableClientRender = true;
-const enableReduxSimpleRouter = true;
+const enableReactRouterRedux = true;
 const enableDevTools = true;
 const enableThunk = true;
 const runWebpack = enableClientRender;
@@ -13,7 +13,7 @@ export default {
   runWebpack,
   enableServerRender,
   enableClientRender,
-  enableReduxSimpleRouter,
+  enableReactRouterRedux,
   enableDevTools,
   enableThunk,
   routes,

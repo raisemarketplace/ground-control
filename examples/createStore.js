@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { syncHistory, routeReducer } from 'redux-simple-router';
+import { syncHistory, routeReducer } from 'react-router-redux';
 import { NAMESPACE } from 'modules/constants';
-import DevTools from 'examples/utils/devtools';
 import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
 
@@ -19,12 +18,7 @@ export default ({
   if (reduxSimpleRouterMiddleware) middleware = middleware.concat(reduxSimpleRouterMiddleware);
 
   let storeEnhancers = [];
-  if (enableDevTools) storeEnhancers = storeEnhancers.concat(DevTools.instrument());
-
-  const finalCreateStore = compose(
-    applyMiddleware(...middleware),
-    ...storeEnhancers
-  )(createStore);
+  if (enableDevTools) storeEnhancers = storeEnhancers.concat(window.devToolsExtension ? window.devToolsExtension() : f => f);
 
   const reducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
   if (enableReduxSimpleRouter) {
@@ -37,7 +31,10 @@ export default ({
     ...reducers,
   });
 
-  const store = finalCreateStore(reducer, {});
+  const store = createStore(reducer, {}, compose(
+    applyMiddleware(...middleware),
+    ...storeEnhancers
+  ));
 
   if (reduxSimpleRouterMiddleware) {
     reduxSimpleRouterMiddleware.listenForReplays(store);

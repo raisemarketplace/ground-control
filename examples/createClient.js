@@ -3,7 +3,6 @@ import { render } from 'react-dom';
 import { Router, browserHistory as history } from 'react-router';
 import GroundControl from 'modules/GroundControl';
 import createStore from 'examples/createStore';
-import DevTools from 'examples/utils/devtools';
 import domready from 'domready';
 
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
@@ -21,12 +20,12 @@ const serializer = (route, data) => {
 };
 
 export default ({
-  additionalReducers, enableReduxSimpleRouter,
+  additionalReducers, enableReactRouterRedux,
   enableDevTools, enableThunk, routes,
 }) => {
   domready(() => {
     const { store, reducers} = createStore({
-      additionalReducers, enableReduxSimpleRouter,
+      additionalReducers, enableReactRouterRedux,
       enableDevTools, enableThunk, history,
     });
 
@@ -44,11 +43,5 @@ export default ({
                 />
           )}/>
     ), document.getElementById('app'));
-
-    if (enableDevTools) {
-      render((
-        <DevTools store={store} />
-      ), document.getElementById('dev'));
-    }
   });
 };
