@@ -15,7 +15,7 @@ export default ({
   if (reactRouterReduxMiddleware) middleware = middleware.concat(reactRouterReduxMiddleware);
 
   let storeEnhancers = [];
-  if (enableLoop) storeEnhancers = storeEnhancers.concat(installLoop());
+  if (enableLoop) storeEnhancers = storeEnhancers.concat(installLoop()); // this should come last, but devtools causes issue
   if (enableDevTools) storeEnhancers = storeEnhancers.concat(window.devToolsExtension ? window.devToolsExtension() : f => f);
 
   const reducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
