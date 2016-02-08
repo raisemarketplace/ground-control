@@ -6,20 +6,20 @@ import { isEmpty } from 'lodash';
 import thunk from 'redux-thunk';
 
 export default ({
-  additionalReducers, enableReduxSimpleRouter, enableDevTools, enableThunk, enableLoop, history,
+  additionalReducers, enableReactRouterRedux, enableDevTools, enableThunk, enableLoop, history,
 }) => {
   let middleware = [];
-  let reduxSimpleRouterMiddleware;
+  let reactRouterReduxMiddleware;
   if (enableThunk) middleware = middleware.concat(thunk);
-  if (enableReduxSimpleRouter && history) reduxSimpleRouterMiddleware = syncHistory(history);
-  if (reduxSimpleRouterMiddleware) middleware = middleware.concat(reduxSimpleRouterMiddleware);
+  if (enableReactRouterRedux && history) reactRouterReduxMiddleware = syncHistory(history);
+  if (reactRouterReduxMiddleware) middleware = middleware.concat(reactRouterReduxMiddleware);
 
   let storeEnhancers = [];
   if (enableLoop) storeEnhancers = storeEnhancers.concat(installLoop());
   if (enableDevTools) storeEnhancers = storeEnhancers.concat(window.devToolsExtension ? window.devToolsExtension() : f => f);
 
   const reducers = additionalReducers && !isEmpty(additionalReducers) ? additionalReducers : {};
-  if (enableReduxSimpleRouter) reducers.routing = routeReducer;
+  if (enableReactRouterRedux) reducers.routing = routeReducer;
 
   const defaultReducer = (state = {}) => state;
   const cr = enableLoop ? loopCombineReducers : reduxCombineReducers;
@@ -33,6 +33,6 @@ export default ({
     ...storeEnhancers
   ));
 
-  if (reduxSimpleRouterMiddleware) reduxSimpleRouterMiddleware.listenForReplays(store);
+  if (reactRouterReduxMiddleware) reactRouterReduxMiddleware.listenForReplays(store);
   return { store, reducers };
 };

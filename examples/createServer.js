@@ -25,9 +25,11 @@ const getHtml = (enableClientRender, html = '', scriptString = '') => {
   );
 };
 
-const getAppHtml = (props, store, initialData, reducers) => {
+const getAppHtml = (props, store, initialData, reducers, enableLoop) => {
   // only props, store, initialData are required
-  const groundControlProps = () => ({ ...props, store, initialData, reducers, combineReducers: loopCombineReducers });
+  let groundControlOpts = { store, initialData, reducers };
+  if (enableLoop) groundControlOpts = { ...groundControlOpts, combineReducers: loopCombineReducers };
+  const groundControlProps = () => ({ ...props, ...groundControlOpts });
   return renderToString(<GroundControl {...groundControlProps()} />);
 };
 
@@ -48,7 +50,7 @@ const render = ({ routes, additionalReducers, enableThunk, enableLoop, enableCli
         } else if (loadDataRedirectLocation) {
           res.redirect(302, `${loadDataRedirectLocation.pathname}${loadDataRedirectLocation.search}`);
         } else {
-          const appHtml = getAppHtml(props, store, initialData, reducers);
+          const appHtml = getAppHtml(props, store, initialData, reducers, enableLoop);
           const html = getHtml(enableClientRender, appHtml, scriptString);
           res.status(200).send(html);
         }

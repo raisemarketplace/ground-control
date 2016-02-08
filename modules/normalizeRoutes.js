@@ -3,7 +3,7 @@ import { map, partial } from 'lodash';
 import { getNestedState } from './nestedState';
 import { ROOT_DEPTH } from './constants';
 
-const defaultLoader = () => <div children=":)" />;
+const defaultLoader = () => <div/>;
 
 export default (routes, props, startIndex = ROOT_DEPTH, force = false) => {
   return map(routes, (route, index) => {
