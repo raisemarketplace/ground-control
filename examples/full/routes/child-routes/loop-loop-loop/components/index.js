@@ -7,11 +7,17 @@ import { Effects, loop } from 'redux-loop';
 const LOOOOP = 'loop';
 
 export const actions = createActions('LoopLoopLoop', ['loop']);
+
+const delayedLoop = () => new Promise(resolve => {
+  setTimeout(() => {
+    resolve(actions.loop());
+  }, 500);
+});
+
 export const reducer = createReducer({
   [actions.loop]: state => {
-    const nextState = { ...state, text: `${state.text}${LOOOOP}` }
-    const effect = nextState.text.length <= LOOOOP.length * 3 ? Effects.constant(actions.loop()) : Effects.none();
-    console.log(nextState, effect)
+    const nextState = { ...state, text: `${state.text}${LOOOOP}` };
+    const effect = nextState.text.length <= LOOOOP.length * 2 ? Effects.promise(delayedLoop) : Effects.none();
     return loop(nextState, effect);
   },
 }, { text: LOOOOP });
@@ -23,11 +29,10 @@ export default class extends Component {
   };
 
   componentDidMount() {
-    this.props.dispatch(actions.loop());
+    delayedLoop().then(action => this.props.dispatch(action));
   }
 
   render() {
-    console.warn('props?',this.props.data)
     return (
       <div style={routeStyle}>
         {this.props.data.text}

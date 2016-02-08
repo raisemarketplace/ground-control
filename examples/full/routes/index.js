@@ -2,6 +2,7 @@ import component, { reducer } from 'examples/full/routes/components';
 import indexRoute from 'examples/full/routes/index-route';
 import googleBooksRoute from 'examples/full/routes/child-routes/google-books';
 import nestedCountersRoute from 'examples/full/routes/child-routes/nested-counters';
+import loopLoopLoop from 'examples/full/routes/child-routes/loop-loop-loop';
 
 // adjusted route api...
 // {
@@ -25,5 +26,6 @@ export default {
   childRoutes: [
     googleBooksRoute,
     nestedCountersRoute,
+    loopLoopLoop,
   ],
 };

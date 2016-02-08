@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import RouterContext from 'react-router/lib/RouterContext';
 import computeChangedRoutes from 'react-router/lib/computeChangedRoutes';
 import asyncEnter from './asyncEnter';
-import createElement from './createElement';
+import baseCreateElement from './createElement';
 import normalizeRoutes from './normalizeRoutes';
 import { getNestedState, nestedStateValid } from './nestedState';
 import { nestAndReplaceReducersAndState, nestAndReplaceReducers, hydrateStore } from './nestReducers';
@@ -12,13 +12,14 @@ import updateRouteState from './updateRouteState';
 import { NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
 import { partial, dropRight } from 'lodash';
 
-export default class extends React.Component {
+export default class extends Component {
   static propTypes = {
-    render: React.PropTypes.func.isRequired, routes: React.PropTypes.array.isRequired,
-    location: React.PropTypes.object.isRequired, router: React.PropTypes.object.isRequired,
-    store: React.PropTypes.object.isRequired, params: React.PropTypes.object.isRequired,
-    initialData: React.PropTypes.object.isRequired, reducers: React.PropTypes.object.isRequired,
-    serializer: React.PropTypes.func.isRequired, deserializer: React.PropTypes.func.isRequired,
+    render: PropTypes.func.isRequired, routes: PropTypes.array.isRequired,
+    location: PropTypes.object.isRequired, router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired, params: PropTypes.object.isRequired,
+    initialData: PropTypes.object.isRequired, reducers: PropTypes.object.isRequired,
+    serializer: PropTypes.func.isRequired, deserializer: PropTypes.func.isRequired,
+    combineReducers: PropTypes.func,
   };
 
   static defaultProps = {
@@ -27,18 +28,17 @@ export default class extends React.Component {
     deserializer: (route, state) => state,
 
     render(props, routes) {
-      const finalCreateElement = partial(createElement, props.store, props.serializer);
-      return (
-        <RouterContext {...props} routes={routes}
-            createElement={finalCreateElement} />
-      );
+      const { store, serializer } = props;
+      const createElement = partial(baseCreateElement, store, serializer);
+      const routerContextProps = () => ({ ...props, routes, createElement });
+      return <RouterContext {...routerContextProps()} />;
     },
   };
 
   constructor(props, context) {
     super(props, context);
 
-    const { initialData, store, routes: baseRoutes, deserializer } = props;
+    const { initialData, store, routes: baseRoutes, deserializer, combineReducers } = props;
     const reducers = this.normalizeReducers();
 
     let { initialState, initialRoutes } = initialData;
@@ -56,10 +56,10 @@ export default class extends React.Component {
     const useInitialStoreState = nestedStateValid(store.getState());
 
     if (useInitialState && !useInitialStoreState) {
-      nestAndReplaceReducers(store, initialRoutes, reducers);
+      nestAndReplaceReducers(store, initialRoutes, reducers, combineReducers);
       hydrateStore(initialState, store);
     } else {
-      this.nestReducers(store, initialRoutes, reducers, useInitialState);
+      this.nestReducers(store, initialRoutes, reducers, useInitialState, ROOT_DEPTH, combineReducers);
     }
 
     this.state = {
@@ -74,7 +74,7 @@ export default class extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location: prevLocation, store } = this.props;
+    const { location: prevLocation, store, combineReducers } = this.props;
     const { location: nextLocation, params: nextRouteParams } = nextProps;
     const { routes: prevRoutes, reducers } = this.state;
     const { query: nextRouteQuery } = nextLocation;
@@ -94,7 +94,8 @@ export default class extends React.Component {
 
     this.nestReducers(
       store, nextRoutes, reducers,
-      false, keepRoutes.length
+      false, keepRoutes.length,
+      combineReducers
     );
 
     this.setState({
@@ -133,12 +134,12 @@ export default class extends React.Component {
     return reducers;
   }
 
-  nestReducers(store, routes, reducers, useInitialState = false, replaceAtDepth = ROOT_DEPTH) {
+  nestReducers(store, routes, reducers, useInitialState = false, replaceAtDepth = ROOT_DEPTH, combineReducers) {
     this.unsubscribe();
     if (useInitialState) {
-      nestAndReplaceReducers(store, routes, reducers);
+      nestAndReplaceReducers(store, routes, reducers, combineReducers);
     } else {
-      nestAndReplaceReducersAndState(store, routes, reducers, replaceAtDepth);
+      nestAndReplaceReducersAndState(store, routes, reducers, replaceAtDepth, combineReducers);
     }
   }
 

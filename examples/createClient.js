@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { Router, browserHistory as history } from 'react-router';
 import GroundControl from 'modules/GroundControl';
 import createStore from 'examples/createStore';
+import { combineReducers as loopCombineReducers } from 'redux-loop';
 import domready from 'domready';
 
 // if you use immutable for route reducers, set a property on route & use app level deserializer (optional)
@@ -20,28 +21,23 @@ const serializer = (route, data) => {
 };
 
 export default ({
-  additionalReducers, enableReactRouterRedux,
-  enableDevTools, enableThunk, routes,
+  additionalReducers, enableReactRouterRedux, enableDevTools, enableThunk, enableLoop, routes,
 }) => {
   domready(() => {
     const { store, reducers} = createStore({
-      additionalReducers, enableReactRouterRedux,
-      enableDevTools, enableThunk, history,
+      additionalReducers, enableReactRouterRedux, enableDevTools, enableThunk, enableLoop, history,
     });
 
-    const groundControlProps = props => ({
-      ...props, store, serializer,
-      deserializer, reducers,
-    });
+    let groundControlsOpts = { store, serializer, deserializer, reducers };
+    if (enableLoop) groundControlsOpts = { ...groundControlsOpts, combineReducers: loopCombineReducers };
+    const groundControlProps = props => ({ ...props, ...groundControlsOpts });
 
     const routerProps = () => ({
-      routes, history,
-      render: props => {
+      routes, history, render: props => {
         return <GroundControl {...groundControlProps(props)} />;
       },
     });
 
-    const router = <Router {...routerProps()} />;
-    render(router, document.getElementById('app'));
+    render(<Router {...routerProps()} />, document.getElementById('app'));
   });
 };

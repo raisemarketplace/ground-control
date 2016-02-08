@@ -6,15 +6,10 @@ const enableClientRender = true;
 const enableReactRouterRedux = false;
 const enableDevTools = false;
 const enableThunk = false;
+const enableLoop = false;
 const runWebpack = enableClientRender;
 
 export default {
-  webpackConfig,
-  runWebpack,
-  enableServerRender,
-  enableClientRender,
-  enableReactRouterRedux,
-  enableDevTools,
-  enableThunk,
-  routes,
+  webpackConfig, runWebpack, enableServerRender, enableClientRender,
+  enableReactRouterRedux, enableDevTools, enableThunk, enableLoop, routes,
 };

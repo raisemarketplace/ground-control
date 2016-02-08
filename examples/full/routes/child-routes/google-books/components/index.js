@@ -10,15 +10,10 @@ const FROWN_FACE = ':(';
 
 export const actions = createActions('GoogleBooks', ['loadTop', 'loadBottom']);
 export const reducer = createReducer({
-  [actions.loadTop]: (state, payload) => {
-    return { ...state, topBooks: payload };
-  },
-  [actions.loadBottom]: (state, payload) => {
-    return { ...state, bottomBooks: payload };
-  },
+  [actions.loadTop]: (state, payload) => ({ ...state, topBooks: payload }),
+  [actions.loadBottom]: (state, payload) => ({ ...state, bottomBooks: payload }),
 }, {
-  topBooks: [],
-  bottomBooks: [],
+  topBooks: [], bottomBooks: [],
 });
 
 export default props => {
@@ -26,9 +21,7 @@ export default props => {
 
   let topBooks;
   if (loadingError && loadingError.topBooks) {
-    topBooks = (
-      <div>{FROWN_FACE}</div>
-    );
+    topBooks = <div>{FROWN_FACE}</div>;
   } else {
     topBooks = map(data.topBooks, (book, index) => (
       <Book key={index} {...book} />
