@@ -1,8 +1,11 @@
-import { NAMESPACE, REHYDRATE_REDUCERS, HYDRATE_STORE, ROOT_DEPTH, UPDATE_ROUTE_STATE } from './constants';
 import { getNestedStateAndMeta, omitNestedState } from './nestedState';
 import { setShape } from './nestedShape';
 import { combineReducers } from 'redux';
-import { reduceRight, omit, map } from 'lodash';
+import { partial, reduceRight, omit, map } from 'lodash';
+import {
+  NAMESPACE, REHYDRATE_REDUCERS, HYDRATE_STORE,
+  ROOT_DEPTH, UPDATE_ROUTE_STATE,
+} from './constants';
 
 export const META_INITIAL_STATE = {
   blockRender: true,
@@ -10,7 +13,8 @@ export const META_INITIAL_STATE = {
   loadingError: null,
 };
 
-const metaReducer = (state = META_INITIAL_STATE, action, depth) => {
+const identityReducer = (s = {}) => s;
+const baseMetaReducer = (depth, state = META_INITIAL_STATE, action) => {
   if (action.type === UPDATE_ROUTE_STATE && action.depth === depth) {
     return { ...state, ...action.meta };
   }
@@ -27,11 +31,17 @@ const nestReducers = (...routeReducers) => {
       currentState = action.state;
     }
 
-    return reduceRight(routeReducers, (nextChild, reducer, depth) => {
+    return reduceRight(routeReducers, (nextChild, routeReducer, depth) => {
       const { state: previousState, meta: previousMeta } = getNestedStateAndMeta(currentState, depth, false);
-      const nextState = reducer(previousState, action);
-      const nextMeta = metaReducer(previousMeta, action, depth);
-      return setShape(nextState, nextChild, nextMeta);
+      action.__ROUTE_DEPTH__ = depth;
+
+      const reducer = combineReducers({
+        self: routeReducer, child: identityReducer, meta: partial(baseMetaReducer, depth),
+      });
+
+      const previous = setShape(previousState, nextChild, previousMeta);
+      const next = reducer(previous, action);
+      return next;
     }, null);
   };
 };

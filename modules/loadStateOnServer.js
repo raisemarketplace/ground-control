@@ -3,7 +3,7 @@ import normalizeRoutes from './normalizeRoutes';
 import { nestAndReplaceReducersAndState } from './nestReducers';
 import createMemoryHistory from 'react-router/lib/createMemoryHistory';
 import { reduce, isEmpty } from 'lodash';
-import { FD_SERVER_RENDER, FD_DONE, UPDATE_ROUTE_STATE } from './constants';
+import { FD_SERVER_RENDER, FD_DONE } from './constants';
 import updateRouteState from './updateRouteState';
 
 const createAsyncEnterCallback = (initialRoutes, store, cb) => {
