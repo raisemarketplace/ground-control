@@ -1,6 +1,6 @@
 # GroundControl
 
-**IMPORTANT!** Relies on React-Router v2 release candidate. This a beta! Use cautiously until we release 1.0 (then strict semver)! Tests coming...
+**IMPORTANT!** This a beta! Use cautiously until we release 1.0 (then strict semver)! Tests coming...
 
 GroundControl simplifies React-Router/Redux single page applications:
 
@@ -87,6 +87,7 @@ async function asyncEnter(done, { clientRender, serverRender, dispatch, isClient
 - [x] React-Redux (if desired)
 - [x] Redux DevTools
 - [x] Thunk / middleware
+- [x] Redux-loop
 - [ ] Others?
 
 ---
