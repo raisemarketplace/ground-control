@@ -18,7 +18,7 @@ export default (routes, props, startIndex = ROOT_DEPTH, force = false) => {
         });
       }
 
-      if (!route.reducer) route.reducer = s => s;
+      if (!route.reducer) route.reducer = (s = {}) => s;
       if (!route.loader) route.loader = defaultLoader;
       route.normalized = true;
     }
