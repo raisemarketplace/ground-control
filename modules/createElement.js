@@ -16,7 +16,7 @@ const getStateAndMetaAndSerialize = (depth, finalGetNestedState, routes, seriali
 };
 
 export default (store, serializer, Component, props) => {
-  const { routes, route } = props;
+  const { routes, route } = props; // eslint-disable-line
 
   const storeState = store.getState();
   const depth = routes.indexOf(route);
@@ -30,13 +30,13 @@ export default (store, serializer, Component, props) => {
   const loading = routeMeta.loading;
   const loadingError = routeMeta.loadingError;
 
-  return (
-    <Component
-        {...props}
-        dispatch={store.dispatch}
-        loadingError={loadingError}
-        loading={loading}
-        data={routeState}
-        />
-  );
+  const componentProps = {
+    ...props,
+    dispatch: store.dispatch,
+    loadingError,
+    loading,
+    data: routeState,
+  };
+
+  return <Component {...componentProps} />;
 };

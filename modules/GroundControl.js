@@ -11,8 +11,9 @@ import hydrateClient from './hydrateClient';
 import updateRouteState from './updateRouteState';
 import { NAMESPACE, ROOT_DEPTH, IS_CLIENT } from './constants';
 import { partial, dropRight } from 'lodash';
+import { connect } from 'react-redux';
 
-export default class extends Component {
+class GroundControl extends Component {
   static propTypes = {
     render: PropTypes.func.isRequired, routes: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired, router: PropTypes.object.isRequired,
@@ -180,7 +181,10 @@ export default class extends Component {
   }
 }
 
+const GroundControlContainer = connect(s => s)(GroundControl);
+
 export {
+  GroundControlContainer as default,
   loadStateOnServer,
   getNestedState,
 };
