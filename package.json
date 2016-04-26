@@ -1,6 +1,6 @@
 {
   "name": "ground-control",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Scalable reducer management and data fetching for React Router / Redux.",
   "main": "lib/GroundControl.js",
   "jsnext:main": "modules/GroundControl.js",
@@ -27,14 +27,14 @@
   "license": "MIT",
   "peerDependencies": {
     "history": "^2.0.0",
-    "react": "^0.14.x",
+    "react": "^15.0.x",
     "react-router": "^2.0.0"
   },
   "dependencies": {
     "deep-equal": "^1.0.1",
     "history": "^2.0.0",
     "lodash": "^4.2.1",
-    "react": "^0.14.7",
+    "react": "^15.0.1",
     "react-redux": "^4.4.0",
     "react-router": "^2.0.0",
     "redux": "^3.3.1"
