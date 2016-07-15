@@ -33,6 +33,7 @@ export default (store, serializer, Component, props) => {
   const componentProps = {
     ...props,
     dispatch: store.dispatch,
+    store,
     loadingError,
     loading,
     data: routeState,
