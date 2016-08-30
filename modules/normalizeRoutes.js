@@ -15,6 +15,7 @@ export default (routes, props, startIndex = ROOT_DEPTH, force = false) => {
           getReducerState,
           params,
           query,
+          dispatch: store.dispatch,
         });
       }
 
